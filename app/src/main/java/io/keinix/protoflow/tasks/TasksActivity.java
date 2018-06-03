@@ -1,6 +1,10 @@
 package io.keinix.protoflow.tasks;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,10 +19,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.keinix.protoflow.R;
+import io.keinix.protoflow.addeddittask.AddEditTaskActivity;
+import io.keinix.protoflow.data.Task;
 
 public class TasksActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -29,6 +37,15 @@ public class TasksActivity extends AppCompatActivity
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.recycler_view_tasks) RecyclerView recyclerView;
 
+    private TasksViewModel mViewModel;
+    private TasksAdapter mAdapter;
+
+    @OnClick(R.id.fab)
+    void fabClick() {
+        Intent intent = new Intent(TasksActivity.this, AddEditTaskActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,9 +54,8 @@ public class TasksActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         setupNavDrawer();
         setUpRecyclerView();
-        fab.setOnClickListener(v -> Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
-
+        mViewModel = ViewModelProviders.of(this).get(TasksViewModel.class);
+        mViewModel.getAllTasks().observe(this, tasks -> mAdapter.setTasks(tasks));
     }
 
     @Override
@@ -107,8 +123,8 @@ public class TasksActivity extends AppCompatActivity
 
 
     private void setUpRecyclerView() {
-        TasksAdapter adapter = new TasksAdapter(this);
-        recyclerView.setAdapter(adapter);
+        mAdapter = new TasksAdapter(this);
+        recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 }
