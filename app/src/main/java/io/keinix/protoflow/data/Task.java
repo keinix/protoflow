@@ -55,4 +55,12 @@ public class Task {
     public void setTimeCreated(@NonNull long timeCreated) {
         this.timeCreated = timeCreated;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }
