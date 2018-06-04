@@ -4,6 +4,7 @@ import android.app.Application;
 
 import dagger.android.AndroidInjector;
 import dagger.android.DaggerApplication;
+import io.keinix.protoflow.di.DaggerApplicationComponent;
 
 public class ProtoflowApplication extends DaggerApplication {
 
@@ -14,6 +15,6 @@ public class ProtoflowApplication extends DaggerApplication {
 
     @Override
     protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
-        return null;
+        return DaggerApplicationComponent.builder().application(this).build();
     }
 }

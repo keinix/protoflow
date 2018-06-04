@@ -7,9 +7,11 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
+import dagger.Module;
 import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.data.source.TaskRepository;
 
+@Module
 public class TasksViewModel extends AndroidViewModel {
 
     private TaskRepository mTaskRepository;
