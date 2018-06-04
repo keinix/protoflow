@@ -25,11 +25,12 @@ public class TaskRepository {
         return mAllTasks;
     }
 
+    //SQL INSERT
     public void insertTask(Task task) {
         new insertAsyncTask(mTaskDao).execute(task);
     }
 
-    //inner async class for INSERT
+    //INSERT ASYNC
     private static class insertAsyncTask extends AsyncTask<Task, Void, Void> {
 
         private TaskDao asyncDao;
