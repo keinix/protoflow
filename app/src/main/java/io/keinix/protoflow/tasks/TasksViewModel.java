@@ -7,19 +7,21 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
-import dagger.Module;
+import javax.inject.Inject;
+
 import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.data.source.TaskRepository;
 
-@Module
 public class TasksViewModel extends AndroidViewModel {
+
 
     private TaskRepository mTaskRepository;
     private LiveData<List<Task>> mAllTasks;
 
-    public TasksViewModel(@NonNull Application application) {
+    @Inject
+    public TasksViewModel(@NonNull Application application, TaskRepository taskRepository) {
         super(application);
-        mTaskRepository = new TaskRepository(application);
+        mTaskRepository = taskRepository;
         mAllTasks = mTaskRepository.getAllTasks();
     }
 

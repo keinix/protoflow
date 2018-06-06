@@ -4,19 +4,23 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.support.annotation.NonNull;
 
+import javax.inject.Inject;
+
 import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.data.source.TaskRepository;
 
 public class AddEditTaskViewModel extends AndroidViewModel {
 
-    private TaskRepository mRepository;
 
-    public AddEditTaskViewModel(@NonNull Application application) {
+    private TaskRepository mTaskRepository;
+
+    @Inject
+    public AddEditTaskViewModel(@NonNull Application application, TaskRepository taskRepository) {
         super(application);
-        mRepository = new TaskRepository(application);
+        mTaskRepository = taskRepository;
     }
 
     void addTask(Task task) {
-        mRepository.insertTask(task);
+        mTaskRepository.insertTask(task);
     }
 }

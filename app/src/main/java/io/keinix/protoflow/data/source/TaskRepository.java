@@ -6,18 +6,25 @@ import android.os.AsyncTask;
 
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.data.source.local.TaskDao;
 import io.keinix.protoflow.data.source.local.TaskRoomDatabase;
 
+@Singleton
 public class TaskRepository {
 
     private TaskDao mTaskDao;
     private LiveData<List<Task>> mAllTasks;
 
-    public TaskRepository(Application application) {
-        TaskRoomDatabase db = TaskRoomDatabase.getDatabase(application);
-        mTaskDao = db.taskDao();
+    //old constructor had Application
+    @Inject
+    public TaskRepository(TaskDao taskDao) {
+//        TaskRoomDatabase db = TaskRoomDatabase.getDatabase(application);
+//        mTaskDao = db.taskDao();
+        mTaskDao = taskDao;
         mAllTasks = mTaskDao.getAllTasks();
     }
 

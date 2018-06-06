@@ -7,8 +7,11 @@ import android.arch.persistence.room.Query;
 
 import java.util.List;
 
+import javax.inject.Singleton;
+
 import io.keinix.protoflow.data.Task;
 
+@Singleton
 @Dao
 public interface TaskDao {
 
