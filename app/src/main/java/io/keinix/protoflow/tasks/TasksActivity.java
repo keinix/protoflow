@@ -1,6 +1,7 @@
 package io.keinix.protoflow.tasks;
 
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
@@ -45,6 +46,9 @@ public class TasksActivity extends DaggerAppCompatActivity
     @Inject
     public TasksAdapter mAdapter;
 
+    @Inject
+    ViewModelProvider.Factory mFactory;
+
 
     @OnClick(R.id.fab)
     void fabClick() {
@@ -60,7 +64,7 @@ public class TasksActivity extends DaggerAppCompatActivity
         setSupportActionBar(toolbar);
         setupNavDrawer();
         setUpRecyclerView();
-        mViewModel = ViewModelProviders.of(this).get(TasksViewModel.class);
+        mViewModel = ViewModelProviders.of(this, mFactory).get(TasksViewModel.class);
         mViewModel.getAllTasks().observe(this, tasks -> mAdapter.setTasks(tasks));
     }
 
