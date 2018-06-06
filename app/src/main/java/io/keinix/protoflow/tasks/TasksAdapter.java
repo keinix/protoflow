@@ -10,16 +10,22 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.protoflow.R;
 import io.keinix.protoflow.data.Task;
+import io.keinix.protoflow.di.ActivityScope;
 
+@ActivityScope
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHolder> {
 
     private Context mContext;
     private List<Task> mTasks;
 
+    @Inject
     public TasksAdapter(Context context) {
         mContext = context;
     }
@@ -49,6 +55,8 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         mTasks = tasks;
         notifyDataSetChanged();
     }
+
+
 
     class TaskViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.text_view_temp) TextView textView;

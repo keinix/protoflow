@@ -4,14 +4,10 @@ import android.app.Application;
 
 import dagger.android.AndroidInjector;
 import dagger.android.DaggerApplication;
+import dagger.android.HasActivityInjector;
 import io.keinix.protoflow.di.DaggerApplicationComponent;
 
 public class ProtoflowApplication extends DaggerApplication {
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-    }
 
     @Override
     protected AndroidInjector<? extends DaggerApplication> applicationInjector() {

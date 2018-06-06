@@ -21,14 +21,17 @@ import android.view.MenuItem;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import dagger.android.support.DaggerAppCompatActivity;
 import io.keinix.protoflow.R;
 import io.keinix.protoflow.addeddittask.AddEditTaskActivity;
 import io.keinix.protoflow.data.Task;
 
-public class TasksActivity extends AppCompatActivity
+public class TasksActivity extends DaggerAppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     @BindView(R.id.fab) FloatingActionButton fab;
@@ -38,7 +41,10 @@ public class TasksActivity extends AppCompatActivity
     @BindView(R.id.recycler_view_tasks) RecyclerView recyclerView;
 
     private TasksViewModel mViewModel;
-    private TasksAdapter mAdapter;
+
+    @Inject
+    public TasksAdapter mAdapter;
+
 
     @OnClick(R.id.fab)
     void fabClick() {
@@ -123,7 +129,6 @@ public class TasksActivity extends AppCompatActivity
 
 
     private void setUpRecyclerView() {
-        mAdapter = new TasksAdapter(this);
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }

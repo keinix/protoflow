@@ -10,7 +10,7 @@ import android.support.annotation.NonNull;
 
 import io.keinix.protoflow.data.Task;
 
-@Database(entities = {Task.class}, version = 1)
+@Database(entities = {Task.class}, version = 1, exportSchema = false)
 public abstract class TaskRoomDatabase extends RoomDatabase {
 
     private static TaskRoomDatabase INSTANCE;

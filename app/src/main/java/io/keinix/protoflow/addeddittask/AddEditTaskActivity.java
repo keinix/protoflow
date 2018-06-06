@@ -9,10 +9,11 @@ import android.widget.EditText;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import dagger.android.support.DaggerAppCompatActivity;
 import io.keinix.protoflow.R;
 import io.keinix.protoflow.data.Task;
 
-public class AddEditTaskActivity extends AppCompatActivity {
+public class AddEditTaskActivity extends DaggerAppCompatActivity {
 
     @BindView(R.id.button_submit) Button btn;
     @BindView(R.id.editText) EditText editText;
