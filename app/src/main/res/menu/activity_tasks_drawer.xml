@@ -3,26 +3,36 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group android:checkableBehavior="single"
+        android:id="@+id/nav_calendar_group">
         <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import"/>
+            android:id="@+id/nav_calendar"
+            android:icon="@drawable/ic_calendar_black_24"
+            android:title="@string/nav_drawer_calendar"/>
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery"/>
+            android:id="@+id/nav_today"
+            android:icon="@drawable/ic_today_black_24"
+            android:title="@string/nav_drawer_today"/>
         <item
             android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow"/>
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools"/>
+            android:icon="@drawable/ic_week_black_24"
+            android:title="@string/nav_drawer_7_days"/>
     </group>
 
-    <item android:title="Communicate">
+    <group android:checkableBehavior="single"
+        android:id="@+id/nav_tasks_group">
+            <item
+                android:id="@+id/nav_tasks"
+                android:icon="@drawable/ic_tasks_black_24"
+                android:title="@string/nav_drawer_tasks"/>
+            <item
+                android:id="@+id/nav_routines"
+                android:icon="@drawable/ic_routines_black_24"
+                android:title="@string/nav_drawer_routines"/>
+    </group>
+
+
+    <item android:title="@string/nav_drawer_projects">
         <menu>
             <item
                 android:id="@+id/nav_share"

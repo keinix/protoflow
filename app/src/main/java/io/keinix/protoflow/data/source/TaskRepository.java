@@ -19,11 +19,8 @@ public class TaskRepository {
     private TaskDao mTaskDao;
     private LiveData<List<Task>> mAllTasks;
 
-    //old constructor had Application
     @Inject
     public TaskRepository(TaskDao taskDao) {
-//        TaskRoomDatabase db = TaskRoomDatabase.getDatabase(application);
-//        mTaskDao = db.taskDao();
         mTaskDao = taskDao;
         mAllTasks = mTaskDao.getAllTasks();
     }

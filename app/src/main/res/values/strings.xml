@@ -1,9 +1,18 @@
 <resources>
     <string name="app_name">Protoflow</string>
+
+    <!--Navigation Drawer-->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
+    <string name="nav_drawer_tasks">Tasks</string>
+    <string name="nav_drawer_7_days">7 Days</string>
+    <string name="nav_drawer_today">Today</string>
+    <string name="nav_drawer_calendar">Calendar</string>
+    <string name="nav_drawer_routines">Routines</string>
+    <string name="nav_drawer_projects">Projects</string>
+
     <string name="action_settings">Settings</string>
 </resources>

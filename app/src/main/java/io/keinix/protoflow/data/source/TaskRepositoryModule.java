@@ -2,7 +2,6 @@ package io.keinix.protoflow.data.source;
 
 import android.app.Application;
 import android.arch.persistence.room.Room;
-import android.arch.persistence.room.RoomDatabase;
 
 import javax.inject.Singleton;
 
