@@ -5,15 +5,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".addeddittask.AddEditTaskActivity">
+    tools:context=".addeddittask.AddEditTaskActivity"
+    tools:layout_editor_absoluteY="81dp">
 
     <EditText
         android:id="@+id/editText"
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:hint="task name"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -23,9 +26,145 @@
         android:layout_height="40dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:text="submit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_repeat_thursday"/>
+
+    <CheckBox
+        android:id="@+id/checkbox_repeat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/add_task_repeat_switch"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editText"/>
+
+
+    <TextView
+        android:id="@+id/text_view_repeat_sunday"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/shape_repeat_day_circle_backgroud"
+        android:text="S"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/text_view_repeat_monday"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/checkbox_repeat"/>
+
+    <TextView
+        android:id="@+id/text_view_repeat_monday"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/shape_repeat_day_circle_backgroud"
+        android:text="M"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/text_view_repeat_tuesday"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/text_view_repeat_sunday"
+        app:layout_constraintTop_toBottomOf="@+id/checkbox_repeat"/>
+
+    <TextView
+        android:id="@+id/text_view_repeat_tuesday"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/shape_repeat_day_circle_backgroud"
+        android:text="T"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/text_view_repeat_wednesday"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/text_view_repeat_monday"
+        app:layout_constraintTop_toBottomOf="@+id/checkbox_repeat"/>
+
+    <TextView
+        android:id="@+id/text_view_repeat_wednesday"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/shape_repeat_day_circle_backgroud"
+        android:text="W"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/text_view_repeat_thursday"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/text_view_repeat_tuesday"
+        app:layout_constraintTop_toBottomOf="@+id/checkbox_repeat"/>
+
+    <TextView
+        android:id="@+id/text_view_repeat_thursday"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/shape_repeat_day_circle_backgroud"
+        android:text="T"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/text_view_repeat_friday"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/text_view_repeat_wednesday"
+        app:layout_constraintTop_toBottomOf="@+id/checkbox_repeat"/>
+
+    <TextView
+        android:id="@+id/text_view_repeat_friday"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/shape_repeat_day_circle_backgroud"
+        android:text="F"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/text_view_repeat_saturday"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/text_view_repeat_thursday"
+        app:layout_constraintTop_toBottomOf="@+id/checkbox_repeat"/>
+
+    <TextView
+        android:id="@+id/text_view_repeat_saturday"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/shape_repeat_day_circle_backgroud"
+        android:text="S"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/text_view_repeat_friday"
+        app:layout_constraintTop_toBottomOf="@+id/checkbox_repeat"/>
+
+    <android.support.constraint.Group
+        android:id="@+id/group_days"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:constraint_referenced_ids="text_view_repeat_saturday,
+        text_view_repeat_friday,text_view_repeat_sunday,
+        text_view_repeat_tuesday,text_view_repeat_thursday,
+        text_view_repeat_wednesday,text_view_repeat_monday"/>
+
 
 </android.support.constraint.ConstraintLayout>

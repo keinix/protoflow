@@ -35,13 +35,9 @@
     <item android:title="@string/nav_drawer_projects">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share"/>
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send"/>
+                android:id="@+id/nav_add_project"
+                android:icon="@drawable/ic_add_black_24"
+                android:title="@string/nav_add_project"/>
         </menu>
     </item>
 
