@@ -45,6 +45,7 @@
 
     <TextView
         android:id="@+id/text_view_repeat_sunday"
+        android:visibility="gone"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginEnd="8dp"
@@ -63,6 +64,7 @@
 
     <TextView
         android:id="@+id/text_view_repeat_monday"
+        android:visibility="gone"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginTop="16dp"
@@ -78,6 +80,7 @@
 
     <TextView
         android:id="@+id/text_view_repeat_tuesday"
+        android:visibility="gone"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginStart="8dp"
@@ -94,6 +97,7 @@
 
     <TextView
         android:id="@+id/text_view_repeat_wednesday"
+        android:visibility="gone"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginStart="8dp"
@@ -110,6 +114,7 @@
 
     <TextView
         android:id="@+id/text_view_repeat_thursday"
+        android:visibility="gone"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginStart="8dp"
@@ -126,6 +131,7 @@
 
     <TextView
         android:id="@+id/text_view_repeat_friday"
+        android:visibility="gone"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginStart="8dp"
@@ -142,6 +148,7 @@
 
     <TextView
         android:id="@+id/text_view_repeat_saturday"
+        android:visibility="gone"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginEnd="8dp"
@@ -159,8 +166,9 @@
 
     <android.support.constraint.Group
         android:id="@+id/group_days"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:constraint_referenced_ids="text_view_repeat_saturday,
         text_view_repeat_friday,text_view_repeat_sunday,
         text_view_repeat_tuesday,text_view_repeat_thursday,

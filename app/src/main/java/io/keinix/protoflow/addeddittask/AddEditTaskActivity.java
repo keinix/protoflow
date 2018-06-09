@@ -8,6 +8,7 @@ import android.support.constraint.Group;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.SparseBooleanArray;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -58,7 +59,11 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity {
 
     @OnCheckedChanged(R.id.checkbox_repeat)
     void showHideRepeatDays(CompoundButton button, boolean checked) {
-        Toast.makeText(this, "checked", Toast.LENGTH_SHORT).show();
+        if (checked) {
+            daysGroup.setVisibility(View.VISIBLE);
+        } else {
+            daysGroup.setVisibility(View.GONE);
+        }
     }
 
     // use to toggle the background/text color of repeat day icons and add
