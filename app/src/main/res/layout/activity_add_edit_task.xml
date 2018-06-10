@@ -49,18 +49,24 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:paddingRight="150dp"
+        android:paddingRight="200dp"
         android:text="@string/add_task_unscheduled"
         android:textSize="15sp"
         app:layout_constraintStart_toEndOf="@+id/image_button_scheduled"
         app:layout_constraintTop_toBottomOf="@+id/editText"/>
 
-    <android.support.constraint.Group
-        android:id="@+id/group_scheduled"
+    <ImageButton
+        android:id="@+id/image_button_cancel_selected_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="image_button_scheduled,
-        text_view_scheduled"/>
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="18dp"
+        android:background="@null"
+        android:src="@drawable/ic_round_cancel_white_18"
+        android:tint="@color/cancel"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@+id/text_view_scheduled"
+        app:layout_constraintTop_toBottomOf="@+id/editText"/>
 
     <CheckBox
         android:id="@+id/checkbox_repeat"

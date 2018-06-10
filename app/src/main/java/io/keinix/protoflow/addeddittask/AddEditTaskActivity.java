@@ -12,8 +12,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import butterknife.BindColor;
 import butterknife.BindDrawable;
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
@@ -40,8 +41,11 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     @BindDrawable(R.drawable.shape_repeat_day_circle_backgroud) Drawable circle;
     @BindColor(R.color.black) int black;
     @BindColor(R.color.white) int white;
+    @BindColor(R.color.gray) int gray;
+    @BindString(R.string.add_task_unscheduled) String unscheduled;
     @BindView(R.id.button_submit) Button btn;
     @BindView(R.id.editText) EditText editText;
+    @BindView(R.id.image_button_cancel_selected_date) ImageButton cancelSelectedImageButton;
     @BindView(R.id.text_view_scheduled) TextView scheduledDayTextView;
     @BindView(R.id.checkbox_repeat) CheckBox repeatCheckbox;
     @BindView(R.id.group_days) Group daysGroup;
@@ -93,6 +97,14 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         mDatePicker.show(getSupportFragmentManager(), "date_picker");
     }
 
+    //TODO:remove date from the task to be generated
+    @OnClick(R.id.image_button_cancel_selected_date)
+    void unScheduleTask() {
+        scheduledDayTextView.setText(unscheduled);
+        scheduledDayTextView.setTextColor(gray);
+        cancelSelectedImageButton.setVisibility(View.INVISIBLE);
+        scheduledDayTextView.setPadding(0, 0, 400, 0);
+    }
 
     @OnClick(R.id.button_submit)
     void submit() {
@@ -110,14 +122,13 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         String selectedDate = DateFormat.getDateInstance(DateFormat.LONG).format(calendar.getTime());
         scheduledDayTextView.setText(selectedDate);
         scheduledDayTextView.setTextColor(black);
+        cancelSelectedImageButton.setVisibility(View.VISIBLE);
+        scheduledDayTextView.setPadding(0, 0, 10, 0);
     }
 
-    // TODO: ********When creating a new task make sure to check if repeat is checked
     // ~~~~~~~lifecycle~~~~~~~~
-
+    // TODO: ********When creating a new task make sure to check if repeat is checked
     // TODO: otherwise false positive repeat days will be passed to the task
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

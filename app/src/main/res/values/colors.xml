@@ -6,4 +6,7 @@
 
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
+    <color name="gray">#808080</color>
+
+    <color name="cancel">#ba1b0d</color>
 </resources>
