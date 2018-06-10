@@ -49,7 +49,6 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity {
 
     // ~~~~~~Member variables ~~~~~
     private AddEditTaskViewModel mViewModel;
-    private SparseBooleanArray isDaySelected;
 
     // ~~~~~~~DI~~~~~~
     @Inject
@@ -73,14 +72,12 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity {
             R.id.text_view_repeat_friday, R.id.text_view_repeat_saturday,
             R.id.text_view_repeat_sunday})
     void dayClicked(TextView day) {
-        if (isDaySelected.get(day.getId())) {
+        if (mViewModel.isDaySelected(day.getId())) {
             day.setBackgroundResource(0);
             day.setTextColor(black);
-            isDaySelected.put(day.getId(), false);
         } else {
             day.setBackground(circle);
             day.setTextColor(white);
-            isDaySelected.put(day.getId(), true);
         }
     }
 
@@ -100,13 +97,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity {
         ButterKnife.bind(this);
         mViewModel = ViewModelProviders.of(this, mViewModelFactory)
                 .get(AddEditTaskViewModel.class);
-        initIsDaySelected();
+        mViewModel.initNewIsDaySelectedArray(repeatDays);
     }
 
-    private void initIsDaySelected() {
-        isDaySelected = new SparseBooleanArray();
-        for (TextView textView : repeatDays) {
-            isDaySelected.put(textView.getId(), true);
-        }
-    }
 }

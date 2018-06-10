@@ -3,6 +3,10 @@ package io.keinix.protoflow.addeddittask;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.support.annotation.NonNull;
+import android.util.SparseBooleanArray;
+import android.widget.TextView;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -13,6 +17,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
 
 
     private TaskRepository mTaskRepository;
+    private SparseBooleanArray isDaySelectedArray;
 
     @Inject
     public AddEditTaskViewModel(@NonNull Application application, TaskRepository taskRepository) {
@@ -22,5 +27,28 @@ public class AddEditTaskViewModel extends AndroidViewModel {
 
     void addTask(Task task) {
         mTaskRepository.insertTask(task);
+    }
+
+    /**
+     * @param id the id of a day TextView
+     * @return if day is selected
+     */
+    public Boolean isDaySelected(int id) {
+        if (isDaySelectedArray.get(id)) {
+            isDaySelectedArray.put(id, false);
+            return true;
+        } else {
+            isDaySelectedArray.put(id, true);
+            return false;
+        }
+    }
+
+    public void initNewIsDaySelectedArray(List<TextView> days) {
+        if (isDaySelectedArray == null) {
+            isDaySelectedArray = new SparseBooleanArray();
+            for (TextView day : days) {
+                isDaySelectedArray.put(day.getId(), true);
+            }
+        }
     }
 }
