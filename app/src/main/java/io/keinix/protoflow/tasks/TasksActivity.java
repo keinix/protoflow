@@ -49,6 +49,7 @@ public class TasksActivity extends DaggerAppCompatActivity
         startActivity(intent);
     }
 
+    //TODO:create a Queue to cache days. pop one if the Queue get past a certain length
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

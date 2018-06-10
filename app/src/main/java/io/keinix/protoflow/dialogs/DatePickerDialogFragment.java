@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.widget.DatePicker;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -19,14 +20,11 @@ public class DatePickerDialogFragment extends DialogFragment {
     private int mStartMonth;
     private int mStartDay;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public DatePickerDialogFragment() {
         Calendar calendar = Calendar.getInstance();
         mStartYear = calendar.get(Calendar.YEAR);
         mStartMonth = calendar.get(Calendar.MONTH);
         mStartDay = calendar.get(Calendar.DAY_OF_MONTH);
-
     }
 
     @NonNull

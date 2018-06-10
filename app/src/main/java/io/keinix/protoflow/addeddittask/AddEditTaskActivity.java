@@ -29,6 +29,7 @@ import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import dagger.Lazy;
 import dagger.android.support.DaggerAppCompatActivity;
 import io.keinix.protoflow.R;
 import io.keinix.protoflow.data.Task;
@@ -63,7 +64,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     ViewModelProvider.Factory mViewModelFactory;
 
     @Inject
-    DatePickerDialogFragment mDatePicker;
+    Lazy<DatePickerDialogFragment> mDatePicker;
 
     //~~~~~~~OnCLicks~~~~~~~~
 
@@ -94,7 +95,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
 
     @OnClick({R.id.image_button_scheduled, R.id.text_view_scheduled})
     void launchDatePicker() {
-        mDatePicker.show(getSupportFragmentManager(), "date_picker");
+        mDatePicker.get().show(getSupportFragmentManager(), "date_picker");
     }
 
     //TODO:remove date from the task to be generated
@@ -123,6 +124,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         scheduledDayTextView.setText(selectedDate);
         scheduledDayTextView.setTextColor(black);
         cancelSelectedImageButton.setVisibility(View.VISIBLE);
+        mDatePicker.get().setStartDate(year, month, day);
         scheduledDayTextView.setPadding(0, 0, 10, 0);
     }
 
