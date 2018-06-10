@@ -62,6 +62,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity {
             daysGroup.setVisibility(View.VISIBLE);
         } else {
             daysGroup.setVisibility(View.GONE);
+             long day = System.currentTimeMillis();
         }
     }
 

@@ -9,7 +9,9 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import io.keinix.protoflow.data.CalendarDay;
 import io.keinix.protoflow.data.Task;
+import io.keinix.protoflow.data.source.local.CalendarDayDao;
 import io.keinix.protoflow.data.source.local.TaskDao;
 import io.keinix.protoflow.data.source.local.TaskRoomDatabase;
 
@@ -17,11 +19,13 @@ import io.keinix.protoflow.data.source.local.TaskRoomDatabase;
 public class TaskRepository {
 
     private TaskDao mTaskDao;
+    private CalendarDayDao mCalendarDayDao;
     private LiveData<List<Task>> mAllTasks;
 
     @Inject
-    public TaskRepository(TaskDao taskDao) {
+    public TaskRepository(TaskDao taskDao, CalendarDayDao calendarDayDao) {
         mTaskDao = taskDao;
+        mCalendarDayDao = calendarDayDao;
         mAllTasks = mTaskDao.getAllTasks();
     }
 

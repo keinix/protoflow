@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 @Entity(tableName = "task_table")
 public class Task {
 
+    //TODO:might need to add column info
     @PrimaryKey (autoGenerate = true)
     private int id;
 
