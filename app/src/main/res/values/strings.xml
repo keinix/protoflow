@@ -20,4 +20,5 @@
     <string name="add_task_unscheduled">Unscheduled</string>
     <string name="add_task_duration">Duration</string>
     <string name="add_task_start_time">Start Time</string>
+    <string name="number_picker_duration">Duration</string>
 </resources>

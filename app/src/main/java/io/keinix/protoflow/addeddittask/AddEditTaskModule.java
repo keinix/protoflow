@@ -7,6 +7,7 @@ import dagger.Module;
 import dagger.Provides;
 import io.keinix.protoflow.di.ActivityScope;
 import io.keinix.protoflow.dialogs.DatePickerDialogFragment;
+import io.keinix.protoflow.dialogs.DurationPickerDialogFragment;
 import io.keinix.protoflow.dialogs.TimePickerDialogFragment;
 
 @Module
@@ -20,6 +21,11 @@ public abstract class AddEditTaskModule {
     @ActivityScope
     @Provides static TimePickerDialogFragment timePickerDialogFragment() {
         return new TimePickerDialogFragment();
+    }
+
+    @ActivityScope
+    @Provides static DurationPickerDialogFragment durationPickerDialogFragment() {
+        return new DurationPickerDialogFragment();
     }
 
 }

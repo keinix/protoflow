@@ -38,6 +38,7 @@ import dagger.android.support.DaggerAppCompatActivity;
 import io.keinix.protoflow.R;
 import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.dialogs.DatePickerDialogFragment;
+import io.keinix.protoflow.dialogs.DurationPickerDialogFragment;
 import io.keinix.protoflow.dialogs.TimePickerDialogFragment;
 
 public class AddEditTaskActivity extends DaggerAppCompatActivity
@@ -77,6 +78,9 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     @Inject
     Lazy<DatePickerDialogFragment> mDatePicker;
 
+    @Inject
+    Lazy<DurationPickerDialogFragment> mDurationPicker;
+
     //~~~~~~~OnCLicks~~~~~~~~
 
     @OnCheckedChanged(R.id.checkbox_repeat)
@@ -114,6 +118,11 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         mTimePicker.get().show(getSupportFragmentManager(), "time_picker");
     }
 
+    @OnClick({R.id.image_button_timer, R.id.text_view_timer})
+    void launchDurationPicker() {
+        mDurationPicker.get().show(getSupportFragmentManager(), "duration_picker");
+    }
+
     //TODO:remove date from the task to be generated
     @OnClick(R.id.image_button_cancel_selected_date)
     void unScheduleTask() {
@@ -146,7 +155,6 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     @Override
     public void onTimeSet(TimePicker timePicker, int hour, int minute) {
         String timeSuffix = "";
-
         if (!android.text.format.DateFormat.is24HourFormat(this)) {
             timeSuffix = hour < 12 ? "AM" : "PM";
             if (hour > 12) {
