@@ -15,6 +15,8 @@ import io.keinix.protoflow.data.source.TaskRepository;
 
 public class AddEditTaskViewModel extends AndroidViewModel {
 
+    private int mTaskDurationInMinutes;
+
 
     private TaskRepository mTaskRepository;
     private SparseBooleanArray isDaySelectedArray;
@@ -50,5 +52,13 @@ public class AddEditTaskViewModel extends AndroidViewModel {
                 isDaySelectedArray.put(day.getId(), true);
             }
         }
+    }
+
+    public int getTaskDurationInMinutes() {
+        return mTaskDurationInMinutes;
+    }
+
+    public void setTaskDurationInMinutes(int taskDurationInMinutes) {
+        mTaskDurationInMinutes = taskDurationInMinutes;
     }
 }

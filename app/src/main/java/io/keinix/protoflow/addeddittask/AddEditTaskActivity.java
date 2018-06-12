@@ -16,10 +16,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
@@ -43,7 +41,7 @@ import io.keinix.protoflow.dialogs.TimePickerDialogFragment;
 
 public class AddEditTaskActivity extends DaggerAppCompatActivity
         implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,
-        DurationPickerDialogFragment.DurationPickerInterface{
+        DurationPickerDialogFragment.onDurationSetListener {
 
     // ~~~~~~view Binding ~~~~~
     @BindDrawable(R.drawable.shape_repeat_day_circle_backgroud) Drawable circle;
@@ -52,11 +50,14 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     @BindColor(R.color.gray) int gray;
     @BindString(R.string.add_task_unscheduled) String unscheduled;
     @BindString(R.string.add_task_start_time) String startTimeString;
+    @BindString(R.string.add_task_duration) String duration;
     @BindView(R.id.text_view_start_time) TextView startTimeTextView;
+    @BindView(R.id.text_view_timer) TextView timerTextView;
     @BindView(R.id.image_button_cancel_start_time) ImageButton cancelStartTimeImageButton;
+    @BindView(R.id.image_button_cancel_selected_date) ImageButton cancelSelectedImageButton;
+    @BindView(R.id.image_button_cancel_timer) ImageButton cancelSelectedDurationImageButton;
     @BindView(R.id.button_submit) Button btn;
     @BindView(R.id.editText) EditText editText;
-    @BindView(R.id.image_button_cancel_selected_date) ImageButton cancelSelectedImageButton;
     @BindView(R.id.text_view_scheduled) TextView scheduledDayTextView;
     @BindView(R.id.checkbox_repeat) CheckBox repeatCheckbox;
     @BindView(R.id.group_days) Group daysGroup;
@@ -135,6 +136,11 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         scheduleCanceled(cancelStartTimeImageButton, startTimeTextView, startTimeString);
     }
 
+    @OnClick(R.id.image_button_cancel_timer)
+    void deselectDuration() {
+        scheduleCanceled(cancelSelectedDurationImageButton, timerTextView, duration);
+    }
+
     @OnClick(R.id.button_submit)
     void submit() {
         Task task = new Task(editText.getText().toString());
@@ -166,15 +172,26 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
                 hour = 12;
             }
         }
-
         mTimePicker.get().setStartTime(hour, minute);
         String timeString = String.format("%s:%02d %s", hour, minute, timeSuffix);
         scheduleSelected(cancelStartTimeImageButton, startTimeTextView, timeString);
     }
 
-    // ~~~~~~~lifecycle~~~~~~~~
+    @Override
+    public void onDurationSet() {
+        int hours = mDurationPicker.get().getSelectedHour();
+        int minutes = mDurationPicker.get().getSelectedMinute();
+        mDurationPicker.get().setStartDuration(hours, minutes);
+        String hoursString = hours > 0 ?  hours + "Hours " : "";
+        String timeStamp = String.format("%s%sMinutes", hoursString, minutes);
+        scheduleSelected(cancelSelectedDurationImageButton, timerTextView, timeStamp);
+        int duration = (hours * 60) + minutes;
+        mViewModel.setTaskDurationInMinutes(duration);
+    }
 
+    // ~~~~~~~lifecycle~~~~~~~~
     // TODO: ********When creating a new task make sure to check if repeat is checked
+
     // TODO: otherwise false positive repeat days will be passed to the task
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -210,10 +227,5 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         textView.setPadding(0,0,400,0);
         textView.setTextColor(gray);
         textView.setText(text);
-    }
-
-    @Override
-    public void durationSet() {
-
     }
 }
