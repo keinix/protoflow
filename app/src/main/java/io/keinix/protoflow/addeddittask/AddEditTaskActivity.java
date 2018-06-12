@@ -182,8 +182,11 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         int hours = mDurationPicker.get().getSelectedHour();
         int minutes = mDurationPicker.get().getSelectedMinute();
         mDurationPicker.get().setStartDuration(hours, minutes);
-        String hoursString = hours > 0 ?  hours + "Hours " : "";
-        String timeStamp = String.format("%s%sMinutes", hoursString, minutes);
+
+        String minutesString = minutes == 1 ? "Minute" : "Minutes";
+        String hoursString = hours > 0 ?  hours + " Hours" : "";
+        if (hours == 1) hoursString = hoursString.replace("s", "");
+        String timeStamp = String.format("%s %s %s", hoursString, minutes, minutesString);
         scheduleSelected(cancelSelectedDurationImageButton, timerTextView, timeStamp);
         int duration = (hours * 60) + minutes;
         mViewModel.setTaskDurationInMinutes(duration);
