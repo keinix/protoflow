@@ -12,6 +12,7 @@ import android.widget.NumberPicker;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.keinix.protoflow.R;
 
 public class DurationPickerDialogFragment extends DialogFragment {
@@ -20,6 +21,23 @@ public class DurationPickerDialogFragment extends DialogFragment {
 
     private int mStartMinute;
     private int mStartHour;
+    private int mSelectedMinute;
+    private int mSelectedHour;
+    private DurationPickerInterface mDurationPickerInterface;
+
+    /**
+     * used as a callback to handle two {@link NumberPicker}
+     * the activity that implements this should call the getters
+     * for mSelectedMinute and mSelectedHour
+     */
+    public interface DurationPickerInterface {
+        void durationSet();
+    }
+
+    @OnClick(R.id.button_set_duration)
+    void setDuration() {
+        mDurationPickerInterface.durationSet();
+    }
 
     @NonNull
     @Override
@@ -30,6 +48,7 @@ public class DurationPickerDialogFragment extends DialogFragment {
     public DurationPickerDialogFragment() {
         mStartMinute = 30;
         mStartHour = 0;
+        mDurationPickerInterface = (DurationPickerInterface) getActivity();
     }
 
     @Nullable
@@ -37,6 +56,19 @@ public class DurationPickerDialogFragment extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_duration_picker, container, false);
         ButterKnife.bind(this, view);
+        initNumPicker();
+        initNumPickerListener();
+        return view;
+    }
+
+    private void initNumPickerListener() {
+        minNumPicker.setOnValueChangedListener((numberPicker, oldMin, newMin) ->
+                mSelectedMinute = newMin);
+        hourNumPicker.setOnValueChangedListener((numberPicker, oldHr, newHr) ->
+            mSelectedHour = newHr);
+    }
+
+    private void initNumPicker() {
         hourNumPicker.setMaxValue(30);
         hourNumPicker.setMinValue(0);
         minNumPicker.setMaxValue(59);
@@ -45,11 +77,18 @@ public class DurationPickerDialogFragment extends DialogFragment {
         hourNumPicker.setClickable(false);
         minNumPicker.setValue(mStartMinute);
         hourNumPicker.setValue(mStartHour);
-        return view;
     }
 
     public void setStartDuration(int hour, int min) {
         mStartHour = hour;
         mStartMinute = min;
+    }
+
+    public int getSelectedMinute() {
+        return mSelectedMinute;
+    }
+
+    public int getSelectedHour() {
+        return mSelectedHour;
     }
 }

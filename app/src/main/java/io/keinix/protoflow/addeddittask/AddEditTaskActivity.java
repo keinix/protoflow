@@ -42,7 +42,8 @@ import io.keinix.protoflow.dialogs.DurationPickerDialogFragment;
 import io.keinix.protoflow.dialogs.TimePickerDialogFragment;
 
 public class AddEditTaskActivity extends DaggerAppCompatActivity
-        implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+        implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,
+        DurationPickerDialogFragment.DurationPickerInterface{
 
     // ~~~~~~view Binding ~~~~~
     @BindDrawable(R.drawable.shape_repeat_day_circle_backgroud) Drawable circle;
@@ -209,5 +210,10 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         textView.setPadding(0,0,400,0);
         textView.setTextColor(gray);
         textView.setText(text);
+    }
+
+    @Override
+    public void durationSet() {
+
     }
 }
