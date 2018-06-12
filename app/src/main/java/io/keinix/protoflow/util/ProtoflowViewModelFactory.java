@@ -34,7 +34,7 @@ public class ProtoflowViewModelFactory implements ViewModelProvider.Factory {
         } else if (modelClass.isAssignableFrom(AddEditTaskViewModel.class)) {
             return (T) new AddEditTaskViewModel(mApplication, mTaskRepository);
         } else {
-            throw new IllegalArgumentException("ViewModel now found in ProtoflowViewModelFactory");
+            throw new IllegalArgumentException("ViewModel not found in ProtoflowViewModelFactory");
         }
     }
 }

@@ -31,7 +31,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
 
     /**
      * @param id the id of a day TextView
-     * @return if day is selected
+     * @return if day was selected before click
      */
     public Boolean isDaySelected(int id) {
         if (isDaySelectedArray.get(id)) {

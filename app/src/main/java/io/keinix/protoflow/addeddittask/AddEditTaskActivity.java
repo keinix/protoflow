@@ -92,7 +92,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         }
     }
 
-    // use to toggle the background/text color of repeat day icons and add
+    // used to toggle the background/text color of repeat day icons and add
     // their state to the isDaySelected Array
     @OnClick({R.id.text_view_repeat_monday, R.id.text_view_repeat_tuesday,
             R.id.text_view_repeat_wednesday, R.id.text_view_repeat_thursday,
@@ -143,6 +143,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
 
     //~~~~~~~~~Override~~~~~~~~~
 
+    // Callback from mDatePicker
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
         Calendar calendar = Calendar.getInstance();
@@ -152,6 +153,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         scheduleSelected(cancelSelectedImageButton, scheduledDayTextView, selectedDate);
     }
 
+    // Callback from mTimePicker
     @Override
     public void onTimeSet(TimePicker timePicker, int hour, int minute) {
         String timeSuffix = "";
