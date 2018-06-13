@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -44,37 +43,39 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,
         DurationPickerDialogFragment.onDurationSetListener {
 
-    // ~~~~~~view Binding ~~~~~
+    // -------------View Binding-------------
     @BindDrawable(R.drawable.shape_repeat_day_circle_backgroud) Drawable circle;
+
+    @BindColor(R.color.gray) int gray;
     @BindColor(R.color.black) int black;
     @BindColor(R.color.white) int white;
-    @BindColor(R.color.gray) int gray;
+
+    @BindString(R.string.add_task_duration) String duration;
     @BindString(R.string.add_task_unscheduled) String unscheduled;
     @BindString(R.string.add_task_start_time) String startTimeString;
-    @BindString(R.string.add_task_duration) String duration;
+
     @BindView(R.id.scroll_view_add_edit) ScrollView addEditScrollView;
-    @BindView(R.id.edit_text_notes) EditText notesEditText;
     @BindView(R.id.checkbox_notes) CheckBox notesCheckbox;
-    @BindView(R.id.text_view_start_time) TextView startTimeTextView;
-    @BindView(R.id.text_view_timer) TextView timerTextView;
+    @BindView(R.id.checkbox_repeat) CheckBox repeatCheckbox;
+    @BindView(R.id.edit_text_notes) EditText notesEditText;
+    @BindView(R.id.edit_text_task_name) EditText editText;
+    @BindView(R.id.image_button_cancel_timer) ImageButton cancelSelectedDurationImageButton;
     @BindView(R.id.image_button_cancel_start_time) ImageButton cancelStartTimeImageButton;
     @BindView(R.id.image_button_cancel_selected_date) ImageButton cancelSelectedImageButton;
-    @BindView(R.id.image_button_cancel_timer) ImageButton cancelSelectedDurationImageButton;
-    @BindView(R.id.button_submit) Button btn;
-    @BindView(R.id.edit_text_task_name) EditText editText;
-    @BindView(R.id.text_view_scheduled) TextView scheduledDayTextView;
-    @BindView(R.id.checkbox_repeat) CheckBox repeatCheckbox;
     @BindView(R.id.group_days) Group daysGroup;
+    @BindView(R.id.button_submit) Button btn;
+    @BindView(R.id.text_view_timer) TextView timerTextView;
+    @BindView(R.id.text_view_scheduled) TextView scheduledDayTextView;
+    @BindView(R.id.text_view_start_time) TextView startTimeTextView;
     @BindViews({R.id.text_view_repeat_monday, R.id.text_view_repeat_tuesday,
             R.id.text_view_repeat_wednesday, R.id.text_view_repeat_thursday,
             R.id.text_view_repeat_friday, R.id.text_view_repeat_saturday,
-            R.id.text_view_repeat_sunday})
-    List<TextView> repeatDays;
+            R.id.text_view_repeat_sunday}) List<TextView> repeatDays;
 
-    // ~~~~~~Member variables ~~~~~
+    // -----------Member variables-----------
     private AddEditTaskViewModel mViewModel;
 
-    // ~~~~~~~DI~~~~~~
+    // ------------------DI------------------
     @Inject
     ViewModelProvider.Factory mViewModelFactory;
 
@@ -87,7 +88,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     @Inject
     Lazy<DurationPickerDialogFragment> mDurationPicker;
 
-    //~~~~~~~OnCLicks~~~~~~~~
+    //----------------OnCLicks----------------
 
     @OnCheckedChanged(R.id.checkbox_repeat)
     void showHideRepeatDays(boolean checked) {
@@ -162,7 +163,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
        finish();
     }
 
-    //~~~~~~~~~Override~~~~~~~~~
+    //------------------Override------------------
 
     // Callback from mDatePicker
     @Override
@@ -177,19 +178,12 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     // Callback from mTimePicker
     @Override
     public void onTimeSet(TimePicker timePicker, int hour, int minute) {
-        String timeSuffix = "";
-        if (!android.text.format.DateFormat.is24HourFormat(this)) {
-            timeSuffix = hour < 12 ? "AM" : "PM";
-            if (hour > 12) {
-                hour -= 12;
-            } else if (hour == 0) {
-                hour = 12;
-            }
-        }
         mTimePicker.get().setStartTime(hour, minute);
-        String timeString = String.format("%s:%02d %s", hour, minute, timeSuffix);
+        boolean is24HourClock = android.text.format.DateFormat.is24HourFormat(this);
+        String timeString = mViewModel.parseStartTimeForTimeStamp(hour, minute, is24HourClock);
         scheduleSelected(cancelStartTimeImageButton, startTimeTextView, timeString);
     }
+    // callback from mDurationPicker
 
     @Override
     public void onDurationSet() {
@@ -197,16 +191,12 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         int minutes = mDurationPicker.get().getSelectedMinute();
         mDurationPicker.get().setStartDuration(hours, minutes);
 
-        String minutesString = minutes == 1 ? "Minute" : "Minutes";
-        String hoursString = hours > 0 ?  hours + " Hours" : "";
-        if (hours == 1) hoursString = hoursString.replace("s", "");
-        String timeStamp = String.format("%s %s %s", hoursString, minutes, minutesString);
+        // the duration var in the viewModel is also set with this method
+        String timeStamp = mViewModel.parseDurationForTimeStamp(hours, minutes);
         scheduleSelected(cancelSelectedDurationImageButton, timerTextView, timeStamp);
-        int duration = (hours * 60) + minutes;
-        mViewModel.setTaskDurationInMinutes(duration);
     }
 
-    // ~~~~~~~lifecycle~~~~~~~~
+    // ------------------Lifecycle------------------
     // TODO: ********When creating a new task make sure to check if repeat is checked
 
     // TODO: otherwise false positive repeat days will be passed to the task
@@ -219,6 +209,8 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
                 .get(AddEditTaskViewModel.class);
         mViewModel.initNewIsDaySelectedArray(repeatDays);
     }
+
+    // ------------------Private------------------
 
     /**
      * Below params refer to the start time, timer (duration), and start date view
