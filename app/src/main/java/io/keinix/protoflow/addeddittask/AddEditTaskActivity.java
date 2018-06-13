@@ -14,6 +14,7 @@ import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -51,13 +52,16 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     @BindString(R.string.add_task_unscheduled) String unscheduled;
     @BindString(R.string.add_task_start_time) String startTimeString;
     @BindString(R.string.add_task_duration) String duration;
+    @BindView(R.id.scroll_view_add_edit) ScrollView addEditScrollView;
+    @BindView(R.id.edit_text_notes) EditText notesEditText;
+    @BindView(R.id.checkbox_notes) CheckBox notesCheckbox;
     @BindView(R.id.text_view_start_time) TextView startTimeTextView;
     @BindView(R.id.text_view_timer) TextView timerTextView;
     @BindView(R.id.image_button_cancel_start_time) ImageButton cancelStartTimeImageButton;
     @BindView(R.id.image_button_cancel_selected_date) ImageButton cancelSelectedImageButton;
     @BindView(R.id.image_button_cancel_timer) ImageButton cancelSelectedDurationImageButton;
     @BindView(R.id.button_submit) Button btn;
-    @BindView(R.id.editText) EditText editText;
+    @BindView(R.id.edit_text_task_name) EditText editText;
     @BindView(R.id.text_view_scheduled) TextView scheduledDayTextView;
     @BindView(R.id.checkbox_repeat) CheckBox repeatCheckbox;
     @BindView(R.id.group_days) Group daysGroup;
@@ -86,11 +90,21 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     //~~~~~~~OnCLicks~~~~~~~~
 
     @OnCheckedChanged(R.id.checkbox_repeat)
-    void showHideRepeatDays(CompoundButton button, boolean checked) {
+    void showHideRepeatDays(boolean checked) {
         if (checked) {
             daysGroup.setVisibility(View.VISIBLE);
         } else {
             daysGroup.setVisibility(View.GONE);
+        }
+    }
+
+    @OnCheckedChanged(R.id.checkbox_notes)
+    void showHideNotes(boolean checked) {
+        if (checked) {
+            notesEditText.setVisibility(View.VISIBLE);
+            notesEditText.requestFocus();
+        } else {
+            notesEditText.setVisibility(View.GONE);
         }
     }
 
