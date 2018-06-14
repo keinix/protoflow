@@ -18,6 +18,7 @@ public abstract class TaskRepositoryModule {
     @Singleton
     @Provides static TaskRoomDatabase provideDb(Application context) {
         return Room.databaseBuilder(context, TaskRoomDatabase.class, "task_database")
+                .fallbackToDestructiveMigration()
                 .build();
     }
 
