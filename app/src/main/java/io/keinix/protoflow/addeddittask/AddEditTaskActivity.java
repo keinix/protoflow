@@ -144,16 +144,19 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     @OnClick(R.id.image_button_cancel_selected_date)
     void unScheduleTask() {
         scheduleCanceled(cancelSelectedImageButton, scheduledDayTextView, unscheduled);
+        mViewModel.setScheduledDateUtc(0);
     }
 
     @OnClick(R.id.image_button_cancel_start_time)
     void unScheduleStartTime() {
         scheduleCanceled(cancelStartTimeImageButton, startTimeTextView, startTimeString);
+        mViewModel.setStartTimeUtc(0);
     }
 
     @OnClick(R.id.image_button_cancel_timer)
     void deselectDuration() {
         scheduleCanceled(cancelSelectedDurationImageButton, timerTextView, duration);
+        mViewModel.setTaskDurationInMinutes(0);
     }
 
     @OnClick(R.id.button_submit)
@@ -168,10 +171,8 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     // Callback from mDatePicker
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month, day);
-        String selectedDate = DateFormat.getDateInstance(DateFormat.LONG).format(calendar.getTime());
         mDatePicker.get().setStartDate(year, month, day);
+        String selectedDate = mViewModel.formatDate(year, month, day);
         scheduleSelected(cancelSelectedImageButton, scheduledDayTextView, selectedDate);
     }
 
