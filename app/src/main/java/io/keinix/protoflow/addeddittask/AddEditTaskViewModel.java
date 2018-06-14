@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.widget.TextView;
 
@@ -13,6 +14,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.keinix.protoflow.R;
 import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.data.source.TaskRepository;
 
@@ -24,14 +26,14 @@ public class AddEditTaskViewModel extends AndroidViewModel {
     // create a new Task object
     @Nullable private String mTaskNotes;
     @Nullable private SparseBooleanArray mIsDaySelectedArray;
-    private long mStartTimeUtc;
     private long mScheduledDateUtc;
-    private int mTaskDurationInMinutes;
     private int mStartTimeHours;
     private int mStartTimeMinutes;
+    private int mTaskDurationInMinutes;
 
     public static final int MILISECONDS_IN_HOUR = 3600000;
     public static final int MINISECONDS_IN_MINUTE = 60000;
+    public static final String TAG = AddEditTaskViewModel.class.getSimpleName();
 
 
     @Inject
@@ -40,8 +42,10 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         mTaskRepository = taskRepository;
     }
 
-    void addTask(Task task) {
+
+    void insertTask(Task task) {
         mTaskRepository.insertTask(task);
+        Log.d(TAG, task.toString());
     }
 
     /**
@@ -97,24 +101,70 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         return DateFormat.getDateInstance(DateFormat.LONG).format(calendar.getTime());
     }
 
-    private void parseUnixStartTime() {
+    private long parseUnixStartTime() {
         if (mScheduledDateUtc == 0) {
             Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.HOUR_OF_DAY, mStartTimeHours);
             calendar.set(Calendar.MINUTE, mStartTimeMinutes);
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.MILLISECOND, 0);
-            mStartTimeUtc = calendar.getTimeInMillis();
+            return calendar.getTimeInMillis();
         } else {
             long timeOffSet = (mStartTimeHours * MILISECONDS_IN_HOUR) +
                     (mStartTimeMinutes * MINISECONDS_IN_MINUTE);
-            mStartTimeUtc = mScheduledDateUtc + timeOffSet;
+            return mScheduledDateUtc + timeOffSet;
         }
-
     }
 
     public void createTask(@NonNull String taskName) {
         Task task = new Task(taskName);
+        if (mTaskNotes != null) {
+            task.setNotes(mTaskNotes);
+        } else if (mIsDaySelectedArray != null) {
+            setRepeatedDaysInTask(task);
+        } else if (mScheduledDateUtc != 0) {
+            task.setScheduledDateUtc(mScheduledDateUtc);
+        } else if (mStartTimeMinutes != 0) {
+            task.setStartTimeUtc(parseUnixStartTime());
+        } else if (mTaskDurationInMinutes != 0) {
+            task.setDurationInMinutes(mTaskDurationInMinutes);
+        }
+        insertTask(task);
+    }
+
+    private void setRepeatedDaysInTask(Task task) {
+        for (int i = 0; i < mIsDaySelectedArray.size(); i++) {
+            boolean dayIsRepeated = mIsDaySelectedArray.valueAt(i);
+            if (dayIsRepeated) {
+                setRepeatedDayByViewId(task, mIsDaySelectedArray.keyAt(i));
+            }
+        }
+    }
+
+    private void setRepeatedDayByViewId(Task task, int id) {
+        switch (id) {
+            case R.id.text_view_repeat_monday:
+                task.setRepeatsOnMonday(true);
+                break;
+            case R.id.text_view_repeat_tuesday:
+                task.setRepeatsOnTuesday(true);
+                break;
+            case R.id.text_view_repeat_wednesday:
+                task.setRepeatsOnWednesday(true);
+                break;
+            case R.id.text_view_repeat_thursday:
+                task.setRepeatsOnThursday(true);
+                break;
+            case R.id.text_view_repeat_friday:
+                task.setRepeatsOnFriday(true);
+                break;
+            case R.id.text_view_repeat_saturday:
+                task.setRepeatsOnSaturday(true);
+                break;
+            case R.id.text_view_repeat_sunday:
+                task.setRepeatsOnSunday(true);
+                break;
+        }
     }
 
 
@@ -126,13 +176,6 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         mTaskDurationInMinutes = taskDurationInMinutes;
     }
 
-    public long getStartTimeUtc() {
-        return mStartTimeUtc;
-    }
-
-    public void setStartTimeUtc(long startTimeUtc) {
-        mStartTimeUtc = startTimeUtc;
-    }
 
     public long getScheduledDateUtc() {
         return mScheduledDateUtc;
@@ -140,6 +183,24 @@ public class AddEditTaskViewModel extends AndroidViewModel {
 
     public void setScheduledDateUtc(long scheduledDateUtc) {
         mScheduledDateUtc = scheduledDateUtc;
+    }
+
+    @Nullable
+    public String getTaskNotes() {
+        return mTaskNotes;
+    }
+
+    public void setTaskNotes(@Nullable String taskNotes) {
+        mTaskNotes = taskNotes;
+    }
+
+    @Nullable
+    public SparseBooleanArray getIsDaySelectedArray() {
+        return mIsDaySelectedArray;
+    }
+
+    public void setIsDaySelectedArray(@Nullable SparseBooleanArray isDaySelectedArray) {
+        mIsDaySelectedArray = isDaySelectedArray;
     }
 
     /**

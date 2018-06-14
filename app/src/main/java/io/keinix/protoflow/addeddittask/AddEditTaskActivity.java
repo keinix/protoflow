@@ -74,6 +74,8 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
 
     // -----------Member variables-----------
     private AddEditTaskViewModel mViewModel;
+    private boolean repeatIsChecked;
+    private boolean notesAreChecked;
 
     // ------------------DI------------------
     @Inject
@@ -92,6 +94,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
 
     @OnCheckedChanged(R.id.checkbox_repeat)
     void showHideRepeatDays(boolean checked) {
+        repeatIsChecked = checked;
         if (checked) {
             daysGroup.setVisibility(View.VISIBLE);
         } else {
@@ -101,6 +104,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
 
     @OnCheckedChanged(R.id.checkbox_notes)
     void showHideNotes(boolean checked) {
+        notesAreChecked = checked;
         if (checked) {
             notesEditText.setVisibility(View.VISIBLE);
             notesEditText.requestFocus();
@@ -140,7 +144,6 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         mDurationPicker.get().show(getSupportFragmentManager(), "duration_picker");
     }
 
-    //TODO:remove date from the task to be generated
     @OnClick(R.id.image_button_cancel_selected_date)
     void unScheduleTask() {
         scheduleCanceled(cancelSelectedImageButton, scheduledDayTextView, unscheduled);
@@ -150,7 +153,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     @OnClick(R.id.image_button_cancel_start_time)
     void unScheduleStartTime() {
         scheduleCanceled(cancelStartTimeImageButton, startTimeTextView, startTimeString);
-        mViewModel.setStartTimeUtc(0);
+        mViewModel.setStartTime(0, 0);
     }
 
     @OnClick(R.id.image_button_cancel_timer)
@@ -161,9 +164,13 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
 
     @OnClick(R.id.button_submit)
     void submit() {
-        Task task = new Task(editText.getText().toString());
-       mViewModel.addTask(task);
-       finish();
+        if (!repeatIsChecked) {
+            mViewModel.setIsDaySelectedArray(null);
+        } else if (notesAreChecked) {
+            mViewModel.setTaskNotes(notesEditText.getText().toString());
+        }
+        mViewModel.createTask(editText.getText().toString());
+        finish();
     }
 
     //------------------Override------------------

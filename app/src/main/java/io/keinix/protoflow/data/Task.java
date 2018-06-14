@@ -176,4 +176,24 @@ public class Task {
     public void setRepeatsOnSunday(boolean repeatsOnSunday) {
         this.repeatsOnSunday = repeatsOnSunday;
     }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", routines='" + routines + '\'' +
+                ", durationInMinutes=" + durationInMinutes +
+                ", scheduledDateUtc=" + scheduledDateUtc +
+                ", startTimeUtc=" + startTimeUtc +
+                ", notes='" + notes + '\'' +
+                ", repeatsOnMonday=" + repeatsOnMonday +
+                ", repeatsOnTuesday=" + repeatsOnTuesday +
+                ", repeatsOnWednesday=" + repeatsOnWednesday +
+                ", repeatsOnThursday=" + repeatsOnThursday +
+                ", repeatsOnFriday=" + repeatsOnFriday +
+                ", repeatsOnSaturday=" + repeatsOnSaturday +
+                ", repeatsOnSunday=" + repeatsOnSunday +
+                '}';
+    }
 }
