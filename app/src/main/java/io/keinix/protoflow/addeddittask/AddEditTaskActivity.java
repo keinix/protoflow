@@ -7,6 +7,8 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.drawable.Drawable;
 import android.support.constraint.Group;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -16,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -49,10 +52,12 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     @BindColor(R.color.gray) int gray;
     @BindColor(R.color.black) int black;
     @BindColor(R.color.white) int white;
+    @BindColor(R.color.errorHintText) int cancelColor;
 
     @BindString(R.string.add_task_duration) String duration;
     @BindString(R.string.add_task_unscheduled) String unscheduled;
     @BindString(R.string.add_task_start_time) String startTimeString;
+    @BindString(R.string.add_task_task_name) String taskName;
 
     @BindView(R.id.scroll_view_add_edit) ScrollView addEditScrollView;
     @BindView(R.id.checkbox_notes) CheckBox notesCheckbox;
@@ -63,7 +68,6 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     @BindView(R.id.image_button_cancel_start_time) ImageButton cancelStartTimeImageButton;
     @BindView(R.id.image_button_cancel_selected_date) ImageButton cancelSelectedImageButton;
     @BindView(R.id.group_days) Group daysGroup;
-    @BindView(R.id.button_submit) Button btn;
     @BindView(R.id.text_view_timer) TextView timerTextView;
     @BindView(R.id.text_view_scheduled) TextView scheduledDayTextView;
     @BindView(R.id.text_view_start_time) TextView startTimeTextView;
@@ -162,16 +166,6 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         mViewModel.setTaskDurationInMinutes(0);
     }
 
-    @OnClick(R.id.button_submit)
-    void submit() {
-        if (!repeatIsChecked) {
-            mViewModel.setIsDaySelectedArray(null);
-        } else if (notesAreChecked) {
-            mViewModel.setTaskNotes(notesEditText.getText().toString());
-        }
-        mViewModel.createTask(editText.getText().toString());
-        finish();
-    }
 
     //------------------Override------------------
 
@@ -204,10 +198,32 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         scheduleSelected(cancelSelectedDurationImageButton, timerTextView, timeStamp);
     }
 
-    // ------------------Lifecycle------------------
-    // TODO: ********When creating a new task make sure to check if repeat is checked
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.add_edit_tasks, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_create_task:
+                if (!taskNameIsEmpty()) {
+                    initTaskCreation();
+                    finish();
+                }
+                break;
+            case R.id.menu_clear_task:
+                finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    // ------------------Lifecycle------------------
     // TODO: otherwise false positive repeat days will be passed to the task
+
+    // TODO: ********When creating a new task make sure to check if repeat is checked
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -219,7 +235,6 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     }
 
     // ------------------Private------------------
-
     /**
      * Below params refer to the start time, timer (duration), and start date view
      * @param imageButton cancel image button
@@ -244,5 +259,29 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         textView.setPadding(0,0,400,0);
         textView.setTextColor(gray);
         textView.setText(text);
+    }
+
+    private void initTaskCreation() {
+        if (!repeatIsChecked) {
+            mViewModel.setIsDaySelectedArray(null);
+        } else if (notesAreChecked) {
+            mViewModel.setTaskNotes(notesEditText.getText().toString());
+        }
+        mViewModel.createTask(editText.getText().toString());
+    }
+
+    /**
+     *
+     * @return returns true if there is no task name
+     */
+    private boolean taskNameIsEmpty() {
+        if (editText.getText().toString().length() < 1) {
+            editText.setHint(taskName + "*");
+            editText.setHintTextColor(cancelColor);
+            Toast.makeText(this, "tasks need a name :(", Toast.LENGTH_SHORT).show();
+            return true;
+        } else {
+            return false;
+        }
     }
 }
