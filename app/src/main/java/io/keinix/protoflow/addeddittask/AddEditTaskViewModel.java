@@ -97,6 +97,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
     public String formatDate(int year, int month, int day) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, day, 0, 0, 0);
+        Log.d(TAG, "calendar date: " + calendar.getTimeInMillis());
         setScheduledDateUtc(calendar.getTimeInMillis());
         return DateFormat.getDateInstance(DateFormat.LONG).format(calendar.getTime());
     }
@@ -122,13 +123,10 @@ public class AddEditTaskViewModel extends AndroidViewModel {
             task.setNotes(mTaskNotes);
         } else if (mIsDaySelectedArray != null) {
             setRepeatedDaysInTask(task);
-        } else if (mScheduledDateUtc != 0) {
-            task.setScheduledDateUtc(mScheduledDateUtc);
-        } else if (mStartTimeMinutes != 0) {
-            task.setStartTimeUtc(parseUnixStartTime());
-        } else if (mTaskDurationInMinutes != 0) {
-            task.setDurationInMinutes(mTaskDurationInMinutes);
         }
+        task.setScheduledDateUtc(mScheduledDateUtc);
+        task.setStartTimeUtc(parseUnixStartTime());
+        task.setDurationInMinutes(mTaskDurationInMinutes);
         insertTask(task);
     }
 

@@ -4,8 +4,11 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+import java.util.ArrayList;
+import java.util.List;
 
-@Entity
+
+@Entity(tableName = "calendar_day_table")
 public class CalendarDay {
 
     @PrimaryKey
@@ -17,11 +20,15 @@ public class CalendarDay {
     @ColumnInfo(name = "day_name")
     private String dayName;
 
-    // This contains a comma separated list of task IDs
-    // The String is split on the comma and the resulting IDs
-    // are used to search the TaskRoomDatabase
+    /**
+     * converted using {@link io.keinix.protoflow.util.RoomTypeConverters}
+     */
     @ColumnInfo(name = "tasks_scheduled")
-    private String tasksScheduled;
+    private ArrayList<Integer> tasksScheduled;
+
+    public CalendarDay(long date) {
+        this.date = date;
+    }
 
     // getters and setters
     public long getDate() {
@@ -40,11 +47,11 @@ public class CalendarDay {
         this.dayName = dayName;
     }
 
-    public String getTasksScheduled() {
+    public ArrayList<Integer> getTasksScheduled() {
         return tasksScheduled;
     }
 
-    public void setTasksScheduled(String tasksScheduled) {
+    public void setTasksScheduled(ArrayList<Integer> tasksScheduled) {
         this.tasksScheduled = tasksScheduled;
     }
 }

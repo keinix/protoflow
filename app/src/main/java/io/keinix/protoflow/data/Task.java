@@ -11,7 +11,7 @@ public class Task {
 
     //TODO:might need to add column info
     @PrimaryKey (autoGenerate = true)
-    private int id;
+    private int id = 0;
 
     @NonNull
     @ColumnInfo(name = "name")

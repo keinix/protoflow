@@ -12,6 +12,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -24,6 +25,7 @@ import butterknife.OnClick;
 import dagger.android.support.DaggerAppCompatActivity;
 import io.keinix.protoflow.R;
 import io.keinix.protoflow.addeddittask.AddEditTaskActivity;
+import io.keinix.protoflow.data.Task;
 
 public class TasksActivity extends DaggerAppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -35,6 +37,7 @@ public class TasksActivity extends DaggerAppCompatActivity
     @BindView(R.id.recycler_view_tasks) RecyclerView recyclerView;
 
     private TasksViewModel mViewModel;
+    public static final String TAG = TasksActivity.class.getSimpleName();
 
     @Inject
     public TasksAdapter mAdapter;
@@ -59,7 +62,12 @@ public class TasksActivity extends DaggerAppCompatActivity
         setupNavDrawer();
         setUpRecyclerView();
         mViewModel = ViewModelProviders.of(this, mFactory).get(TasksViewModel.class);
-        mViewModel.getAllTasks().observe(this, tasks -> mAdapter.setTasks(tasks));
+        mViewModel.getAllTasks().observe(this, tasks -> {
+            mAdapter.setTasks(tasks);
+            for (Task task : tasks) {
+                Log.d(TAG, task.toString());
+            }
+        });
     }
 
     @Override

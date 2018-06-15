@@ -16,7 +16,7 @@ import io.keinix.protoflow.data.Task;
 public interface TaskDao {
 
     @Insert
-    void insert(Task task);
+    long insert(Task task);
 
     @Query("SELECT * from task_table")
     LiveData<List<Task>> getAllTasks();

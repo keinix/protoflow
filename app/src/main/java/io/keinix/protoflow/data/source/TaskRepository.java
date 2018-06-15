@@ -33,24 +33,39 @@ public class TaskRepository {
         return mAllTasks;
     }
 
+
+
+
     //SQL INSERT
     public void insertTask(Task task) {
-        new insertAsyncTask(mTaskDao).execute(task);
+        new insertAsyncTask(mTaskDao, mCalendarDayDao).execute(task);
     }
 
     //INSERT ASYNC
     private static class insertAsyncTask extends AsyncTask<Task, Void, Void> {
 
         private TaskDao asyncDao;
+        private CalendarDayDao calendarDayDao;
 
-        public insertAsyncTask(TaskDao asyncDao) {
-            this.asyncDao = asyncDao;
+        public insertAsyncTask(TaskDao asyncTaskDao, CalendarDayDao asyncCalendarDao) {
+            this.asyncDao = asyncTaskDao;
+            this.calendarDayDao = asyncCalendarDao;
         }
 
         @Override
         protected Void doInBackground(Task... params) {
-            asyncDao.insert(params[0]);
+            long id = asyncDao.insert(params[0]);
+            if (params[0].getScheduledDateUtc() > 0) {
+                insertTaskIdIntoDay(id, params[0].getScheduledDateUtc());
+            }
             return null;
+        }
+
+        private void insertTaskIdIntoDay(long id, long day) {
+            CalendarDay calendarDay = calendarDayDao.getDay(day);
+            if (calendarDay !=null) {
+
+            }
         }
     }
 }
