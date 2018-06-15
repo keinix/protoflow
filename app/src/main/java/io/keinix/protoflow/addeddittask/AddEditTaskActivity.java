@@ -173,6 +173,8 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
         mDatePicker.get().setStartDate(year, month, day);
+
+        // mViewModel member vars used to create a new task init in this method
         String selectedDate = mViewModel.formatDate(year, month, day);
         scheduleSelected(cancelSelectedImageButton, scheduledDayTextView, selectedDate);
     }
@@ -182,18 +184,20 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     public void onTimeSet(TimePicker timePicker, int hour, int minute) {
         mTimePicker.get().setStartTime(hour, minute);
         boolean is24HourClock = android.text.format.DateFormat.is24HourFormat(this);
+
+        // mViewModel member vars used to create a new task init in this method
         String timeString = mViewModel.parseStartTimeForTimeStamp(hour, minute, is24HourClock);
         scheduleSelected(cancelStartTimeImageButton, startTimeTextView, timeString);
     }
-    // callback from mDurationPicker
 
+    // callback from mDurationPicker
     @Override
     public void onDurationSet() {
         int hours = mDurationPicker.get().getSelectedHour();
         int minutes = mDurationPicker.get().getSelectedMinute();
         mDurationPicker.get().setStartDuration(hours, minutes);
 
-        // the duration var in the viewModel is also set with this method
+        // mViewModel member vars used to create a new task init in this method
         String timeStamp = mViewModel.parseDurationForTimeStamp(hours, minutes);
         scheduleSelected(cancelSelectedDurationImageButton, timerTextView, timeStamp);
     }
@@ -219,11 +223,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-
     // ------------------Lifecycle------------------
-    // TODO: otherwise false positive repeat days will be passed to the task
-
-    // TODO: ********When creating a new task make sure to check if repeat is checked
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -271,7 +271,6 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     }
 
     /**
-     *
      * @return returns true if there is no task name
      */
     private boolean taskNameIsEmpty() {

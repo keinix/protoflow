@@ -25,6 +25,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
     // These vars are set in AddEditTaskActivity and are used to
     // create a new Task object
     @Nullable private String mTaskNotes;
+    // Maps the day TextView id to if its selected (boolean)
     @Nullable private SparseBooleanArray mIsDaySelectedArray;
     private long mScheduledDateUtc;
     private int mStartTimeHours;
@@ -102,6 +103,19 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         return DateFormat.getDateInstance(DateFormat.LONG).format(calendar.getTime());
     }
 
+    public void createTask(@NonNull String taskName) {
+        Task task = new Task(taskName);
+        if (mTaskNotes != null) {
+            task.setNotes(mTaskNotes);
+        } else if (mIsDaySelectedArray != null) {
+            setRepeatedDaysInTask(task);
+        }
+        task.setScheduledDateUtc(mScheduledDateUtc);
+        task.setStartTimeUtc(parseUnixStartTime());
+        task.setDurationInMinutes(mTaskDurationInMinutes);
+        insertTask(task);
+    }
+
     private long parseUnixStartTime() {
         if (mScheduledDateUtc == 0) {
             Calendar calendar = Calendar.getInstance();
@@ -115,19 +129,6 @@ public class AddEditTaskViewModel extends AndroidViewModel {
                     (mStartTimeMinutes * MINISECONDS_IN_MINUTE);
             return mScheduledDateUtc + timeOffSet;
         }
-    }
-
-    public void createTask(@NonNull String taskName) {
-        Task task = new Task(taskName);
-        if (mTaskNotes != null) {
-            task.setNotes(mTaskNotes);
-        } else if (mIsDaySelectedArray != null) {
-            setRepeatedDaysInTask(task);
-        }
-        task.setScheduledDateUtc(mScheduledDateUtc);
-        task.setStartTimeUtc(parseUnixStartTime());
-        task.setDurationInMinutes(mTaskDurationInMinutes);
-        insertTask(task);
     }
 
     private void setRepeatedDaysInTask(Task task) {
