@@ -5,7 +5,6 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 @Entity(tableName = "calendar_day_table")
@@ -24,7 +23,7 @@ public class CalendarDay {
      * converted using {@link io.keinix.protoflow.util.RoomTypeConverters}
      */
     @ColumnInfo(name = "tasks_scheduled")
-    private ArrayList<Integer> tasksScheduled;
+    private ArrayList<Integer> scheduledTaskIds;
 
     public CalendarDay(long date) {
         this.date = date;
@@ -47,11 +46,15 @@ public class CalendarDay {
         this.dayName = dayName;
     }
 
-    public ArrayList<Integer> getTasksScheduled() {
-        return tasksScheduled;
+    public ArrayList<Integer> getScheduledTaskIds() {
+        return scheduledTaskIds;
     }
 
-    public void setTasksScheduled(ArrayList<Integer> tasksScheduled) {
-        this.tasksScheduled = tasksScheduled;
+    public void setScheduledTaskIds(ArrayList<Integer> scheduledTaskIds) {
+        this.scheduledTaskIds = scheduledTaskIds;
+    }
+
+    public void addTaskId(int id) {
+        scheduledTaskIds.add(id);
     }
 }

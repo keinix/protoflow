@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -54,17 +55,24 @@ public class TaskRepository {
 
         @Override
         protected Void doInBackground(Task... params) {
-            long id = asyncDao.insert(params[0]);
+            long taskId = asyncDao.insert(params[0]);
             if (params[0].getScheduledDateUtc() > 0) {
-                insertTaskIdIntoDay(id, params[0].getScheduledDateUtc());
+                insertTaskIdIntoDay(taskId, params[0].getScheduledDateUtc());
             }
             return null;
         }
 
-        private void insertTaskIdIntoDay(long id, long day) {
-            CalendarDay calendarDay = calendarDayDao.getDay(day);
-            if (calendarDay !=null) {
-
+        private void insertTaskIdIntoDay(long id, long dayInMillis) {
+            CalendarDay calendarDay = calendarDayDao.getDay(dayInMillis);
+            if (calendarDay == null) {
+                calendarDay = new CalendarDay(dayInMillis);
+                ArrayList<Integer> taskIds = new ArrayList<>();
+                taskIds.add((int) id);
+                calendarDay.setScheduledTaskIds(taskIds);
+                calendarDayDao.insert(calendarDay);
+            } else {
+                calendarDay.addTaskId((int) id);
+                calendarDayDao.update(calendarDay);
             }
         }
     }
