@@ -271,7 +271,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     }
 
     /**
-     * @return returns true if there is no task name
+     * @return true if there is no task name
      */
     private boolean taskNameIsEmpty() {
         if (editText.getText().toString().length() < 1) {

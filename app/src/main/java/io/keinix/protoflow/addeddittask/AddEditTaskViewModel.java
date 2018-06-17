@@ -22,8 +22,8 @@ public class AddEditTaskViewModel extends AndroidViewModel {
 
     private TaskRepository mTaskRepository;
 
+    // ------------create a new Task object------------
     // These vars are set in AddEditTaskActivity and are used to
-    // create a new Task object
     @Nullable private String mTaskNotes;
     // Maps the day TextView id to if its selected (boolean)
     @Nullable private SparseBooleanArray mIsDaySelectedArray;
@@ -32,9 +32,9 @@ public class AddEditTaskViewModel extends AndroidViewModel {
     private int mStartTimeMinutes;
     private int mTaskDurationInMinutes;
 
-    public static final int MILISECONDS_IN_HOUR = 3600000;
-    public static final int MINISECONDS_IN_MINUTE = 60000;
-    public static final String TAG = AddEditTaskViewModel.class.getSimpleName();
+    private static final int MILISECONDS_IN_HOUR = 3600000;
+    private static final int MINISECONDS_IN_MINUTE = 60000;
+    private static final String TAG = AddEditTaskViewModel.class.getSimpleName();
 
 
     @Inject
@@ -43,11 +43,14 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         mTaskRepository = taskRepository;
     }
 
+    // -------public: model layer bridge--------
 
     void insertTask(Task task) {
         mTaskRepository.insertTask(task);
         Log.d(TAG, task.toString());
     }
+
+    // -----------public: view layer------------
 
     /**
      * @param id the id of a day TextView
@@ -63,6 +66,10 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         }
     }
 
+    /**
+     * called in onCreate() of {@link AddEditTaskActivity}
+     * @param days a list of textViews that represent the repeated days
+     */
     public void initNewIsDaySelectedArray(List<TextView> days) {
         if (mIsDaySelectedArray == null) {
             mIsDaySelectedArray = new SparseBooleanArray();
@@ -116,6 +123,8 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         insertTask(task);
     }
 
+    // --------------private-----------------
+
     private long parseUnixStartTime() {
         if (mScheduledDateUtc == 0) {
             Calendar calendar = Calendar.getInstance();
@@ -166,41 +175,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         }
     }
 
-
-    public int getTaskDurationInMinutes() {
-        return mTaskDurationInMinutes;
-    }
-
-    public void setTaskDurationInMinutes(int taskDurationInMinutes) {
-        mTaskDurationInMinutes = taskDurationInMinutes;
-    }
-
-
-    public long getScheduledDateUtc() {
-        return mScheduledDateUtc;
-    }
-
-    public void setScheduledDateUtc(long scheduledDateUtc) {
-        mScheduledDateUtc = scheduledDateUtc;
-    }
-
-    @Nullable
-    public String getTaskNotes() {
-        return mTaskNotes;
-    }
-
-    public void setTaskNotes(@Nullable String taskNotes) {
-        mTaskNotes = taskNotes;
-    }
-
-    @Nullable
-    public SparseBooleanArray getIsDaySelectedArray() {
-        return mIsDaySelectedArray;
-    }
-
-    public void setIsDaySelectedArray(@Nullable SparseBooleanArray isDaySelectedArray) {
-        mIsDaySelectedArray = isDaySelectedArray;
-    }
+    // -----------getters & setters--------------
 
     /**
      * When the Task is finished being edited this will be converted to
@@ -212,5 +187,21 @@ public class AddEditTaskViewModel extends AndroidViewModel {
     public void setStartTime(int hours, int minutes) {
         mStartTimeHours = hours;
         mStartTimeMinutes = minutes;
+    }
+
+    public void setTaskDurationInMinutes(int taskDurationInMinutes) {
+        mTaskDurationInMinutes = taskDurationInMinutes;
+    }
+
+    public void setScheduledDateUtc(long scheduledDateUtc) {
+        mScheduledDateUtc = scheduledDateUtc;
+    }
+
+    public void setTaskNotes(@Nullable String taskNotes) {
+        mTaskNotes = taskNotes;
+    }
+
+    public void setIsDaySelectedArray(@Nullable SparseBooleanArray isDaySelectedArray) {
+        mIsDaySelectedArray = isDaySelectedArray;
     }
 }
