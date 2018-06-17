@@ -45,7 +45,6 @@ public class TasksActivity extends DaggerAppCompatActivity
     @Inject
     ViewModelProvider.Factory mFactory;
 
-
     @OnClick(R.id.fab)
     void fabClick() {
         Intent intent = new Intent(TasksActivity.this, AddEditTaskActivity.class);

@@ -56,8 +56,6 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         notifyDataSetChanged();
     }
 
-
-
     class TaskViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.text_view_temp) TextView textView;
 
