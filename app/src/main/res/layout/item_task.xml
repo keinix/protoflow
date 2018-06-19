@@ -28,26 +28,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
-        <ImageButton
-            android:id="@+id/imageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="6dp"
-            android:background="@null"
-            android:src="@drawable/ic_play_arrow_black_36"
-            android:tint="@color/gray"
-            app:layout_constraintStart_toEndOf="@+id/checkbox_task_completed"
-            app:layout_constraintTop_toTopOf="parent"/>
-
         <TextView
-            android:id="@+id/text_view_temp"
+            android:id="@+id/text_view_task_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
             android:layout_marginTop="8dp"
             android:text="This is a sample task name"
             android:textSize="20sp"
-            app:layout_constraintStart_toEndOf="@+id/imageButton"
+            app:layout_constraintStart_toEndOf="@+id/checkbox_task_completed"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="This is a test task name"/>
 
@@ -55,12 +44,43 @@
             android:id="@+id/text_view_task_details"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="2dp"
             android:text="Duration 26m Start: 12:56 AM "
-            app:layout_constraintStart_toEndOf="@+id/imageButton"
-            app:layout_constraintTop_toBottomOf="@+id/text_view_temp"/>
+            android:textColor="@color/taskDetailsGray"
+            app:layout_constraintStart_toEndOf="@+id/checkbox_task_completed"
+            app:layout_constraintTop_toBottomOf="@+id/text_view_task_name"/>
 
+        <ImageButton
+            android:id="@+id/image_button_play_task"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@null"
+            android:src="@drawable/ic_play_arrow_black_36"
+            app:layout_constraintBottom_toTopOf="@+id/text_view_duration_display"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/text_view_duration_display"
+            android:layout_width="wrap_content"
+            android:layout_height="15dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_button_play_task"
+            tools:text="1h25m"/>
+
+        <android.support.constraint.Group
+            android:id="@+id/group_duration"
+            app:constraint_referenced_ids="text_view_duration_display,
+               image_button_play_task"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
     </android.support.constraint.ConstraintLayout>
+
 </android.support.v7.widget.CardView>

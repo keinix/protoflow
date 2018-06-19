@@ -29,10 +29,9 @@
         android:layout_height="30dp"
         android:layout_marginBottom="3dp"
         android:layout_marginStart="113dp"
-        android:background="@drawable/shape_repeat_day_circle_backgroud"
         android:paddingLeft="3dp"
         android:text=" H"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/number_picker_hr"
         app:layout_constraintStart_toStartOf="parent"/>
@@ -56,10 +55,9 @@
         android:layout_height="30dp"
         android:layout_marginBottom="3dp"
         android:layout_marginStart="48dp"
-        android:background="@drawable/shape_repeat_day_circle_backgroud"
         android:paddingLeft="1dp"
         android:text=" M"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/number_picker_min"
         app:layout_constraintStart_toEndOf="@+id/textView4"/>

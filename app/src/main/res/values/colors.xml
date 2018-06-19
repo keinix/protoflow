@@ -10,4 +10,6 @@
 
     <color name="cancel">#ba1b0d</color>
     <color name="errorHintText">#7Fba1b0d</color>
+    <color name="taskDetailsGray">#b0b4ba</color>
+
 </resources>

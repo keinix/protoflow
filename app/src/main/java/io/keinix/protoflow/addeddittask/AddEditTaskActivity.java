@@ -267,7 +267,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         } else if (notesAreChecked) {
             mViewModel.setTaskNotes(notesEditText.getText().toString());
         }
-        mViewModel.createTask(editText.getText().toString());
+        mViewModel.createTask(editText.getText().toString().trim());
     }
 
     /**
