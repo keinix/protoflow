@@ -4,16 +4,21 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.constraint.Group;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.util.Calendar;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.protoflow.R;
@@ -23,6 +28,7 @@ import io.keinix.protoflow.di.ActivityScope;
 @ActivityScope
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHolder> {
 
+    public static final String TAG = TasksAdapter.class.getSimpleName();
     private Context mContext;
     private List<Task> mTasks;
 
@@ -58,7 +64,10 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     }
 
     class TaskViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.text_view_task_name) TextView textView;
+        @BindColor(R.color.starTimeDotColor) int startTimeDotColor;
+
+        @BindView(R.id.text_view_task_name) TextView taskNameTextView;
+        @BindView(R.id.text_view_task_details) TextView taskDetailsTextView;
         @BindView(R.id.image_button_play_task) ImageButton playButton;
         @BindView(R.id.group_duration) Group durationGroup;
         @BindView(R.id.text_view_duration_display) TextView durationTextView;
@@ -70,8 +79,29 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
         void bindView(int position) {
             Task task = mTasks.get(position);
-            textView.setText(task.getName());
+            taskNameTextView.setText(task.getName());
             setUpPlay(task);
+            setDescription(task);
+        }
+
+        private void setDescription(Task task) {
+            SpannableStringBuilder descriptionStringBuilder = new SpannableStringBuilder();
+            Log.d(TAG, "long utx" + task.getStartTimeUtc());
+            if (task.getStartTimeUtc() > 1) taskDetailsTextView.setText(getTimeStamp(task));
+        }
+
+        public String getTimeStamp(Task task) {
+            Calendar calendar  = Calendar.getInstance();
+            calendar.setTimeInMillis(task.getStartTimeUtc());
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            int minute = calendar.get(Calendar.MINUTE);
+            String timeSuffix = calendar.get(Calendar.AM_PM) == Calendar.AM ? "AM" : "PM";
+            return  hour + ":" + minute + timeSuffix;
+        }
+
+        private SpannableString getSpannableString(String text, int dotColor) {
+
+            return null;
         }
 
         private void setUpPlay(Task task) {

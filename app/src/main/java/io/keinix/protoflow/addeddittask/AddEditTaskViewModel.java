@@ -126,6 +126,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
     // --------------private-----------------
 
     private long parseUnixStartTime() {
+        if ((mStartTimeMinutes + mStartTimeHours) == 0) return 0;
         if (mScheduledDateUtc == 0) {
             Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.HOUR_OF_DAY, mStartTimeHours);
