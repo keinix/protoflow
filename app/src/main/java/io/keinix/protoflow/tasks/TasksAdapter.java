@@ -4,8 +4,14 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.constraint.Group;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.AlignmentSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -81,13 +87,15 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             Task task = mTasks.get(position);
             taskNameTextView.setText(task.getName());
             setUpPlay(task);
-            setDescription(task);
+            setDetails(task);
+            // "\u2022"
         }
 
-        private void setDescription(Task task) {
-            SpannableStringBuilder descriptionStringBuilder = new SpannableStringBuilder();
-            Log.d(TAG, "long utx" + task.getStartTimeUtc());
-            if (task.getStartTimeUtc() > 1) taskDetailsTextView.setText(getTimeStamp(task));
+        private void setDetails(Task task) {
+            if (task.getStartTimeUtc() > 1) {
+                String detailsText = "Start: " + getTimeStamp(task);
+                taskDetailsTextView.setText(detailsText);
+            }
         }
 
         public String getTimeStamp(Task task) {
@@ -99,10 +107,6 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             return  hour + ":" + minute + timeSuffix;
         }
 
-        private SpannableString getSpannableString(String text, int dotColor) {
-
-            return null;
-        }
 
         private void setUpPlay(Task task) {
             if (task.getDurationInMinutes() < 1) {
