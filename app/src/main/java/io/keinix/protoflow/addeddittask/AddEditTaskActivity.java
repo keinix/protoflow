@@ -7,6 +7,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.drawable.Drawable;
 import android.support.constraint.Group;
 import android.os.Bundle;
+import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -223,7 +225,14 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        loadUiData();
+    }
+
     // ------------------Lifecycle------------------
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -281,6 +290,33 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
             return true;
         } else {
             return false;
+        }
+    }
+
+    //TODO:might need to move the lines that set ViewModel values to different methods
+    private void loadUiData() {
+        setUpRepeatedDaysUi();
+    }
+
+    /**
+     * dayArray should never be null b/c it inits in onCreate and is stored in
+     * {@link AddEditTaskViewModel}. dayArray maps TextView ids to booleans
+     * the id is used to search a list TextViews (repeatDays) and the boolean sets its ui
+     */
+    private void setUpRepeatedDaysUi() {
+        SparseBooleanArray dayArray = mViewModel.getIsDaySelectedArray();
+        for (int i = 0; i < dayArray.size(); i++) {
+            if (!dayArray.valueAt(i)) {
+                TextView dayTextView = null;
+                for (TextView day : repeatDays) {
+                    if (day.getId() == dayArray.keyAt(i)) {
+                        dayTextView = day;
+                        break;
+                    }
+                }
+                dayTextView.setBackgroundResource(0);
+                dayTextView.setTextColor(black);
+            }
         }
     }
 }

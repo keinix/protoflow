@@ -123,6 +123,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         insertTask(task);
     }
 
+
     // --------------private-----------------
 
     private long parseUnixStartTime() {
@@ -204,5 +205,10 @@ public class AddEditTaskViewModel extends AndroidViewModel {
 
     public void setIsDaySelectedArray(@Nullable SparseBooleanArray isDaySelectedArray) {
         mIsDaySelectedArray = isDaySelectedArray;
+    }
+
+    @Nullable
+    public SparseBooleanArray getIsDaySelectedArray() {
+        return mIsDaySelectedArray;
     }
 }

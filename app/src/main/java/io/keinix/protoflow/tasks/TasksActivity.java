@@ -119,7 +119,6 @@ public class TasksActivity extends DaggerAppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-
     private void setUpRecyclerView() {
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
