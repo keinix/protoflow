@@ -11,19 +11,15 @@ import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import java.text.DateFormat;
-import java.util.Calendar;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -39,7 +35,6 @@ import butterknife.OnClick;
 import dagger.Lazy;
 import dagger.android.support.DaggerAppCompatActivity;
 import io.keinix.protoflow.R;
-import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.dialogs.DatePickerDialogFragment;
 import io.keinix.protoflow.dialogs.DurationPickerDialogFragment;
 import io.keinix.protoflow.dialogs.TimePickerDialogFragment;
@@ -159,7 +154,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     @OnClick(R.id.image_button_cancel_start_time)
     void unScheduleStartTime() {
         scheduleCanceled(cancelStartTimeImageButton, startTimeTextView, startTimeString);
-        mViewModel.setStartTime(0, 0);
+        mViewModel.setStartTimeUtc(0);
     }
 
     @OnClick(R.id.image_button_cancel_timer)
@@ -170,6 +165,8 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
 
 
     //------------------Override------------------
+
+    //TODO: create a sub method that sets the values and another that set the vars in the ViewModel
 
     // Callback from mDatePicker
     @Override
@@ -296,6 +293,31 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     //TODO:might need to move the lines that set ViewModel values to different methods
     private void loadUiData() {
         setUpRepeatedDaysUi();
+        setDurationFromViewModel();
+        setStartTimeFromViewModel();
+        setStartDateFromViewModel();
+    }
+
+    private void setStartDateFromViewModel() {
+        if (mViewModel.getScheduledDateUtc() > 0) {
+            scheduleSelected(cancelSelectedImageButton,
+                    scheduledDayTextView, mViewModel.getTaskStartDateTimeStamp());
+        }
+    }
+
+    private void setStartTimeFromViewModel() {
+        if (mViewModel.getStartTimeUtc() > 0) {
+            boolean is24Hours = android.text.format.DateFormat.is24HourFormat(this);
+            scheduleSelected(cancelStartTimeImageButton, startTimeTextView,
+                    mViewModel.getTaskStartTimeStamp(is24Hours));
+        }
+    }
+
+    private void setDurationFromViewModel() {
+        if (mViewModel.getTaskDurationInMinutes() >0) {
+            scheduleSelected(cancelSelectedDurationImageButton,
+                    timerTextView, mViewModel.getTaskDurationTimeStamp());
+        }
     }
 
     /**

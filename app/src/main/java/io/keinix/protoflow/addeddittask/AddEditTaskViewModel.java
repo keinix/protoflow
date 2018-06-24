@@ -9,6 +9,7 @@ import android.util.SparseBooleanArray;
 import android.widget.TextView;
 
 import java.text.DateFormat;
+import java.time.Year;
 import java.util.Calendar;
 import java.util.List;
 
@@ -28,9 +29,10 @@ public class AddEditTaskViewModel extends AndroidViewModel {
     // Maps the day TextView id to if its selected (boolean)
     @Nullable private SparseBooleanArray mIsDaySelectedArray;
     private long mScheduledDateUtc;
-    private int mStartTimeHours;
-    private int mStartTimeMinutes;
     private int mTaskDurationInMinutes;
+    private long mStartTimeUtc;
+
+    //used to persists the UI state
 
     private static final int MILISECONDS_IN_HOUR = 3600000;
     private static final int MINISECONDS_IN_MINUTE = 60000;
@@ -98,7 +100,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
             }
         }
         // this will be parsed into unix timer later when the Add/Edit is complete
-        setStartTime(hour, minute);
+        mStartTimeUtc = parseUnixStartTime(hour, minute);
         return String.format("%s:%02d %s", hour, minute, timeSuffix);
     }
 
@@ -118,7 +120,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
             setRepeatedDaysInTask(task);
         }
         task.setScheduledDateUtc(mScheduledDateUtc);
-        task.setStartTimeUtc(parseUnixStartTime());
+        task.setStartTimeUtc(mStartTimeUtc);
         task.setDurationInMinutes(mTaskDurationInMinutes);
         insertTask(task);
     }
@@ -126,18 +128,18 @@ public class AddEditTaskViewModel extends AndroidViewModel {
 
     // --------------private-----------------
 
-    private long parseUnixStartTime() {
-        if ((mStartTimeMinutes + mStartTimeHours) == 0) return 0;
+    private long parseUnixStartTime(int hours, int minutes) {
+        if ((minutes + hours) == 0) return 0;
         if (mScheduledDateUtc == 0) {
             Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.HOUR_OF_DAY, mStartTimeHours);
-            calendar.set(Calendar.MINUTE, mStartTimeMinutes);
+            calendar.set(Calendar.HOUR_OF_DAY, hours);
+            calendar.set(Calendar.MINUTE, minutes);
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.MILLISECOND, 0);
             return calendar.getTimeInMillis();
         } else {
-            long timeOffSet = (mStartTimeHours * MILISECONDS_IN_HOUR) +
-                    (mStartTimeMinutes * MINISECONDS_IN_MINUTE);
+            long timeOffSet = (hours * MILISECONDS_IN_HOUR) +
+                    (minutes * MINISECONDS_IN_MINUTE);
             return mScheduledDateUtc + timeOffSet;
         }
     }
@@ -180,15 +182,50 @@ public class AddEditTaskViewModel extends AndroidViewModel {
     // -----------getters & setters--------------
 
     /**
-     * When the Task is finished being edited this will be converted to
-     * mStartTimeUtc in parseUnixStarTime()
-     * @param hours for the start time
-     * @param minutes for the start time
-     *
+     * @return duration string for UI parsed from total time in minutes
+     * call this method when config changes in {@link AddEditTaskActivity}
+     * or where the activity is loaded to Edit a task
      */
-    public void setStartTime(int hours, int minutes) {
-        mStartTimeHours = hours;
-        mStartTimeMinutes = minutes;
+    @Nullable
+    public String getTaskDurationTimeStamp() {
+        int hours = mTaskDurationInMinutes /60;
+        int minutes = mTaskDurationInMinutes % 60;
+        return parseDurationForTimeStamp(hours, minutes);
+    }
+
+    @Nullable
+    public String getTaskStartTimeStamp(boolean is24Hour) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(mStartTimeUtc);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        return parseStartTimeForTimeStamp(hour, minute, is24Hour);
+    }
+
+    @Nullable
+    public String getTaskStartDateTimeStamp() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(mScheduledDateUtc);
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_YEAR);
+        return formatDate(year, month, day);
+    }
+
+    public long getScheduledDateUtc() {
+        return mScheduledDateUtc;
+    }
+
+    public void setStartTimeUtc(long startTimeUtc) {
+        mStartTimeUtc = startTimeUtc;
+    }
+
+    public long getStartTimeUtc() {
+        return mStartTimeUtc;
+    }
+
+    public int getTaskDurationInMinutes() {
+        return mTaskDurationInMinutes;
     }
 
     public void setTaskDurationInMinutes(int taskDurationInMinutes) {
