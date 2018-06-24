@@ -61,12 +61,12 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     @BindView(R.id.checkbox_repeat) CheckBox repeatCheckbox;
     @BindView(R.id.edit_text_notes) EditText notesEditText;
     @BindView(R.id.edit_text_task_name) EditText editText;
-    @BindView(R.id.image_button_cancel_timer) ImageButton cancelSelectedDurationImageButton;
+    @BindView(R.id.image_button_cancel_duration) ImageButton cancelSelectedDurationImageButton;
     @BindView(R.id.image_button_cancel_start_time) ImageButton cancelStartTimeImageButton;
-    @BindView(R.id.image_button_cancel_selected_date) ImageButton cancelSelectedImageButton;
+    @BindView(R.id.image_button_cancel_start_date) ImageButton cancelSelectedImageButton;
     @BindView(R.id.group_days) Group daysGroup;
-    @BindView(R.id.text_view_timer) TextView timerTextView;
-    @BindView(R.id.text_view_scheduled) TextView scheduledDayTextView;
+    @BindView(R.id.text_view_duration) TextView durationTextView;
+    @BindView(R.id.text_view_start_date) TextView startDateTextView;
     @BindView(R.id.text_view_start_time) TextView startTimeTextView;
     @BindViews({R.id.text_view_repeat_monday, R.id.text_view_repeat_tuesday,
             R.id.text_view_repeat_wednesday, R.id.text_view_repeat_thursday,
@@ -130,7 +130,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         }
     }
 
-    @OnClick({R.id.image_button_scheduled, R.id.text_view_scheduled})
+    @OnClick({R.id.image_button_scheduled, R.id.text_view_start_date})
     void launchDatePicker() {
         mDatePicker.get().show(getSupportFragmentManager(), "date_picker");
     }
@@ -140,14 +140,14 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         mTimePicker.get().show(getSupportFragmentManager(), "time_picker");
     }
 
-    @OnClick({R.id.image_button_timer, R.id.text_view_timer})
+    @OnClick({R.id.image_button_timer, R.id.text_view_duration})
     void launchDurationPicker() {
         mDurationPicker.get().show(getSupportFragmentManager(), "duration_picker");
     }
 
-    @OnClick(R.id.image_button_cancel_selected_date)
+    @OnClick(R.id.image_button_cancel_start_date)
     void unScheduleTask() {
-        scheduleCanceled(cancelSelectedImageButton, scheduledDayTextView, unscheduled);
+        scheduleCanceled(cancelSelectedImageButton, startDateTextView, unscheduled);
         mViewModel.setStartDateUtc(0);
     }
 
@@ -157,9 +157,9 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         mViewModel.setStartTimeUtc(0);
     }
 
-    @OnClick(R.id.image_button_cancel_timer)
+    @OnClick(R.id.image_button_cancel_duration)
     void deselectDuration() {
-        scheduleCanceled(cancelSelectedDurationImageButton, timerTextView, duration);
+        scheduleCanceled(cancelSelectedDurationImageButton, durationTextView, duration);
         mViewModel.setTaskDurationInMinutes(0);
     }
 
@@ -174,7 +174,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         mDatePicker.get().setStartDate(year, month, day);
         String selectedDate = mViewModel.formatDate(year, month, day);
         mViewModel.setStartDateUtc(year, month, day);
-        scheduleSelected(cancelSelectedImageButton, scheduledDayTextView, selectedDate);
+        scheduleSelected(cancelSelectedImageButton, startDateTextView, selectedDate);
     }
 
     // Callback from mTimePicker
@@ -197,7 +197,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         mDurationPicker.get().setStartDuration(hours, minutes);
         String timeStamp = mViewModel.parseDurationForTimeStamp(hours, minutes);
         mViewModel.setTaskDurationInMinutes(hours, minutes);
-        scheduleSelected(cancelSelectedDurationImageButton, timerTextView, timeStamp);
+        scheduleSelected(cancelSelectedDurationImageButton, durationTextView, timeStamp);
     }
 
     @Override
@@ -289,7 +289,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         }
     }
 
-    //TODO:might need to move the lines that set ViewModel values to different methods
+    // Called on configuration changes or if aa task is being edited
     private void loadUiData() {
         setUpRepeatedDaysUi();
         setDurationFromViewModel();
@@ -300,7 +300,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     private void setStartDateFromViewModel() {
         if (mViewModel.getStartDateUtc() > 0) {
             scheduleSelected(cancelSelectedImageButton,
-                    scheduledDayTextView, mViewModel.getTaskStartDateTimeStamp());
+                    startDateTextView, mViewModel.getTaskStartDateTimeStamp());
         }
     }
 
@@ -315,7 +315,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     private void setDurationFromViewModel() {
         if (mViewModel.getTaskDurationInMinutes() >0) {
             scheduleSelected(cancelSelectedDurationImageButton,
-                    timerTextView, mViewModel.getTaskDurationTimeStamp());
+                    durationTextView, mViewModel.getTaskDurationTimeStamp());
         }
     }
 

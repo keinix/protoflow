@@ -39,7 +39,7 @@
             app:layout_constraintTop_toBottomOf="@+id/edit_text_task_name"/>
 
         <TextView
-            android:id="@+id/text_view_timer"
+            android:id="@+id/text_view_duration"
             android:layout_width="wrap_content"
             android:layout_height="22dp"
             android:layout_marginStart="8dp"
@@ -51,7 +51,7 @@
             app:layout_constraintTop_toBottomOf="@+id/edit_text_task_name"/>
 
         <ImageButton
-            android:id="@+id/image_button_cancel_timer"
+            android:id="@+id/image_button_cancel_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -59,7 +59,7 @@
             android:background="@null"
             android:src="@drawable/ic_round_cancel_white_18"
             android:tint="@color/cancel"
-            app:layout_constraintStart_toEndOf="@+id/text_view_timer"
+            app:layout_constraintStart_toEndOf="@+id/text_view_duration"
             app:layout_constraintTop_toBottomOf="@+id/edit_text_task_name"
             android:visibility="invisible"/>
 
@@ -75,7 +75,7 @@
             app:layout_constraintTop_toBottomOf="@+id/image_button_timer"/>
 
         <TextView
-            android:id="@+id/text_view_scheduled"
+            android:id="@+id/text_view_start_date"
             android:layout_width="wrap_content"
             android:layout_height="22dp"
             android:layout_marginStart="8dp"
@@ -84,10 +84,10 @@
             android:text="@string/add_task_unscheduled"
             android:textSize="15sp"
             app:layout_constraintStart_toEndOf="@+id/image_button_scheduled"
-            app:layout_constraintTop_toBottomOf="@+id/text_view_timer"/>
+            app:layout_constraintTop_toBottomOf="@+id/text_view_duration"/>
 
         <ImageButton
-            android:id="@+id/image_button_cancel_selected_date"
+            android:id="@+id/image_button_cancel_start_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -96,8 +96,8 @@
             android:src="@drawable/ic_round_cancel_white_18"
             android:tint="@color/cancel"
             android:visibility="invisible"
-            app:layout_constraintStart_toEndOf="@+id/text_view_scheduled"
-            app:layout_constraintTop_toBottomOf="@+id/text_view_timer"/>
+            app:layout_constraintStart_toEndOf="@+id/text_view_start_date"
+            app:layout_constraintTop_toBottomOf="@+id/text_view_duration"/>
 
         <ImageButton
             android:id="@+id/image_button_start_time"
@@ -108,7 +108,7 @@
             android:background="@null"
             android:src="@drawable/ic_clock_black_24"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_view_scheduled"/>
+            app:layout_constraintTop_toBottomOf="@+id/text_view_start_date"/>
 
         <TextView
             android:id="@+id/text_view_start_time"
@@ -120,7 +120,7 @@
             android:text="@string/add_task_start_time"
             android:textSize="15sp"
             app:layout_constraintStart_toEndOf="@+id/image_button_start_time"
-            app:layout_constraintTop_toBottomOf="@+id/text_view_scheduled"/>
+            app:layout_constraintTop_toBottomOf="@+id/text_view_start_date"/>
 
         <ImageButton
             android:id="@+id/image_button_cancel_start_time"

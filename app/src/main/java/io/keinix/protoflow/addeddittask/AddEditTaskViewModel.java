@@ -206,13 +206,11 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         return formatDate(year, month, day);
     }
 
-    public long getStartDateUtc() {
-        return mStartDateUtc;
-    }
     //overloaded
     public void setStartTimeUtc(long startTimeUtc) {
         mStartTimeUtc = startTimeUtc;
     }
+
 
     //overloaded
     public void setStartTimeUtc(int hour, int minute) {
@@ -245,6 +243,13 @@ public class AddEditTaskViewModel extends AndroidViewModel {
     public void setTaskDurationInMinutes(int hours, int minutes) {
         setTaskDurationInMinutes((hours * 60) + minutes);
     }
+    public void setIsDaySelectedArray(@Nullable SparseBooleanArray isDaySelectedArray) {
+        mIsDaySelectedArray = isDaySelectedArray;
+    }
+
+    public void setTaskNotes(@Nullable String taskNotes) {
+        mTaskNotes = taskNotes;
+    }
 
     public long getStartTimeUtc() {
         return mStartTimeUtc;
@@ -254,13 +259,8 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         return mTaskDurationInMinutes;
     }
 
-
-    public void setTaskNotes(@Nullable String taskNotes) {
-        mTaskNotes = taskNotes;
-    }
-
-    public void setIsDaySelectedArray(@Nullable SparseBooleanArray isDaySelectedArray) {
-        mIsDaySelectedArray = isDaySelectedArray;
+    public long getStartDateUtc() {
+        return mStartDateUtc;
     }
 
     @Nullable
