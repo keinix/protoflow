@@ -148,7 +148,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     @OnClick(R.id.image_button_cancel_selected_date)
     void unScheduleTask() {
         scheduleCanceled(cancelSelectedImageButton, scheduledDayTextView, unscheduled);
-        mViewModel.setScheduledDateUtc(0);
+        mViewModel.setStartDateUtc(0);
     }
 
     @OnClick(R.id.image_button_cancel_start_time)
@@ -172,9 +172,8 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
         mDatePicker.get().setStartDate(year, month, day);
-
-        // mViewModel member vars used to create a new task init in this method
         String selectedDate = mViewModel.formatDate(year, month, day);
+        mViewModel.setStartDateUtc(year, month, day);
         scheduleSelected(cancelSelectedImageButton, scheduledDayTextView, selectedDate);
     }
 
@@ -186,6 +185,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
 
         // mViewModel member vars used to create a new task init in this method
         String timeString = mViewModel.parseStartTimeForTimeStamp(hour, minute, is24HourClock);
+        mViewModel.setStartTimeUtc(hour, minute);
         scheduleSelected(cancelStartTimeImageButton, startTimeTextView, timeString);
     }
 
@@ -195,9 +195,8 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         int hours = mDurationPicker.get().getSelectedHour();
         int minutes = mDurationPicker.get().getSelectedMinute();
         mDurationPicker.get().setStartDuration(hours, minutes);
-
-        // mViewModel member vars used to create a new task init in this method
         String timeStamp = mViewModel.parseDurationForTimeStamp(hours, minutes);
+        mViewModel.setTaskDurationInMinutes(hours, minutes);
         scheduleSelected(cancelSelectedDurationImageButton, timerTextView, timeStamp);
     }
 
@@ -299,7 +298,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     }
 
     private void setStartDateFromViewModel() {
-        if (mViewModel.getScheduledDateUtc() > 0) {
+        if (mViewModel.getStartDateUtc() > 0) {
             scheduleSelected(cancelSelectedImageButton,
                     scheduledDayTextView, mViewModel.getTaskStartDateTimeStamp());
         }

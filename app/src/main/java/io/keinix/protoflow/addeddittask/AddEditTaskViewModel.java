@@ -9,7 +9,6 @@ import android.util.SparseBooleanArray;
 import android.widget.TextView;
 
 import java.text.DateFormat;
-import java.time.Year;
 import java.util.Calendar;
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
     @Nullable private String mTaskNotes;
     // Maps the day TextView id to if its selected (boolean)
     @Nullable private SparseBooleanArray mIsDaySelectedArray;
-    private long mScheduledDateUtc;
+    private long mStartDateUtc;
     private int mTaskDurationInMinutes;
     private long mStartTimeUtc;
 
@@ -85,7 +84,6 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         String minutesString = minutes == 1 ? "Minute" : "Minutes";
         String hoursString = hours > 0 ?  hours + " Hours" : "";
         if (hours == 1) hoursString = hoursString.replace("s", "");
-        setTaskDurationInMinutes((hours * 60) + minutes);
         return String.format("%s %s %s", hoursString, minutes, minutesString);
     }
 
@@ -99,16 +97,12 @@ public class AddEditTaskViewModel extends AndroidViewModel {
                 hour = 12;
             }
         }
-        // this will be parsed into unix timer later when the Add/Edit is complete
-        mStartTimeUtc = parseUnixStartTime(hour, minute);
         return String.format("%s:%02d %s", hour, minute, timeSuffix);
     }
 
     public String formatDate(int year, int month, int day) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, day, 0, 0, 0);
-        Log.d(TAG, "calendar date: " + calendar.getTimeInMillis());
-        setScheduledDateUtc(calendar.getTimeInMillis());
         return DateFormat.getDateInstance(DateFormat.LONG).format(calendar.getTime());
     }
 
@@ -119,7 +113,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         } else if (mIsDaySelectedArray != null) {
             setRepeatedDaysInTask(task);
         }
-        task.setScheduledDateUtc(mScheduledDateUtc);
+        task.setScheduledDateUtc(mStartDateUtc);
         task.setStartTimeUtc(mStartTimeUtc);
         task.setDurationInMinutes(mTaskDurationInMinutes);
         insertTask(task);
@@ -130,7 +124,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
 
     private long parseUnixStartTime(int hours, int minutes) {
         if ((minutes + hours) == 0) return 0;
-        if (mScheduledDateUtc == 0) {
+        if (mStartDateUtc == 0) {
             Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.HOUR_OF_DAY, hours);
             calendar.set(Calendar.MINUTE, minutes);
@@ -140,7 +134,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         } else {
             long timeOffSet = (hours * MILISECONDS_IN_HOUR) +
                     (minutes * MINISECONDS_IN_MINUTE);
-            return mScheduledDateUtc + timeOffSet;
+            return mStartDateUtc + timeOffSet;
         }
     }
 
@@ -205,19 +199,51 @@ public class AddEditTaskViewModel extends AndroidViewModel {
     @Nullable
     public String getTaskStartDateTimeStamp() {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(mScheduledDateUtc);
+        calendar.setTimeInMillis(mStartDateUtc);
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_YEAR);
         return formatDate(year, month, day);
     }
 
-    public long getScheduledDateUtc() {
-        return mScheduledDateUtc;
+    public long getStartDateUtc() {
+        return mStartDateUtc;
     }
-
+    //overloaded
     public void setStartTimeUtc(long startTimeUtc) {
         mStartTimeUtc = startTimeUtc;
+    }
+
+    //overloaded
+    public void setStartTimeUtc(int hour, int minute) {
+        if (hour > 12) {
+            hour -= 12;
+        } else if (hour == 0) {
+            hour = 12;
+        }
+        setStartTimeUtc(parseUnixStartTime(hour, minute));
+    }
+
+    //overloaded
+    public void setStartDateUtc(int year, int month, int day) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day, 0, 0, 0);
+        setStartDateUtc(calendar.getTimeInMillis());
+    }
+
+    //overloaded
+    public void setStartDateUtc(long startDateUtc) {
+        mStartDateUtc = startDateUtc;
+    }
+
+    //overloaded
+    public void setTaskDurationInMinutes(int taskDurationInMinutes) {
+        mTaskDurationInMinutes = taskDurationInMinutes;
+    }
+
+    //overloaded
+    public void setTaskDurationInMinutes(int hours, int minutes) {
+        setTaskDurationInMinutes((hours * 60) + minutes);
     }
 
     public long getStartTimeUtc() {
@@ -228,13 +254,6 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         return mTaskDurationInMinutes;
     }
 
-    public void setTaskDurationInMinutes(int taskDurationInMinutes) {
-        mTaskDurationInMinutes = taskDurationInMinutes;
-    }
-
-    public void setScheduledDateUtc(long scheduledDateUtc) {
-        mScheduledDateUtc = scheduledDateUtc;
-    }
 
     public void setTaskNotes(@Nullable String taskNotes) {
         mTaskNotes = taskNotes;
