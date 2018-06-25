@@ -35,6 +35,7 @@ import butterknife.OnClick;
 import dagger.Lazy;
 import dagger.android.support.DaggerAppCompatActivity;
 import io.keinix.protoflow.R;
+import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.dialogs.DatePickerDialogFragment;
 import io.keinix.protoflow.dialogs.DurationPickerDialogFragment;
 import io.keinix.protoflow.dialogs.TimePickerDialogFragment;
@@ -60,7 +61,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     @BindView(R.id.checkbox_notes) CheckBox notesCheckbox;
     @BindView(R.id.checkbox_repeat) CheckBox repeatCheckbox;
     @BindView(R.id.edit_text_notes) EditText notesEditText;
-    @BindView(R.id.edit_text_task_name) EditText editText;
+    @BindView(R.id.edit_text_task_name) EditText taskNameEditText;
     @BindView(R.id.image_button_cancel_duration) ImageButton cancelSelectedDurationImageButton;
     @BindView(R.id.image_button_cancel_start_time) ImageButton cancelStartTimeImageButton;
     @BindView(R.id.image_button_cancel_start_date) ImageButton cancelSelectedImageButton;
@@ -122,8 +123,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
             R.id.text_view_repeat_sunday})
     void dayClicked(TextView day) {
         if (mViewModel.isDaySelected(day.getId())) {
-            day.setBackgroundResource(0);
-            day.setTextColor(black);
+            setDayUiAsUnSelected(day);
         } else {
             day.setBackground(circle);
             day.setTextColor(white);
@@ -172,7 +172,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
         mDatePicker.get().setStartDate(year, month, day);
-        String selectedDate = mViewModel.formatDate(year, month, day);
+        String selectedDate = mViewModel.parseStartDateForTimeStamp(year, month, day);
         mViewModel.setStartDateUtc(year, month, day);
         scheduleSelected(cancelSelectedImageButton, startDateTextView, selectedDate);
     }
@@ -182,8 +182,6 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     public void onTimeSet(TimePicker timePicker, int hour, int minute) {
         mTimePicker.get().setStartTime(hour, minute);
         boolean is24HourClock = android.text.format.DateFormat.is24HourFormat(this);
-
-        // mViewModel member vars used to create a new task init in this method
         String timeString = mViewModel.parseStartTimeForTimeStamp(hour, minute, is24HourClock);
         mViewModel.setStartTimeUtc(hour, minute);
         scheduleSelected(cancelStartTimeImageButton, startTimeTextView, timeString);
@@ -272,16 +270,16 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         } else if (notesAreChecked) {
             mViewModel.setTaskNotes(notesEditText.getText().toString());
         }
-        mViewModel.createTask(editText.getText().toString().trim());
+        mViewModel.createTask(taskNameEditText.getText().toString().trim());
     }
 
     /**
      * @return true if there is no task name
      */
     private boolean taskNameIsEmpty() {
-        if (editText.getText().toString().length() < 1) {
-            editText.setHint(taskName + "*");
-            editText.setHintTextColor(cancelColor);
+        if (taskNameEditText.getText().toString().length() < 1) {
+            taskNameEditText.setHint(taskName + "*");
+            taskNameEditText.setHintTextColor(cancelColor);
             Toast.makeText(this, "tasks need a name :(", Toast.LENGTH_SHORT).show();
             return true;
         } else {
@@ -313,10 +311,36 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     }
 
     private void setDurationFromViewModel() {
-        if (mViewModel.getTaskDurationInMinutes() >0) {
+        if (mViewModel.getTaskDurationInMinutes() > 0) {
             scheduleSelected(cancelSelectedDurationImageButton,
                     durationTextView, mViewModel.getTaskDurationTimeStamp());
         }
+    }
+
+    //TODO: set task name and notes in the LiveData callback
+    private void setViewModelVariablesFromTask(Task task) {
+        mViewModel.setStartTimeUtc(task.getStartTimeUtc());
+        mViewModel.setTaskDurationInMinutes(task.getDurationInMinutes());
+        mViewModel.setStartDateUtc(task.getScheduledDateUtc());
+        if (task.isRepeatsOnADay()) mViewModel.setRepeatedDaysInViewModelFromTask(task);
+    }
+
+    private void setUpUiToEditTask(Task task) {
+        setViewModelVariablesFromTask(task);
+        taskNameEditText.setText(task.getName());
+        if (task.getNotes() != null) {
+            showHideNotes(true);
+            notesEditText.setText(task.getNotes());
+        }
+        if (task.isRepeatsOnADay()) showHideRepeatDays(true);
+        loadUiData();
+    }
+
+
+
+    private void setDayUiAsUnSelected(TextView day) {
+        day.setBackgroundResource(0);
+        day.setTextColor(black);
     }
 
     /**
@@ -335,8 +359,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
                         break;
                     }
                 }
-                dayTextView.setBackgroundResource(0);
-                dayTextView.setTextColor(black);
+                setDayUiAsUnSelected(dayTextView);
             }
         }
     }

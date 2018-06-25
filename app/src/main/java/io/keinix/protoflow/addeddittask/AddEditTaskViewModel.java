@@ -31,12 +31,9 @@ public class AddEditTaskViewModel extends AndroidViewModel {
     private int mTaskDurationInMinutes;
     private long mStartTimeUtc;
 
-    //used to persists the UI state
-
     private static final int MILISECONDS_IN_HOUR = 3600000;
     private static final int MINISECONDS_IN_MINUTE = 60000;
     private static final String TAG = AddEditTaskViewModel.class.getSimpleName();
-
 
     @Inject
     public AddEditTaskViewModel(@NonNull Application application, TaskRepository taskRepository) {
@@ -80,6 +77,32 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         }
     }
 
+    /**
+     * @param task that will be edited in {@link AddEditTaskActivity}
+     */
+    public void setRepeatedDaysInViewModelFromTask(Task task) {
+        if (mIsDaySelectedArray != null) {
+            if (!task.isRepeatsOnMonday()) {
+                mIsDaySelectedArray.put(R.id.text_view_repeat_monday, false);
+            } else if (!task.isRepeatsOnTuesday()) {
+                mIsDaySelectedArray.put(R.id.text_view_repeat_tuesday, false);
+            } else if (!task.isRepeatsOnWednesday()) {
+                mIsDaySelectedArray.put(R.id.text_view_repeat_wednesday, false);
+            } else if (!task.isRepeatsOnThursday()) {
+                mIsDaySelectedArray.put(R.id.text_view_repeat_thursday, false);
+            } else if (!task.isRepeatsOnFriday()) {
+                mIsDaySelectedArray.put(R.id.text_view_repeat_friday, false);
+            } else if (!task.isRepeatsOnSaturday()) {
+                mIsDaySelectedArray.put(R.id.text_view_repeat_saturday, false);
+            } else if (!task.isRepeatsOnSaturday()) {
+                mIsDaySelectedArray.put(R.id.text_view_repeat_sunday, false);
+            }
+        } else {
+            throw new NullPointerException("call initNewISDaySelectedArray() before " +
+                    "calling setRepeatedDaysInViewModelFromTask()");
+        }
+    }
+
     public String parseDurationForTimeStamp(int hours, int minutes) {
         String minutesString = minutes == 1 ? "Minute" : "Minutes";
         String hoursString = hours > 0 ?  hours + " Hours" : "";
@@ -100,7 +123,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         return String.format("%s:%02d %s", hour, minute, timeSuffix);
     }
 
-    public String formatDate(int year, int month, int day) {
+    public String parseStartDateForTimeStamp(int year, int month, int day) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, day, 0, 0, 0);
         return DateFormat.getDateInstance(DateFormat.LONG).format(calendar.getTime());
@@ -148,6 +171,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
     }
 
     private void setRepeatedDayByViewId(Task task, int id) {
+        task.setRepeatsOnADay(true);
         switch (id) {
             case R.id.text_view_repeat_monday:
                 task.setRepeatsOnMonday(true);
@@ -173,6 +197,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         }
     }
 
+
     // -----------getters & setters--------------
 
     /**
@@ -180,14 +205,12 @@ public class AddEditTaskViewModel extends AndroidViewModel {
      * call this method when config changes in {@link AddEditTaskActivity}
      * or where the activity is loaded to Edit a task
      */
-    @Nullable
     public String getTaskDurationTimeStamp() {
-        int hours = mTaskDurationInMinutes /60;
+        int hours = mTaskDurationInMinutes / 60;
         int minutes = mTaskDurationInMinutes % 60;
         return parseDurationForTimeStamp(hours, minutes);
     }
 
-    @Nullable
     public String getTaskStartTimeStamp(boolean is24Hour) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(mStartTimeUtc);
@@ -196,14 +219,13 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         return parseStartTimeForTimeStamp(hour, minute, is24Hour);
     }
 
-    @Nullable
     public String getTaskStartDateTimeStamp() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(mStartDateUtc);
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_YEAR);
-        return formatDate(year, month, day);
+        return parseStartDateForTimeStamp(year, month, day);
     }
 
     //overloaded

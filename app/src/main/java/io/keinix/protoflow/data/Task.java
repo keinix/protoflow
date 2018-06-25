@@ -34,6 +34,9 @@ public class Task {
     @ColumnInfo(name = "notes")
     private String notes;
 
+    @ColumnInfo(name = "repeats_on_a_day")
+    private boolean repeatsOnADay;
+
     @ColumnInfo(name = "repeats_on_monday")
     private boolean repeatsOnMonday;
 
@@ -175,6 +178,14 @@ public class Task {
 
     public void setRepeatsOnSunday(boolean repeatsOnSunday) {
         this.repeatsOnSunday = repeatsOnSunday;
+    }
+
+    public boolean isRepeatsOnADay() {
+        return repeatsOnADay;
+    }
+
+    public void setRepeatsOnADay(boolean repeatsOnADay) {
+        this.repeatsOnADay = repeatsOnADay;
     }
 
     @Override
