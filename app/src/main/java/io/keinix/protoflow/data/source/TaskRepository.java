@@ -34,8 +34,9 @@ public class TaskRepository {
         return mAllTasks;
     }
 
-
-
+    public LiveData<Task> getTask(int id) {
+        return mTaskDao.getTask(id);
+    }
 
     //SQL INSERT
     public void insertTask(Task task) {

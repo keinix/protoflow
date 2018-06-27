@@ -2,6 +2,7 @@ package io.keinix.protoflow.addeddittask;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.drawable.Drawable;
@@ -76,8 +77,11 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
 
     // -----------Member variables-----------
     private AddEditTaskViewModel mViewModel;
+    private boolean asyncTaskLoadIsInProgress;
     private boolean repeatIsChecked;
     private boolean notesAreChecked;
+
+    public static final String EXTRA_TASK_ID = "EXTRA_TASK_ID";
 
     // ------------------DI------------------
     @Inject
@@ -91,6 +95,9 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
 
     @Inject
     Lazy<DurationPickerDialogFragment> mDurationPicker;
+
+    @Inject
+    int taskIdToEdit;
 
     //----------------OnCLicks----------------
 
@@ -222,7 +229,9 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        loadUiData();
+        if (!asyncTaskLoadIsInProgress) {
+            loadUiData();
+        }
     }
 
     // ------------------Lifecycle------------------
@@ -235,6 +244,10 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         mViewModel = ViewModelProviders.of(this, mViewModelFactory)
                 .get(AddEditTaskViewModel.class);
         mViewModel.initNewIsDaySelectedArray(repeatDays);
+        if (taskIdToEdit >= 0) {
+            LiveData<Task> task = mViewModel.getTaskToEdit(taskIdToEdit);
+            task.observe(this, this::setUpUiToEditTask);
+        }
     }
 
     // ------------------Private------------------
@@ -287,7 +300,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         }
     }
 
-    // Called on configuration changes or if aa task is being edited
+    // Called on configuration changes or if a task is being edited
     private void loadUiData() {
         setUpRepeatedDaysUi();
         setDurationFromViewModel();
@@ -317,14 +330,6 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         }
     }
 
-    //TODO: set task name and notes in the LiveData callback
-    private void setViewModelVariablesFromTask(Task task) {
-        mViewModel.setStartTimeUtc(task.getStartTimeUtc());
-        mViewModel.setTaskDurationInMinutes(task.getDurationInMinutes());
-        mViewModel.setStartDateUtc(task.getScheduledDateUtc());
-        if (task.isRepeatsOnADay()) mViewModel.setRepeatedDaysInViewModelFromTask(task);
-    }
-
     private void setUpUiToEditTask(Task task) {
         setViewModelVariablesFromTask(task);
         taskNameEditText.setText(task.getName());
@@ -334,6 +339,13 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         }
         if (task.isRepeatsOnADay()) showHideRepeatDays(true);
         loadUiData();
+    }
+
+    private void setViewModelVariablesFromTask(Task task) {
+        mViewModel.setStartTimeUtc(task.getStartTimeUtc());
+        mViewModel.setTaskDurationInMinutes(task.getDurationInMinutes());
+        mViewModel.setStartDateUtc(task.getScheduledDateUtc());
+        if (task.isRepeatsOnADay()) mViewModel.setRepeatedDaysInViewModelFromTask(task);
     }
 
 

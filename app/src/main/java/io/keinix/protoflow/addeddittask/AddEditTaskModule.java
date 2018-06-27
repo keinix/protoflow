@@ -1,6 +1,7 @@
 package io.keinix.protoflow.addeddittask;
 
 import android.app.DialogFragment;
+import android.support.annotation.Nullable;
 
 import dagger.Binds;
 import dagger.Module;
@@ -26,6 +27,12 @@ public abstract class AddEditTaskModule {
     @ActivityScope
     @Provides static DurationPickerDialogFragment durationPickerDialogFragment() {
         return new DurationPickerDialogFragment();
+    }
+
+    @Nullable
+    @ActivityScope
+    @Provides static int taskIdExtra(AddEditTaskActivity addEditTaskActivity) {
+        return addEditTaskActivity.getIntent().getIntExtra(AddEditTaskActivity.EXTRA_TASK_ID, -1);
     }
 
 }

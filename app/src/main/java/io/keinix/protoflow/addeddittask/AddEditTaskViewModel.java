@@ -2,6 +2,7 @@ package io.keinix.protoflow.addeddittask;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
+import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -46,6 +47,10 @@ public class AddEditTaskViewModel extends AndroidViewModel {
     void insertTask(Task task) {
         mTaskRepository.insertTask(task);
         Log.d(TAG, task.toString());
+    }
+
+    LiveData<Task> getTaskToEdit(int id) {
+        return getTaskToEdit(id);
     }
 
     // -----------public: view layer------------
