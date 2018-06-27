@@ -29,7 +29,6 @@ public abstract class AddEditTaskModule {
         return new DurationPickerDialogFragment();
     }
 
-    @Nullable
     @ActivityScope
     @Provides static int taskIdExtra(AddEditTaskActivity addEditTaskActivity) {
         return addEditTaskActivity.getIntent().getIntExtra(AddEditTaskActivity.EXTRA_TASK_ID, -1);

@@ -1,6 +1,5 @@
 package io.keinix.protoflow.data.source;
 
-import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 
@@ -14,7 +13,6 @@ import io.keinix.protoflow.data.CalendarDay;
 import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.data.source.local.CalendarDayDao;
 import io.keinix.protoflow.data.source.local.TaskDao;
-import io.keinix.protoflow.data.source.local.TaskRoomDatabase;
 
 @Singleton
 public class TaskRepository {
@@ -46,17 +44,18 @@ public class TaskRepository {
     //INSERT ASYNC
     private static class insertAsyncTask extends AsyncTask<Task, Void, Void> {
 
-        private TaskDao asyncDao;
+        private TaskDao asyncTaskDao;
         private CalendarDayDao calendarDayDao;
 
         public insertAsyncTask(TaskDao asyncTaskDao, CalendarDayDao asyncCalendarDao) {
-            this.asyncDao = asyncTaskDao;
+            this.asyncTaskDao = asyncTaskDao;
             this.calendarDayDao = asyncCalendarDao;
         }
 
         @Override
         protected Void doInBackground(Task... params) {
-            long taskId = asyncDao.insert(params[0]);
+            //TODO:update instead of insert if task was edited
+            long taskId = asyncTaskDao.insert(params[0]);
             if (params[0].getScheduledDateUtc() > 0) {
                 insertTaskIdIntoDay(taskId, params[0].getScheduledDateUtc());
             }

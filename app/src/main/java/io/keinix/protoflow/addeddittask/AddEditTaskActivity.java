@@ -244,6 +244,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         mViewModel = ViewModelProviders.of(this, mViewModelFactory)
                 .get(AddEditTaskViewModel.class);
         mViewModel.initNewIsDaySelectedArray(repeatDays);
+
         if (taskIdToEdit >= 0) {
             LiveData<Task> task = mViewModel.getTaskToEdit(taskIdToEdit);
             task.observe(this, this::setUpUiToEditTask);

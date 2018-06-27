@@ -1,6 +1,7 @@
 package io.keinix.protoflow.tasks;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.constraint.Group;
 import android.support.v7.widget.RecyclerView;
@@ -28,6 +29,7 @@ import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.protoflow.R;
+import io.keinix.protoflow.addeddittask.AddEditTaskActivity;
 import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.di.ActivityScope;
 
@@ -88,6 +90,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             taskNameTextView.setText(task.getName());
             setUpPlay(task);
             setDetails(task);
+            playButton.setOnClickListener(v -> launchEditTask(task.getId()));
             // "\u2022"
         }
 
@@ -107,7 +110,6 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             return  hour + ":" + minute + timeSuffix;
         }
 
-
         private void setUpPlay(Task task) {
             if (task.getDurationInMinutes() < 1) {
                 durationGroup.setVisibility(View.GONE);
@@ -122,6 +124,12 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             String hourString = taskInMins >= 60 ? taskInMins / 60 + "h" : "";
             String minuteString = taskInMins > 60 ? taskInMins % 60 + "m" : String.valueOf(taskInMins) + "m";
             return hourString + minuteString;
+        }
+
+        private void launchEditTask(int taskId) {
+            Intent intent = new Intent(mContext, AddEditTaskActivity.class);
+            intent.putExtra(AddEditTaskActivity.EXTRA_TASK_ID, taskId);
+            mContext.startActivity(intent);
         }
 
     }

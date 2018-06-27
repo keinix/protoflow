@@ -50,7 +50,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
     }
 
     LiveData<Task> getTaskToEdit(int id) {
-        return getTaskToEdit(id);
+        return mTaskRepository.getTask(id);
     }
 
     // -----------public: view layer------------
