@@ -34,6 +34,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
 
     private static final int MILISECONDS_IN_HOUR = 3600000;
     private static final int MINISECONDS_IN_MINUTE = 60000;
+    private boolean taskIsBeingEdited;
     private static final String TAG = AddEditTaskViewModel.class.getSimpleName();
 
     @Inject
@@ -46,7 +47,10 @@ public class AddEditTaskViewModel extends AndroidViewModel {
 
     void insertTask(Task task) {
         mTaskRepository.insertTask(task);
-        Log.d(TAG, task.toString());
+    }
+
+    void updateTask(Task task) {
+        mTaskRepository.updateTask(task);
     }
 
     LiveData<Task> getTaskToEdit(int id) {
@@ -133,22 +137,43 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         calendar.set(year, month, day, 0, 0, 0);
         return DateFormat.getDateInstance(DateFormat.LONG).format(calendar.getTime());
     }
+    public void createNewTask(@NonNull String taskName) {
+        Task task = initNewTask(taskName);
+        insertTask(task);
+    }
 
-    public void createTask(@NonNull String taskName) {
+    public void updateExistingTask(@NonNull String taskName, int id) {
+        Task task = initNewTask(taskName);
+        task.setId(id);
+        updateTask(task);
+    }
+
+
+
+    public void setViewModelVariablesFromTask(Task task) {
+        taskIsBeingEdited = true;
+        setStartTimeUtc(task.getStartTimeUtc());
+        setTaskDurationInMinutes(task.getDurationInMinutes());
+        setStartDateUtc(task.getScheduledDateUtc());
+        if (task.isRepeatsOnADay()) setRepeatedDaysInViewModelFromTask(task);
+    }
+
+
+    // --------------private-----------------
+
+    private Task initNewTask(String taskName) {
         Task task = new Task(taskName);
         if (mTaskNotes != null) {
             task.setNotes(mTaskNotes);
-        } else if (mIsDaySelectedArray != null) {
+        }
+        if (mIsDaySelectedArray != null) {
             setRepeatedDaysInTask(task);
         }
         task.setScheduledDateUtc(mStartDateUtc);
         task.setStartTimeUtc(mStartTimeUtc);
         task.setDurationInMinutes(mTaskDurationInMinutes);
-        insertTask(task);
+        return task;
     }
-
-
-    // --------------private-----------------
 
     private long parseUnixStartTime(int hours, int minutes) {
         if ((minutes + hours) == 0) return 0;

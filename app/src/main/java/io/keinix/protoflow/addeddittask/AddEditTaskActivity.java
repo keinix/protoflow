@@ -97,7 +97,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     Lazy<DurationPickerDialogFragment> mDurationPicker;
 
     @Inject
-    int taskIdToEdit;
+    int mTaskIdToEdit;
 
     //----------------OnCLicks----------------
 
@@ -245,8 +245,8 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
                 .get(AddEditTaskViewModel.class);
         mViewModel.initNewIsDaySelectedArray(repeatDays);
 
-        if (taskIdToEdit >= 0) {
-            LiveData<Task> task = mViewModel.getTaskToEdit(taskIdToEdit);
+        if (mTaskIdToEdit >= 0) {
+            LiveData<Task> task = mViewModel.getTaskToEdit(mTaskIdToEdit);
             task.observe(this, this::setUpUiToEditTask);
         }
     }
@@ -281,10 +281,15 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     private void initTaskCreation() {
         if (!repeatIsChecked) {
             mViewModel.setIsDaySelectedArray(null);
-        } else if (notesAreChecked) {
+        }
+        if (notesAreChecked) {
             mViewModel.setTaskNotes(notesEditText.getText().toString());
         }
-        mViewModel.createTask(taskNameEditText.getText().toString().trim());
+        if (mTaskIdToEdit >= 0) {
+            mViewModel.updateExistingTask(taskNameEditText.getText().toString(), mTaskIdToEdit);
+        } else {
+            mViewModel.createNewTask(taskNameEditText.getText().toString().trim());
+        }
     }
 
     /**
@@ -332,7 +337,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     }
 
     private void setUpUiToEditTask(Task task) {
-        setViewModelVariablesFromTask(task);
+        mViewModel.setViewModelVariablesFromTask(task);
         taskNameEditText.setText(task.getName());
         if (task.getNotes() != null) {
             showHideNotes(true);
@@ -342,12 +347,6 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         loadUiData();
     }
 
-    private void setViewModelVariablesFromTask(Task task) {
-        mViewModel.setStartTimeUtc(task.getStartTimeUtc());
-        mViewModel.setTaskDurationInMinutes(task.getDurationInMinutes());
-        mViewModel.setStartDateUtc(task.getScheduledDateUtc());
-        if (task.isRepeatsOnADay()) mViewModel.setRepeatedDaysInViewModelFromTask(task);
-    }
 
 
 

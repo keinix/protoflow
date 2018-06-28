@@ -36,6 +36,11 @@ public class TaskRepository {
         return mTaskDao.getTask(id);
     }
 
+    //SQL UPDATE
+    public void updateTask(Task task) {
+        new updateAsyncTask(mTaskDao).execute(task);
+    }
+
     //SQL INSERT
     public void insertTask(Task task) {
         new insertAsyncTask(mTaskDao, mCalendarDayDao).execute(task);
@@ -54,7 +59,6 @@ public class TaskRepository {
 
         @Override
         protected Void doInBackground(Task... params) {
-            //TODO:update instead of insert if task was edited
             long taskId = asyncTaskDao.insert(params[0]);
             if (params[0].getScheduledDateUtc() > 0) {
                 insertTaskIdIntoDay(taskId, params[0].getScheduledDateUtc());
@@ -74,6 +78,22 @@ public class TaskRepository {
                 calendarDay.addTaskId((int) id);
                 calendarDayDao.update(calendarDay);
             }
+        }
+    }
+
+    //UPDATE ASYNC
+    private static class updateAsyncTask extends AsyncTask<Task, Void, Void> {
+
+        private TaskDao asyncTaskDao;
+
+        public updateAsyncTask(TaskDao asyncTaskDao) {
+            this.asyncTaskDao = asyncTaskDao;
+        }
+
+        @Override
+        protected Void doInBackground(Task... tasks) {
+            asyncTaskDao.update(tasks[0]);
+            return null;
         }
     }
 }
