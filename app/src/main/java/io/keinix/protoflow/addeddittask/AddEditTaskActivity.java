@@ -278,12 +278,8 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     // Called to save/update a task before leaving AddEditTaskActivity
     // Called in onOptionItemSelected
     private void initTaskCreation() {
-        if (!repeatIsChecked) {
-            mViewModel.setIsDaySelectedArray(null);
-        }
-        if (notesAreChecked) {
-            mViewModel.setTaskNotes(notesEditText.getText().toString());
-        }
+        if (!repeatIsChecked) mViewModel.setIsDaySelectedArray(null);
+        if (notesAreChecked) mViewModel.setTaskNotes(notesEditText.getText().toString());
         if (mTaskIdToEdit >= 0) {
             mViewModel.updateExistingTask(taskNameEditText.getText().toString(), mTaskIdToEdit);
         } else {
@@ -346,9 +342,6 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         if (task.isRepeatsOnADay()) repeatCheckbox.setChecked(true);
         loadUiData();
     }
-
-
-
 
     private void setDayUiAsUnSelected(TextView day) {
         day.setBackgroundResource(0);

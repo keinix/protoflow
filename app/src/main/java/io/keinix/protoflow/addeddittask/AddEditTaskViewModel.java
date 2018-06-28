@@ -103,7 +103,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
                   mIsDaySelectedArray.put(R.id.text_view_repeat_friday, false);
             } if (!task.isRepeatsOnSaturday()) {
                   mIsDaySelectedArray.put(R.id.text_view_repeat_saturday, false);
-            } if (!task.isRepeatsOnSaturday()) {
+            } if (!task.isRepeatsOnSunday()) {
                   mIsDaySelectedArray.put(R.id.text_view_repeat_sunday, false);
             }
         } else {
