@@ -93,18 +93,18 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         if (mIsDaySelectedArray != null) {
             if (!task.isRepeatsOnMonday()) {
                 mIsDaySelectedArray.put(R.id.text_view_repeat_monday, false);
-            } else if (!task.isRepeatsOnTuesday()) {
-                mIsDaySelectedArray.put(R.id.text_view_repeat_tuesday, false);
-            } else if (!task.isRepeatsOnWednesday()) {
-                mIsDaySelectedArray.put(R.id.text_view_repeat_wednesday, false);
-            } else if (!task.isRepeatsOnThursday()) {
-                mIsDaySelectedArray.put(R.id.text_view_repeat_thursday, false);
-            } else if (!task.isRepeatsOnFriday()) {
-                mIsDaySelectedArray.put(R.id.text_view_repeat_friday, false);
-            } else if (!task.isRepeatsOnSaturday()) {
-                mIsDaySelectedArray.put(R.id.text_view_repeat_saturday, false);
-            } else if (!task.isRepeatsOnSaturday()) {
-                mIsDaySelectedArray.put(R.id.text_view_repeat_sunday, false);
+            } if (!task.isRepeatsOnTuesday()) {
+                  mIsDaySelectedArray.put(R.id.text_view_repeat_tuesday, false);
+            } if (!task.isRepeatsOnWednesday()) {
+                  mIsDaySelectedArray.put(R.id.text_view_repeat_wednesday, false);
+            } if (!task.isRepeatsOnThursday()) {
+                  mIsDaySelectedArray.put(R.id.text_view_repeat_thursday, false);
+            } if (!task.isRepeatsOnFriday()) {
+                  mIsDaySelectedArray.put(R.id.text_view_repeat_friday, false);
+            } if (!task.isRepeatsOnSaturday()) {
+                  mIsDaySelectedArray.put(R.id.text_view_repeat_saturday, false);
+            } if (!task.isRepeatsOnSaturday()) {
+                  mIsDaySelectedArray.put(R.id.text_view_repeat_sunday, false);
             }
         } else {
             throw new NullPointerException("call initNewISDaySelectedArray() before " +
@@ -147,8 +147,6 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         task.setId(id);
         updateTask(task);
     }
-
-
 
     public void setViewModelVariablesFromTask(Task task) {
         taskIsBeingEdited = true;

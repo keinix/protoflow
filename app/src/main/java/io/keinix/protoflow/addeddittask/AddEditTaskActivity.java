@@ -173,8 +173,6 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
 
     //------------------Override------------------
 
-    //TODO: create a sub method that sets the values and another that set the vars in the ViewModel
-
     // Callback from mDatePicker
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
@@ -277,7 +275,8 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         textView.setTextColor(gray);
         textView.setText(text);
     }
-
+    // Called to save/update a task before leaving AddEditTaskActivity
+    // Called in onOptionItemSelected
     private void initTaskCreation() {
         if (!repeatIsChecked) {
             mViewModel.setIsDaySelectedArray(null);
@@ -336,14 +335,15 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         }
     }
 
+    // Only Called when a task is being edited
     private void setUpUiToEditTask(Task task) {
         mViewModel.setViewModelVariablesFromTask(task);
         taskNameEditText.setText(task.getName());
         if (task.getNotes() != null) {
-            showHideNotes(true);
+            notesCheckbox.setChecked(true);
             notesEditText.setText(task.getNotes());
         }
-        if (task.isRepeatsOnADay()) showHideRepeatDays(true);
+        if (task.isRepeatsOnADay()) repeatCheckbox.setChecked(true);
         loadUiData();
     }
 
