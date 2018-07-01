@@ -124,9 +124,10 @@ public class TasksActivity extends DaggerAppCompatActivity
         mDatePicker.get().setStartDate(year, month, day);
         setTitle(mDatePicker.get().getStartDateTimeStamp());
         long startDateUtc = mDatePicker.get().getStartDateUtc();
-        CalendarDay calendarDay = mViewModel.getCalendarDay(startDateUtc);
-
+        Log.d(TAG, "Start date from onDateSet(): " + startDateUtc);
+         mViewModel.getLiveCalendarDay(startDateUtc).observe(this, this::displayTasksForDay);
     }
+
 
     // --------------Lifecycle--------------
 
@@ -141,7 +142,7 @@ public class TasksActivity extends DaggerAppCompatActivity
         setUpRecyclerView();
         mViewModel = ViewModelProviders.of(this, mFactory).get(TasksViewModel.class);
         mDisplayedTasks = mViewModel.getAllTasks();
-        mDisplayedTasks.observe(this, tasks -> mAdapter.setTasks(tasks));
+        mDisplayedTasks.observe(this, mAdapter::setTasks);
     }
 
     // ------------------Private------------------
@@ -151,8 +152,19 @@ public class TasksActivity extends DaggerAppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    // updating mDisplayedTasks will trigger the observer set on OnCreate to refresh
+    // the adapter with the new tasks
+    private void displayTasksForDay(CalendarDay calendarDay) {
+        if (calendarDay != null) {
+            LiveData<List<Task>> tasks = mViewModel.getTasks(calendarDay.getScheduledTaskIds());
+            mDisplayedTasks = tasks;
+            mDisplayedTasks.observe(this, mAdapter::setTasks);
+        } else {
+            mAdapter.clearTasks();
+        }
     }
 
     private void setUpRecyclerView() {

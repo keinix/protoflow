@@ -71,6 +71,11 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         notifyDataSetChanged();
     }
 
+    public void clearTasks() {
+        mTasks = null;
+        notifyDataSetChanged();
+    }
+
     class TaskViewHolder extends RecyclerView.ViewHolder {
         @BindColor(R.color.starTimeDotColor) int startTimeDotColor;
 

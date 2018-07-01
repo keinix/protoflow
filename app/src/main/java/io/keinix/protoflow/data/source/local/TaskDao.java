@@ -25,6 +25,9 @@ public interface TaskDao {
     @Query("SELECT * from task_table WHERE id = :id LIMIT 1")
     LiveData<Task> getTask(int id);
 
+    @Query("SELECT * from Task_table WHERE id IN (:taskIds)")
+    LiveData<List<Task>> getTasks(List<Integer> taskIds);
+
     @Update
     void update(Task task);
 }

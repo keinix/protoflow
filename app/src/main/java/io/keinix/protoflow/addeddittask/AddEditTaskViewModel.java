@@ -169,6 +169,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
             setRepeatedDaysInTask(task);
         }
         task.setScheduledDateUtc(mStartDateUtc);
+        Log.d(TAG, "Start Date that is being set in AddEditTask: " + mStartDateUtc);
         task.setStartTimeUtc(mStartTimeUtc);
         task.setDurationInMinutes(mTaskDurationInMinutes);
         return task;
@@ -277,6 +278,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
     public void setStartDateUtc(int year, int month, int day) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, day, 0, 0, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
         setStartDateUtc(calendar.getTimeInMillis());
     }
 

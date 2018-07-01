@@ -57,4 +57,13 @@ public class CalendarDay {
     public void addTaskId(int id) {
         scheduledTaskIds.add(id);
     }
+
+    @Override
+    public String toString() {
+        return "CalendarDay{" +
+                "date=" + date +
+                ", dayName='" + dayName + '\'' +
+                ", scheduledTaskIds=" + scheduledTaskIds +
+                '}';
+    }
 }

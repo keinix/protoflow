@@ -56,6 +56,7 @@ public class DatePickerDialogFragment extends DialogFragment {
     public long getStartDateUtc() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(mStartYear, mStartMonth, mStartDay, 0, 0, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
         return calendar.getTimeInMillis();
     }
 }

@@ -40,6 +40,14 @@ public class TaskRepository {
         return mCalendarDayDao.getCalendarDay(date);
     }
 
+    public LiveData<CalendarDay> getLiveCalendarDay(long date) {
+        return mCalendarDayDao.getLiveCalendarDay(date);
+    }
+
+    public LiveData<List<Task>> getTasks(List<Integer> taskIds) {
+        return mTaskDao.getTasks(taskIds);
+    }
+
     //SQL UPDATE
     public void updateTask(Task task) {
         new updateAsyncTask(mTaskDao).execute(task);

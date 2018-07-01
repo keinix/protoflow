@@ -31,11 +31,11 @@ public class TasksViewModel extends AndroidViewModel {
         return mAllTasks;
     }
 
-    public void insertTask(Task task) {
-        mTaskRepository.insertTask(task);
+    public LiveData<CalendarDay> getLiveCalendarDay(long date) {
+        return mTaskRepository.getLiveCalendarDay(date);
     }
 
-    public CalendarDay getCalendarDay(long date) {
-        return mTaskRepository.getCalendarDay(date);
+    public LiveData<List<Task>> getTasks(List<Integer> taskIds) {
+        return mTaskRepository.getTasks(taskIds);
     }
 }
