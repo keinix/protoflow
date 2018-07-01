@@ -137,6 +137,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         calendar.set(year, month, day, 0, 0, 0);
         return DateFormat.getDateInstance(DateFormat.LONG).format(calendar.getTime());
     }
+
     public void createNewTask(@NonNull String taskName) {
         Task task = initNewTask(taskName);
         insertTask(task);

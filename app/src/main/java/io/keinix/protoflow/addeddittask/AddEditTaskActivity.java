@@ -177,7 +177,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
         mDatePicker.get().setStartDate(year, month, day);
-        String selectedDate = mViewModel.parseStartDateForTimeStamp(year, month, day);
+        String selectedDate = mDatePicker.get().getStartDateTimeStamp();
         mViewModel.setStartDateUtc(year, month, day);
         scheduleSelected(cancelSelectedImageButton, startDateTextView, selectedDate);
     }

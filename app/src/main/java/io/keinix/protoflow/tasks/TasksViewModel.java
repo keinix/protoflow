@@ -9,12 +9,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.keinix.protoflow.data.CalendarDay;
 import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.data.source.TaskRepository;
 
 public class TasksViewModel extends AndroidViewModel {
 
-
+    // ----------Member variables------------
     private TaskRepository mTaskRepository;
     private LiveData<List<Task>> mAllTasks;
 
@@ -25,11 +26,16 @@ public class TasksViewModel extends AndroidViewModel {
         mAllTasks = mTaskRepository.getAllTasks();
     }
 
+    // -------public: model layer bridge--------
     public LiveData<List<Task>> getAllTasks() {
         return mAllTasks;
     }
 
     public void insertTask(Task task) {
         mTaskRepository.insertTask(task);
+    }
+
+    public CalendarDay getCalendarDay(long date) {
+        return mTaskRepository.getCalendarDay(date);
     }
 }

@@ -1,5 +1,6 @@
 package io.keinix.protoflow.data.source.local;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
@@ -20,7 +21,10 @@ public interface CalendarDayDao {
     void insert(CalendarDay day);
 
     @Query("SELECT * from calendar_day_table WHERE date = :date LIMIT 1")
-    CalendarDay getDay(long date);
+    CalendarDay getCalendarDay(long date);
+
+    @Query("SELECT * from calendar_day_table WHERE date = :date LIMIT 1")
+    LiveData<CalendarDay> getLiveCalendarDay(long date);
 
     @Update
     void update(CalendarDay day);

@@ -36,6 +36,10 @@ public class TaskRepository {
         return mTaskDao.getTask(id);
     }
 
+    public CalendarDay getCalendarDay(long date) {
+        return mCalendarDayDao.getCalendarDay(date);
+    }
+
     //SQL UPDATE
     public void updateTask(Task task) {
         new updateAsyncTask(mTaskDao).execute(task);
@@ -67,7 +71,7 @@ public class TaskRepository {
         }
 
         private void insertTaskIdIntoDay(long id, long dayInMillis) {
-            CalendarDay calendarDay = calendarDayDao.getDay(dayInMillis);
+            CalendarDay calendarDay = calendarDayDao.getCalendarDay(dayInMillis);
             if (calendarDay == null) {
                 calendarDay = new CalendarDay(dayInMillis);
                 ArrayList<Integer> taskIds = new ArrayList<>();
