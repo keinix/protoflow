@@ -50,7 +50,6 @@ public class TasksActivity extends DaggerAppCompatActivity
     // ----------Member variables------------
 
     private TasksViewModel mViewModel;
-    private LiveData<CalendarDay> mCalendarDay;
     private LiveData<List<Task>> mDisplayedTasks;
     public static final String TAG = TasksActivity.class.getSimpleName();
 

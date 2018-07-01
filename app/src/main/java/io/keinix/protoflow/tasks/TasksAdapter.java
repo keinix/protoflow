@@ -36,7 +36,12 @@ import io.keinix.protoflow.di.ActivityScope;
 @ActivityScope
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHolder> {
 
+    // ----------Member variables------------
+
     public static final String TAG = TasksAdapter.class.getSimpleName();
+    public static final String DATE_HEADING = "$$$DATE_HEADING$$$";
+    public static final int ITEM_VIEW_TYPE_TASK = 101;
+    public static final int ITEM_VIEW_TYPE_DATE = 102;
     private Context mContext;
     private List<Task> mTasks;
 
@@ -45,6 +50,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         mContext = context;
     }
 
+    // ----------------Override----------------
     @NonNull
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -66,6 +72,19 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         }
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        String taskName = mTasks.get(position).getName();
+        switch (taskName) {
+            case DATE_HEADING:
+                return ITEM_VIEW_TYPE_DATE;
+            default:
+                return ITEM_VIEW_TYPE_TASK;
+        }
+    }
+
+    // ----------------Public----------------
+
     public void setTasks(List<Task> tasks) {
         mTasks = tasks;
         notifyDataSetChanged();
@@ -75,6 +94,24 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         mTasks = null;
         notifyDataSetChanged();
     }
+
+    // This method is called when looking at the 7 day view
+    // mTasks contains the task for all 7 days this method adds a new task before each new day
+    // DATE_HEADING task name will trigger a ViewHolder that displays a date separator
+    public void addDaySeperatorItems() {
+        for (int i = 0; i < mTasks.size() - 1; i++ ) {
+            long date1 = mTasks.get(i).getScheduledDateUtc();
+            long date2 = mTasks.get(i + 1).getScheduledDateUtc();
+            if (date1 != date2) {
+                Task task = new Task(DATE_HEADING);
+                task.setScheduledDateUtc(date2);
+                mTasks.add(i, task);
+            }
+        }
+    }
+
+    // -------------View Holders--------------
+
 
     class TaskViewHolder extends RecyclerView.ViewHolder {
         @BindColor(R.color.starTimeDotColor) int startTimeDotColor;
@@ -136,7 +173,6 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             intent.putExtra(AddEditTaskActivity.EXTRA_TASK_ID, taskId);
             mContext.startActivity(intent);
         }
-
     }
 }
 
