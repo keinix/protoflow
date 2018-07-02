@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
+    tools:layout_editor_absoluteY="81dp">
+
+    <View
+        android:id="@+id/left_line"
+        android:layout_width="wrap_content"
+        android:layout_height="3dp"
+        android:background="@color/gray"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="12dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/text_view_date_separator"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="24dp"/>
+
+    <TextView
+        android:id="@+id/text_view_date_separator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/right_line"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/left_line"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Wednesday, July 2, 2018"/>
+
+    <View
+        android:id="@+id/right_line"
+        android:layout_width="wrap_content"
+        android:layout_height="3dp"
+        android:background="@color/gray"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="18dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/text_view_date_separator"
+        tools:layout_editor_absoluteY="8dp"/>
+
+</android.support.constraint.ConstraintLayout>

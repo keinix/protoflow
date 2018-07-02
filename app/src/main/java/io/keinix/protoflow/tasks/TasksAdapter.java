@@ -5,15 +5,6 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.constraint.Group;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.AbsoluteSizeSpan;
-import android.text.style.AlignmentSpan;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.RelativeSizeSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,9 +23,10 @@ import io.keinix.protoflow.R;
 import io.keinix.protoflow.addeddittask.AddEditTaskActivity;
 import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.di.ActivityScope;
+import io.keinix.protoflow.dialogs.DatePickerDialogFragment;
 
 @ActivityScope
-public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHolder> {
+public class TasksAdapter extends RecyclerView.Adapter {
 
     // ----------Member variables------------
 
@@ -53,14 +45,29 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     // ----------------Override----------------
     @NonNull
     @Override
-    public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_task, parent, false);
-        return new TaskViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view;
+        switch (viewType) {
+            case ITEM_VIEW_TYPE_DATE:
+                view = LayoutInflater.from(mContext)
+                        .inflate(R.layout.item_date_separator, parent, false);
+                return new DateSeparatorViewHolder(view);
+            default:
+                view = LayoutInflater.from(mContext)
+                        .inflate(R.layout.item_task, parent, false);
+                return new TaskViewHolder(view);
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-        holder.bindView(position);
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        switch (getItemViewType(position)) {
+            case ITEM_VIEW_TYPE_DATE:
+                ((DateSeparatorViewHolder) holder).bindView(position);
+                break;
+            default:
+                ((TaskViewHolder) holder).bindView(position);
+        }
     }
 
     @Override
@@ -99,7 +106,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     // mTasks contains the task for all 7 days this method adds a new task before each new day
     // DATE_HEADING task name will trigger a ViewHolder that displays a date separator
     public void addDaySeperatorItems() {
-        for (int i = 0; i < mTasks.size() - 1; i++ ) {
+        for (int i = 0; i < mTasks.size() - 1; i++) {
             long date1 = mTasks.get(i).getScheduledDateUtc();
             long date2 = mTasks.get(i + 1).getScheduledDateUtc();
             if (date1 != date2) {
@@ -112,10 +119,8 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
     // -------------View Holders--------------
 
-
     class TaskViewHolder extends RecyclerView.ViewHolder {
         @BindColor(R.color.starTimeDotColor) int startTimeDotColor;
-
         @BindView(R.id.text_view_task_name) TextView taskNameTextView;
         @BindView(R.id.text_view_task_details) TextView taskDetailsTextView;
         @BindView(R.id.image_button_play_task) ImageButton playButton;
@@ -172,6 +177,21 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             Intent intent = new Intent(mContext, AddEditTaskActivity.class);
             intent.putExtra(AddEditTaskActivity.EXTRA_TASK_ID, taskId);
             mContext.startActivity(intent);
+        }
+    }
+
+    class DateSeparatorViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.text_view_date_separator) TextView dateSeparatorTextView;
+
+        public DateSeparatorViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+
+        public void bindView(int position) {
+            String dateString = DatePickerDialogFragment
+                    .getStartDateTimeStampWithDay(mTasks.get(position).getScheduledDateUtc());
+            dateSeparatorTextView.setText(dateString);
         }
     }
 }

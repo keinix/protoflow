@@ -38,6 +38,14 @@ public class DatePickerDialogFragment extends DialogFragment {
         mStartDay = day;
     }
 
+    public void setStartDate(long startDateUtc) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(startDateUtc);
+        mStartYear = calendar.get(Calendar.YEAR);
+        mStartMonth = calendar.get(Calendar.MONTH);
+        mStartDay = calendar.get(Calendar.DAY_OF_MONTH);
+    }
+
     /**
      * Call setStartDate() before calling this method
      *
@@ -47,6 +55,18 @@ public class DatePickerDialogFragment extends DialogFragment {
         Calendar calendar = Calendar.getInstance();
         calendar.set(mStartYear, mStartMonth, mStartDay, 0, 0, 0);
         return DateFormat.getDateInstance(DateFormat.LONG).format(calendar.getTime());
+    }
+
+    public String getStartDateTimeStampWithDay() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(mStartYear, mStartMonth, mStartDay, 0, 0, 0);
+        return DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime());
+    }
+
+    public static String getStartDateTimeStampWithDay(long startDateUtx) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(startDateUtx);
+        return DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime());
     }
 
     /**
