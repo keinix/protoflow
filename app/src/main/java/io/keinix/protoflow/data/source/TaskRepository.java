@@ -2,8 +2,10 @@ package io.keinix.protoflow.data.source;
 
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -46,6 +48,38 @@ public class TaskRepository {
 
     public LiveData<List<Task>> getTasks(List<Integer> taskIds) {
         return mTaskDao.getTasks(taskIds);
+    }
+
+    /**
+     * @param taskIds a list of ids for a given day. pass null if no events scheduled for day
+     * @param repeatedDay day constant from {@link Calendar} used to get tasks that repeat on
+     *                    that day
+     * @return List of {@link Task} for a given date
+     */
+    public LiveData<List<Task>> getAllTasksOnDay(@Nullable List<Integer> taskIds, int repeatedDay) {
+        switch (repeatedDay) {
+            case Calendar.MONDAY:
+                if (taskIds == null) return mTaskDao.getAllTasksForDateMonday();
+                return mTaskDao.getAllTasksForDateMonday(taskIds);
+            case Calendar.TUESDAY:
+                if (taskIds == null) return mTaskDao.getAllTasksForDateTuesday();
+                return mTaskDao.getAllTasksForDateTuesday(taskIds);
+            case Calendar.WEDNESDAY:
+                if (taskIds == null) return mTaskDao.getAllTasksForDateWednesday();
+                return mTaskDao.getAllTasksForDateWednesday(taskIds);
+            case Calendar.THURSDAY:
+                if (taskIds == null) return mTaskDao.getAllTasksForDateThursday();
+                return mTaskDao.getAllTasksForDateThursday(taskIds);
+            case Calendar.FRIDAY:
+                if (taskIds == null) return mTaskDao.getAllTasksForDateFriday();
+                return mTaskDao.getAllTasksForDateFriday(taskIds);
+            case Calendar.SATURDAY:
+                if (taskIds == null) return mTaskDao.getAllTasksForDateSaturday();
+                return mTaskDao.getAllTasksForDateSaturday(taskIds);
+            default:
+                if (taskIds == null) return mTaskDao.getAllTasksForDateSunday();
+                return mTaskDao.getAllTasksForDateSunday(taskIds);
+        }
     }
 
     //SQL UPDATE

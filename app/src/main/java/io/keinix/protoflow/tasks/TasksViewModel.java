@@ -5,7 +5,9 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -37,5 +39,38 @@ public class TasksViewModel extends AndroidViewModel {
 
     public LiveData<List<Task>> getTasks(List<Integer> taskIds) {
         return mTaskRepository.getTasks(taskIds);
+    }
+
+    /**
+     * @param calendarDay you want to get the tasks from
+     * @return all task on CalendarDay as well as task that repeat on that day
+     */
+    public LiveData<List<Task>> getAllTasksOnDay(CalendarDay calendarDay) {
+        List<Integer> taskIds = calendarDay.getScheduledTaskIds();
+        int repeatedDay = getDayOfWeek(calendarDay);
+        return mTaskRepository.getAllTasksOnDay(taskIds, repeatedDay);
+    }
+
+    /**
+     * @param dayInMillis is a day constant from the Calendar class
+     * @return all tasks that repeat on the given day
+     */
+    public LiveData<List<Task>> getAllTasksOnDay(long dayInMillis) {
+        int repeatedDay = getDayOfWeek(dayInMillis);
+        return mTaskRepository.getAllTasksOnDay(null, repeatedDay);
+    }
+
+    // ----------------private-----------------
+
+    private int getDayOfWeek(CalendarDay calendarDay) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(calendarDay.getDate());
+        return calendar.get(Calendar.DAY_OF_WEEK);
+    }
+
+    private int getDayOfWeek(long dayInMillis) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(dayInMillis);
+        return calendar.get(Calendar.DAY_OF_WEEK);
     }
 }

@@ -2,13 +2,19 @@ package io.keinix.protoflow.dialogs;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.arch.lifecycle.LiveData;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.List;
 
+import javax.inject.Inject;
+
+import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.di.ActivityScope;
 
 @ActivityScope
@@ -18,11 +24,14 @@ public class DatePickerDialogFragment extends DialogFragment {
     private int mStartMonth;
     private int mStartDay;
 
+    // @Inject Context mContext;
+
     public DatePickerDialogFragment() {
         Calendar calendar = Calendar.getInstance();
         mStartYear = calendar.get(Calendar.YEAR);
         mStartMonth = calendar.get(Calendar.MONTH);
         mStartDay = calendar.get(Calendar.DAY_OF_MONTH);
+
     }
 
     @NonNull

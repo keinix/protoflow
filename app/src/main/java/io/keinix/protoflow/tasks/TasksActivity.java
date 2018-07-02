@@ -121,12 +121,10 @@ public class TasksActivity extends DaggerAppCompatActivity
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
         mDatePicker.get().setStartDate(year, month, day);
-        setTitle(mDatePicker.get().getStartDateTimeStamp());
+        setTitle(mDatePicker.get().getStartDateTimeStampWithDay());
         long startDateUtc = mDatePicker.get().getStartDateUtc();
-        Log.d(TAG, "Start date from onDateSet(): " + startDateUtc);
          mViewModel.getLiveCalendarDay(startDateUtc).observe(this, this::displayTasksForDay);
     }
-
 
     // --------------Lifecycle--------------
 
@@ -158,12 +156,19 @@ public class TasksActivity extends DaggerAppCompatActivity
     // the adapter with the new tasks
     private void displayTasksForDay(CalendarDay calendarDay) {
         if (calendarDay != null) {
-            LiveData<List<Task>> tasks = mViewModel.getTasks(calendarDay.getScheduledTaskIds());
-            mDisplayedTasks = tasks;
+            mDisplayedTasks = mViewModel.getAllTasksOnDay(calendarDay);
             mDisplayedTasks.observe(this, mAdapter::setTasks);
         } else {
-            mAdapter.clearTasks();
+            mDisplayedTasks = mViewModel.getAllTasksOnDay(mDatePicker.get().getStartDateUtc());
+            mDisplayedTasks.observe(this, tasks -> {
+                if (tasks == null) {
+                    mAdapter.clearTasks();
+                } else {
+                    mAdapter.setTasks(tasks);
+                }
+            });
         }
+
     }
 
     private void setUpRecyclerView() {
@@ -171,8 +176,5 @@ public class TasksActivity extends DaggerAppCompatActivity
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    private void reloadUiToCalendarDay() {
-        mDatePicker.get().show(getSupportFragmentManager(), "date_picker");
-    }
 
 }
