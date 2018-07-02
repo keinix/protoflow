@@ -24,8 +24,6 @@ public class DatePickerDialogFragment extends DialogFragment {
     private int mStartMonth;
     private int mStartDay;
 
-    // @Inject Context mContext;
-
     public DatePickerDialogFragment() {
         Calendar calendar = Calendar.getInstance();
         mStartYear = calendar.get(Calendar.YEAR);

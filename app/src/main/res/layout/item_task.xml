@@ -34,7 +34,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
             android:layout_marginTop="8dp"
-            android:text="This is a sample task name"
             android:textSize="20sp"
             app:layout_constraintStart_toEndOf="@+id/checkbox_task_completed"
             app:layout_constraintTop_toTopOf="parent"
@@ -48,7 +47,7 @@
             android:layout_marginStart="2dp"
             android:layout_marginTop="2dp"
             android:textSize="14sp"
-            android:text="Duration 26m Start: 12:56 AM "
+            tools:text="Duration 26m Start: 12:56 AM "
             android:textColor="@color/taskDetailsGray"
             app:layout_constraintStart_toEndOf="@+id/checkbox_task_completed"
             app:layout_constraintTop_toBottomOf="@+id/text_view_task_name"/>

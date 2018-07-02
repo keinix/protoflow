@@ -110,6 +110,11 @@ public class TasksActivity extends DaggerAppCompatActivity
             case R.id.nav_calendar:
                 mDatePicker.get().show(getSupportFragmentManager(), "date_picker");
                 break;
+            case R.id.nav_today:
+                mDatePicker.get().setStartDate(System.currentTimeMillis());
+                mViewModel.getLiveCalendarDay(mDatePicker.get().getStartDateUtc())
+                        .observe(this, this::displayTasksForDay);
+                break;
         }
 
         drawer.closeDrawer(GravityCompat.START);
