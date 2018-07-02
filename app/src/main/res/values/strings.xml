@@ -24,4 +24,6 @@
     <string name="add_task_start_time">Start Time</string>
     <string name="add_task_notes">Notes</string>
     <string name="add_task_task_name">task name</string>
+
+    <string name="tasks_toolbar_title_today">Today</string>
 </resources>

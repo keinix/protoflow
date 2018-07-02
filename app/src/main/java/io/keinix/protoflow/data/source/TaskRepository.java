@@ -50,6 +50,10 @@ public class TaskRepository {
         return mTaskDao.getTasks(taskIds);
     }
 
+    public LiveData<List<CalendarDay>> getNext7CalendarDays(List<Long> dates) {
+        return mCalendarDayDao.getNext7CalendarDays(dates);
+    }
+
     /**
      * @param taskIds a list of ids for a given day. pass null if no events scheduled for day
      * @param repeatedDay day constant from {@link Calendar} used to get tasks that repeat on

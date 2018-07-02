@@ -58,7 +58,6 @@ public class Task {
     @ColumnInfo(name = "repeats_on_sunday")
     private boolean repeatsOnSunday;
 
-
     public Task(@NonNull String name) {
         this.name = name;
     }

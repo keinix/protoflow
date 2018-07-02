@@ -14,7 +14,7 @@
             android:icon="@drawable/ic_today_black_24"
             android:title="@string/nav_drawer_today"/>
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_7_days"
             android:icon="@drawable/ic_week_black_24"
             android:title="@string/nav_drawer_7_days"/>
     </group>

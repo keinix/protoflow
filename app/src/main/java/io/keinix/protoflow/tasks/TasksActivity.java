@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,10 +21,13 @@ import android.view.MenuItem;
 import android.widget.DatePicker;
 
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -46,6 +50,8 @@ public class TasksActivity extends DaggerAppCompatActivity
     @BindView(R.id.nav_view) NavigationView navigationView;
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.recycler_view_tasks) RecyclerView recyclerView;
+
+    @BindString(R.string.tasks_toolbar_title_today) String todayString;
 
     // ----------Member variables------------
 
@@ -86,7 +92,6 @@ public class TasksActivity extends DaggerAppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.tasks, menu);
         return true;
     }
@@ -98,7 +103,6 @@ public class TasksActivity extends DaggerAppCompatActivity
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -111,10 +115,10 @@ public class TasksActivity extends DaggerAppCompatActivity
                 mDatePicker.get().show(getSupportFragmentManager(), "date_picker");
                 break;
             case R.id.nav_today:
-                mDatePicker.get().setStartDate(System.currentTimeMillis());
-                mViewModel.getLiveCalendarDay(mDatePicker.get().getStartDateUtc())
-                        .observe(this, this::displayTasksForDay);
+                getTasksForToday();
                 break;
+            case R.id.nav_7_days:
+                getTaskstFor7Days();
         }
 
         drawer.closeDrawer(GravityCompat.START);
@@ -133,7 +137,6 @@ public class TasksActivity extends DaggerAppCompatActivity
 
     // --------------Lifecycle--------------
 
-    //TODO:create a Queue to cache days. pop one if the Queue get past a certain length
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,8 +146,7 @@ public class TasksActivity extends DaggerAppCompatActivity
         setupNavDrawer();
         setUpRecyclerView();
         mViewModel = ViewModelProviders.of(this, mFactory).get(TasksViewModel.class);
-        mDisplayedTasks = mViewModel.getAllTasks();
-        mDisplayedTasks.observe(this, mAdapter::setTasks);
+        if (mDisplayedTasks == null) getTasksForToday();
     }
 
     // ------------------Private------------------
@@ -157,23 +159,42 @@ public class TasksActivity extends DaggerAppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    // updating mDisplayedTasks will trigger the observer set on OnCreate to refresh
-    // the adapter with the new tasks
-    private void displayTasksForDay(CalendarDay calendarDay) {
+    // calendarDay can be null if no task was scheduled for that day
+    private void displayTasksForDay(@Nullable CalendarDay calendarDay) {
         if (calendarDay != null) {
-            mDisplayedTasks = mViewModel.getAllTasksOnDay(calendarDay);
-            mDisplayedTasks.observe(this, mAdapter::setTasks);
+            getTaskForDate(calendarDay);
         } else {
-            mDisplayedTasks = mViewModel.getAllTasksOnDay(mDatePicker.get().getStartDateUtc());
-            mDisplayedTasks.observe(this, tasks -> {
-                if (tasks == null) {
-                    mAdapter.clearTasks();
-                } else {
-                    mAdapter.setTasks(tasks);
-                }
-            });
+            getTaskThatRepeatOnDay();
         }
+    }
 
+    private void getTaskThatRepeatOnDay() {
+        mDisplayedTasks = mViewModel.getAllTasksOnDay(mDatePicker.get().getStartDateUtc());
+        mDisplayedTasks.observe(this, tasks -> {
+            if (tasks == null) {
+                mAdapter.clearTasks();
+            } else {
+                mAdapter.setTasks(tasks);
+            }
+        });
+    }
+
+    private void getTaskForDate(CalendarDay calendarDay) {
+        mDisplayedTasks = mViewModel.getAllTasksOnDay(calendarDay);
+        mDisplayedTasks.observe(this, mAdapter::setTasks);
+    }
+
+    private void getTasksForToday() {
+        setTitle(todayString);
+        mDatePicker.get().setStartDate(System.currentTimeMillis());
+        mViewModel.getLiveCalendarDay(mDatePicker.get().getStartDateUtc())
+                .observe(this, this::displayTasksForDay);
+    }
+
+    private void getTaskstFor7Days() {
+        mViewModel.getNext7CalendarDays().observe(this, days -> {
+            Log.d(TAG, "Here are the next 7 Days:" + days.toString());
+        });
     }
 
     private void setUpRecyclerView() {
