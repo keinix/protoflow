@@ -6,6 +6,8 @@ import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.util.Objects;
+
 @Entity(tableName = "task_table")
 public class Task {
 
@@ -185,6 +187,20 @@ public class Task {
 
     public void setRepeatsOnADay(boolean repeatsOnADay) {
         this.repeatsOnADay = repeatsOnADay;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return scheduledDateUtc == task.scheduledDateUtc;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(scheduledDateUtc);
     }
 
     @Override

@@ -8,6 +8,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -23,7 +24,7 @@ public class TasksViewModel extends AndroidViewModel {
     // ----------Member variables------------
     private TaskRepository mTaskRepository;
     private LiveData<List<Task>> mAllTasks;
-    private List<Long> next7DaysUtc;
+    private List<Long> mNext7DaysUtc;
 
     public static final String TAG = TasksViewModel.class.getSimpleName();
     @Inject
@@ -82,7 +83,7 @@ public class TasksViewModel extends AndroidViewModel {
     public List<Task> format7DayTasks(List<Task> tasks) {
         tasks = addDateToRepeatedTasks(tasks);
         tasks = sortTasksByDate(tasks);
-        tasks = addDaySeparatorItems(tasks);
+        //tasks = addDaySeparatorItems(tasks);
         return tasks;
     }
 
@@ -102,14 +103,14 @@ public class TasksViewModel extends AndroidViewModel {
 
     private List<Long> getDatesForNext7Days() {
         Calendar calendar = getCalendarForFirstOf7Days();
-        next7DaysUtc = new ArrayList<>();
-        next7DaysUtc.add(calendar.getTimeInMillis());
+        mNext7DaysUtc = new ArrayList<>();
+        mNext7DaysUtc.add(calendar.getTimeInMillis());
         for (int i = 0; i < 6; i++) {
             calendar.add(Calendar.DATE, 1);
-            next7DaysUtc.add(calendar.getTimeInMillis());
+            mNext7DaysUtc.add(calendar.getTimeInMillis());
         }
-        Log.d(TAG, "next 7 Dates: " + next7DaysUtc);
-        return next7DaysUtc;
+        Log.d(TAG, "next 7 Dates: " + mNext7DaysUtc);
+        return mNext7DaysUtc;
     }
 
     private Calendar getCalendarForFirstOf7Days() {
@@ -123,41 +124,59 @@ public class TasksViewModel extends AndroidViewModel {
     }
 
     private List<Task> addDateToRepeatedTasks(List<Task> tasks) {
-        for (Task task : tasks) {
-            if (task.isRepeatsOnADay()) {
-                tasks.remove(task);
-                tasks.addAll(convertRepeatedTaskToTasksWithDates(task));
+        for (int i = tasks.size() -1; i >= 0; i--) {
+            if (tasks.get(i).isRepeatsOnADay()) {
+                tasks.remove(i);
+                tasks.addAll(convertRepeatedTaskToTasksWithDates(tasks.get(i)));
             }
         }
         return tasks;
     }
 
     private List<Task> convertRepeatedTaskToTasksWithDates(Task task) {
+        boolean taskWasScheduled = false;
         List<Task> convertedTasks = new ArrayList<>();
         if (task.getScheduledDateUtc() > 0) {
             convertedTasks.add(task);
+            taskWasScheduled = true;
         }
         orderNext7DaysDatesFromMondayToSunday();
+
         if (task.isRepeatsOnMonday()) {
-
+            task.setScheduledDateUtc(mNext7DaysUtc.get(0));
+            if (!taskWasScheduled || !convertedTasks.contains(task)) convertedTasks.add(task);
         } if (task.isRepeatsOnTuesday()) {
-
+            task.setScheduledDateUtc(mNext7DaysUtc.get(1));
+            if (!taskWasScheduled || !convertedTasks.contains(task)) convertedTasks.add(task);
         } if (task.isRepeatsOnWednesday()) {
-
+            task.setScheduledDateUtc(mNext7DaysUtc.get(2));
+            if (!taskWasScheduled || !convertedTasks.contains(task)) convertedTasks.add(task);
         } if (task.isRepeatsOnThursday()) {
-
+            task.setScheduledDateUtc(mNext7DaysUtc.get(3));
+            if (!taskWasScheduled || !convertedTasks.contains(task)) convertedTasks.add(task);
         } if (task.isRepeatsOnFriday()) {
-
+            task.setScheduledDateUtc(mNext7DaysUtc.get(4));
+            if (!taskWasScheduled || !convertedTasks.contains(task)) convertedTasks.add(task);
         } if (task.isRepeatsOnSaturday()) {
-
+            task.setScheduledDateUtc(mNext7DaysUtc.get(5));
+            if (!taskWasScheduled || !convertedTasks.contains(task)) convertedTasks.add(task);
         } if (task.isRepeatsOnSunday()) {
-
+            task.setScheduledDateUtc(mNext7DaysUtc.get(6));
+            if (!taskWasScheduled || !convertedTasks.contains(task)) convertedTasks.add(task);
         }
+
         return convertedTasks;
     }
 
-    private List<Task> sortTasksByDate(List<Task> tasks) {
-
+    private void orderNext7DaysDatesFromMondayToSunday() {
+        Calendar calendar = Calendar.getInstance();
+        for (int i = 0; i < mNext7DaysUtc.size(); i++) {
+            calendar.setTimeInMillis(mNext7DaysUtc.get(i));
+            if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
+                Collections.rotate(mNext7DaysUtc, i - 1);
+                break;
+            }
+        }
     }
 
     // This method is called when looking at the 7 day view
@@ -176,7 +195,16 @@ public class TasksViewModel extends AndroidViewModel {
         return tasks;
     }
 
-    private void orderNext7DaysDatesFromMondayToSunday() {
-
+    private List<Task> sortTasksByDate(List<Task> tasks) {
+        tasks.sort((t1, t2) -> {
+            if (t1.getScheduledDateUtc() > t2.getScheduledDateUtc()) {
+                return 1;
+            } else if (t1.getScheduledDateUtc() == t2.getScheduledDateUtc()) {
+                return 0;
+            } else {
+                return -1;
+            }
+        });
+        return tasks;
     }
 }
