@@ -21,8 +21,6 @@ import android.view.MenuItem;
 import android.widget.DatePicker;
 
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -52,12 +50,15 @@ public class TasksActivity extends DaggerAppCompatActivity
     @BindView(R.id.recycler_view_tasks) RecyclerView recyclerView;
 
     @BindString(R.string.tasks_toolbar_title_today) String todayString;
+    @BindString(R.string.tasks_toolbar_title_7_days) String sevenDaysString;
 
     // ----------Member variables------------
 
     private TasksViewModel mViewModel;
     private LiveData<List<Task>> mDisplayedTasks;
     public static final String TAG = TasksActivity.class.getSimpleName();
+
+    public static final int REQUEST_CODE_ADD_TASK_TO_7_DAYS = 1001;
 
     // ------------------DI------------------
 
@@ -76,7 +77,11 @@ public class TasksActivity extends DaggerAppCompatActivity
     @OnClick(R.id.fab)
     void fabClick() {
         Intent intent = new Intent(TasksActivity.this, AddEditTaskActivity.class);
-        startActivity(intent);
+        if (getTitle().equals(sevenDaysString)) {
+            startActivityForResult(intent, REQUEST_CODE_ADD_TASK_TO_7_DAYS);
+        } else {
+            startActivity(intent);
+        }
     }
 
     // ----------------Override----------------
@@ -118,11 +123,24 @@ public class TasksActivity extends DaggerAppCompatActivity
                 getTasksForToday();
                 break;
             case R.id.nav_7_days:
-                getTaskstFor7Days();
+                getTasksFor7Days();
         }
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    // If a new task is created within the 7 day range it will not have been included in the live
+    // Data so the view will not update automatically. In this case when adding a new task
+    // while the 7 day view is active a result is used to determine if the UI needs to be
+    // reloaded
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_ADD_TASK_TO_7_DAYS) {
+            getTasksFor7Days();
+            Log.d(TAG, "7 Days UI Reload Triggered");
+        }
     }
 
     // This callback is used when A DatePickerDialog is shown from the calendar
@@ -191,9 +209,18 @@ public class TasksActivity extends DaggerAppCompatActivity
                 .observe(this, this::displayTasksForDay);
     }
 
-    private void getTaskstFor7Days() {
+    private void getTasksFor7Days() {
+        setTitle(sevenDaysString);
         mViewModel.getNext7CalendarDays().observe(this, days -> {
-            Log.d(TAG, "Here are the next 7 Days:" + days.toString());
+                mDisplayedTasks = mViewModel.getAllTasksFor7Days(days);
+                mDisplayedTasks.observe(this, tasks -> {
+                    List<Task> sortedTasks = mViewModel.sort7DayTasksByDay(tasks);
+                    if (sortedTasks != null) {
+                        mAdapter.setTasks(sortedTasks);
+                    } else {
+                        mAdapter.clearTasks();
+                    }
+            });
         });
     }
 

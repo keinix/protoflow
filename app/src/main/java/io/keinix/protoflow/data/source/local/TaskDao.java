@@ -51,6 +51,9 @@ public interface TaskDao {
     @Query("SELECT * from task_table WHERE repeats_on_sunday = 1 OR id IN (:taskIds)")
     LiveData<List<Task>> getAllTasksForDateSunday(List<Integer> taskIds);
 
+    @Query("SELECT * from task_table WHERE repeats_on_a_day = 1 OR id IN (:taskIds)")
+    LiveData<List<Task>> getAllTasksFor7Days(List<Integer> taskIds);
+
     // Returns Tasks that repeat on a given day. These methods are used if no task was
     // specifically scheduled for that date so no CalendarDay object exists for the day
     @Query("SELECT * from task_table WHERE repeats_on_monday = 1")
