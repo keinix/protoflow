@@ -214,9 +214,9 @@ public class TasksActivity extends DaggerAppCompatActivity
         mViewModel.getNext7CalendarDays().observe(this, days -> {
                 mDisplayedTasks = mViewModel.getAllTasksFor7Days(days);
                 mDisplayedTasks.observe(this, tasks -> {
-                    List<Task> sortedTasks = mViewModel.sort7DayTasksByDay(tasks);
-                    if (sortedTasks != null) {
-                        mAdapter.setTasks(sortedTasks);
+                    List<Task> formattedTasks = mViewModel.format7DayTasks(tasks);
+                    if (formattedTasks != null) {
+                        mAdapter.setTasks(formattedTasks);
                     } else {
                         mAdapter.clearTasks();
                     }

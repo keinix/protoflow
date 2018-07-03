@@ -9,13 +9,14 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
 import io.keinix.protoflow.data.CalendarDay;
 import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.data.source.TaskRepository;
+
+import static io.keinix.protoflow.tasks.TasksAdapter.DATE_HEADING;
 
 public class TasksViewModel extends AndroidViewModel {
 
@@ -78,10 +79,12 @@ public class TasksViewModel extends AndroidViewModel {
 
     // -----------------public------------------
 
-    public List<Task> sort7DayTasksByDay(List<Task> tasks) {
+    public List<Task> format7DayTasks(List<Task> tasks) {
+        tasks = addDateToRepeatedTasks(tasks);
+        tasks = sortTasksByDate(tasks);
+        tasks = addDaySeparatorItems(tasks);
         return tasks;
     }
-
 
     // ----------------private-----------------
 
@@ -101,7 +104,7 @@ public class TasksViewModel extends AndroidViewModel {
         Calendar calendar = getCalendarForFirstOf7Days();
         next7DaysUtc = new ArrayList<>();
         next7DaysUtc.add(calendar.getTimeInMillis());
-        for (int i = 0; i <= 7; i++) {
+        for (int i = 0; i < 6; i++) {
             calendar.add(Calendar.DATE, 1);
             next7DaysUtc.add(calendar.getTimeInMillis());
         }
@@ -117,5 +120,63 @@ public class TasksViewModel extends AndroidViewModel {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         return calendar;
+    }
+
+    private List<Task> addDateToRepeatedTasks(List<Task> tasks) {
+        for (Task task : tasks) {
+            if (task.isRepeatsOnADay()) {
+                tasks.remove(task);
+                tasks.addAll(convertRepeatedTaskToTasksWithDates(task));
+            }
+        }
+        return tasks;
+    }
+
+    private List<Task> convertRepeatedTaskToTasksWithDates(Task task) {
+        List<Task> convertedTasks = new ArrayList<>();
+        if (task.getScheduledDateUtc() > 0) {
+            convertedTasks.add(task);
+        }
+        orderNext7DaysDatesFromMondayToSunday();
+        if (task.isRepeatsOnMonday()) {
+
+        } if (task.isRepeatsOnTuesday()) {
+
+        } if (task.isRepeatsOnWednesday()) {
+
+        } if (task.isRepeatsOnThursday()) {
+
+        } if (task.isRepeatsOnFriday()) {
+
+        } if (task.isRepeatsOnSaturday()) {
+
+        } if (task.isRepeatsOnSunday()) {
+
+        }
+        return convertedTasks;
+    }
+
+    private List<Task> sortTasksByDate(List<Task> tasks) {
+
+    }
+
+    // This method is called when looking at the 7 day view
+    // mTasks contains the task for all 7 days this method adds a new task before each new day
+    // DATE_HEADING task name will trigger a ViewHolder that displays a date separator
+    private List<Task> addDaySeparatorItems(List<Task> tasks) {
+        for (int i = 0; i < tasks.size() - 1; i++) {
+            long date1 = tasks.get(i).getScheduledDateUtc();
+            long date2 = tasks.get(i + 1).getScheduledDateUtc();
+            if (date1 != date2) {
+                Task task = new Task(DATE_HEADING);
+                task.setScheduledDateUtc(date2);
+                tasks.add(i, task);
+            }
+        }
+        return tasks;
+    }
+
+    private void orderNext7DaysDatesFromMondayToSunday() {
+
     }
 }

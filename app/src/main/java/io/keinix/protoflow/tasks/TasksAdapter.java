@@ -102,21 +102,6 @@ public class TasksAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
-    // This method is called when looking at the 7 day view
-    // mTasks contains the task for all 7 days this method adds a new task before each new day
-    // DATE_HEADING task name will trigger a ViewHolder that displays a date separator
-    public void addDaySeperatorItems() {
-        for (int i = 0; i < mTasks.size() - 1; i++) {
-            long date1 = mTasks.get(i).getScheduledDateUtc();
-            long date2 = mTasks.get(i + 1).getScheduledDateUtc();
-            if (date1 != date2) {
-                Task task = new Task(DATE_HEADING);
-                task.setScheduledDateUtc(date2);
-                mTasks.add(i, task);
-            }
-        }
-    }
-
     // -------------View Holders--------------
 
     class TaskViewHolder extends RecyclerView.ViewHolder {
