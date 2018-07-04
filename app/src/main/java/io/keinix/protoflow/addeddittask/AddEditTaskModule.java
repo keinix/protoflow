@@ -1,9 +1,5 @@
 package io.keinix.protoflow.addeddittask;
 
-import android.app.DialogFragment;
-import android.support.annotation.Nullable;
-
-import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import io.keinix.protoflow.di.ActivityScope;
@@ -37,7 +33,7 @@ public abstract class AddEditTaskModule {
 
     @ActivityScope
     @Provides static long dateFromPreviousView(AddEditTaskActivity addEditTaskActivity) {
-        return addEditTaskActivity.getIntent().getLongExtra(TasksActivity.INTENT_DATE_OF_CURRENT_VIEW, 0);
+        return addEditTaskActivity.getIntent().getLongExtra(TasksActivity.EXTRA_DATE_OF_CURRENT_VIEW, 0);
     }
 
 }

@@ -57,10 +57,15 @@ public class TasksActivity extends DaggerAppCompatActivity
     private TasksViewModel mViewModel;
     private LiveData<List<Task>> mDisplayedTasks;
     private long mDateOfCurrentView;
+    private String mLastViewValue;
     public static final String TAG = TasksActivity.class.getSimpleName();
     public static final int REQUEST_CODE_ADD_TASK_TO_7_DAYS = 1001;
-    public static final String INTENT_DATE_OF_CURRENT_VIEW = "INTENT_DATE_OF_CURRENT_VIEW";
-
+    public static final String EXTRA_DATE_OF_CURRENT_VIEW = "EXTRA_DATE_OF_CURRENT_VIEW";
+    public static final String KEY_DATE_OF_CURRENT_VIEW = "KEY_DATE_OF_CURRENT_VIEW";
+    public static final String KEY_LAST_VIEW = "KEY_LAST_VIEW";
+    public static final String LAST_VIEW_TODAY = "VALUE_LAST_VIEW_TODAY";
+    public static final String LAST_VIEW_CALENDAR = "VALUE_LAST_VIEW_CALENDAR";
+    public static final String LAST_VIEW_7_DAYS = "VALUE_LAST_VIEW_7_DAYS";
     // ------------------DI------------------
 
     @Inject
@@ -81,7 +86,7 @@ public class TasksActivity extends DaggerAppCompatActivity
         if (getTitle().equals(sevenDaysString)) {
             startActivityForResult(intent, REQUEST_CODE_ADD_TASK_TO_7_DAYS);
         } else {
-            intent.putExtra(INTENT_DATE_OF_CURRENT_VIEW, mDateOfCurrentView);
+            intent.putExtra(EXTRA_DATE_OF_CURRENT_VIEW, mDateOfCurrentView);
             startActivity(intent);
         }
     }
@@ -119,12 +124,15 @@ public class TasksActivity extends DaggerAppCompatActivity
 
         switch (id) {
             case R.id.nav_calendar:
+                mLastViewValue = LAST_VIEW_CALENDAR;
                 mDatePicker.get().show(getSupportFragmentManager(), "date_picker");
                 break;
             case R.id.nav_today:
+                mLastViewValue = LAST_VIEW_TODAY;
                 getTasksForToday();
                 break;
             case R.id.nav_7_days:
+                mLastViewValue = LAST_VIEW_7_DAYS;
                 mDateOfCurrentView = 0;
                 getTasksFor7Days();
         }
@@ -157,6 +165,22 @@ public class TasksActivity extends DaggerAppCompatActivity
                  .observe(this, this::displayTasksForDay);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(KEY_LAST_VIEW, mLastViewValue);
+        outState.putLong(KEY_DATE_OF_CURRENT_VIEW, mDateOfCurrentView);
+
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mDateOfCurrentView = savedInstanceState.getLong(KEY_DATE_OF_CURRENT_VIEW);
+        mLastViewValue = savedInstanceState.getString(KEY_LAST_VIEW);
+        restoreView();
+    }
+
     // --------------Lifecycle--------------
 
     @Override
@@ -168,7 +192,10 @@ public class TasksActivity extends DaggerAppCompatActivity
         setupNavDrawer();
         setUpRecyclerView();
         mViewModel = ViewModelProviders.of(this, mFactory).get(TasksViewModel.class);
-        if (mDisplayedTasks == null) getTasksForToday();
+        if (savedInstanceState == null) {
+            mLastViewValue = LAST_VIEW_TODAY;
+            getTasksForToday();
+        }
     }
 
     // ------------------Private------------------
@@ -236,6 +263,23 @@ public class TasksActivity extends DaggerAppCompatActivity
     private void setUpRecyclerView() {
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    private void restoreView() {
+        switch (mLastViewValue) {
+            case LAST_VIEW_CALENDAR:
+                mDatePicker.get().setStartDate(mDateOfCurrentView);
+                setTitle(mDatePicker.get().getStartDateTimeStampWithDay());
+                mViewModel.getLiveCalendarDay(mDateOfCurrentView)
+                        .observe(this, this::displayTasksForDay);
+                break;
+            case LAST_VIEW_TODAY:
+                getTasksForToday();
+                break;
+            case LAST_VIEW_7_DAYS:
+                getTasksFor7Days();
+                break;
+        }
     }
 
 
