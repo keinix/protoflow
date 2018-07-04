@@ -9,6 +9,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -56,6 +57,7 @@ public class TasksViewModel extends AndroidViewModel {
     }
 
     /**
+     * gets tasks scheduled for the day + tasks that repeat on that day
      * @param calendarDay you want to get the tasks from
      * @return all task on CalendarDay as well as task that repeat on that day
      */
@@ -66,7 +68,9 @@ public class TasksViewModel extends AndroidViewModel {
     }
 
     /**
-     * @param dayInMillis is a day constant from the Calendar class
+     * get the repeated tasks that appear on a day if there were
+     * no tasks specifically scheduled for that day
+     * @param dayInMillis is used to get day constant from the Calendar class
      * @return all tasks that repeat on the given day
      */
     public LiveData<List<Task>> getAllTasksOnDay(long dayInMillis) {
@@ -88,7 +92,6 @@ public class TasksViewModel extends AndroidViewModel {
         tasks = addDateToRepeatedTasks(tasks);
         tasks = sortTasksByDate(tasks);
         tasks = addDaySeparatorItems(tasks);
-        Log.d(TAG, "sorted tasks: " + tasks);
         return tasks;
     }
 
@@ -141,7 +144,11 @@ public class TasksViewModel extends AndroidViewModel {
         return outputTasks;
     }
 
+    // new tasks are created for each day the task repeats on so they display properly
+    // in the 7 day view
     private List<Task> convertRepeatedTaskToTasksWithDates(Task task) {
+        // addedDate used to make sure a task does not appear twice in
+        //  7 day view if it was scheduled for a day it also repeats on
         long addedDate = -1;
         List<Task> convertedTasks = new ArrayList<>();
         if (task.getScheduledDateUtc() > 0) {
@@ -181,7 +188,6 @@ public class TasksViewModel extends AndroidViewModel {
         return convertedTasks;
     }
 
-
     private void orderNext7DaysDatesFromMondayToSunday() {
         Calendar calendar = Calendar.getInstance();
         for (int i = 0; i < mNext7DaysUtc.size(); i++) {
@@ -217,15 +223,7 @@ public class TasksViewModel extends AndroidViewModel {
     }
 
     private List<Task> sortTasksByDate(List<Task> tasks) {
-        tasks.sort((t1, t2) -> {
-            if (t1.getScheduledDateUtc() > t2.getScheduledDateUtc()) {
-                return 1;
-            } else if (t1.getScheduledDateUtc() == t2.getScheduledDateUtc()) {
-                return 0;
-            } else {
-                return -1;
-            }
-        });
+        tasks.sort(Comparator.comparingLong(Task::getScheduledDateUtc));
         return tasks;
     }
 }

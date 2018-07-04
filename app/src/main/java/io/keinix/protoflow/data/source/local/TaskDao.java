@@ -19,6 +19,9 @@ public interface TaskDao {
     @Insert
     long insert(Task task);
 
+    @Update
+    void update(Task task);
+
     @Query("SELECT * from task_table")
     LiveData<List<Task>> getAllTasks();
 
@@ -79,9 +82,4 @@ public interface TaskDao {
 
     @Query("SELECT * from task_table WHERE repeats_on_a_day = 1")
     LiveData<List<Task>> getAllRepeatedTasks();
-
-
-
-    @Update
-    void update(Task task);
 }

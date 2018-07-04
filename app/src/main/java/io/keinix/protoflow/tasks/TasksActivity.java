@@ -150,7 +150,6 @@ public class TasksActivity extends DaggerAppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_ADD_TASK_TO_7_DAYS) {
             getTasksFor7Days();
-            Log.d(TAG, "7 Days UI Reload Triggered");
         }
     }
 
@@ -265,6 +264,7 @@ public class TasksActivity extends DaggerAppCompatActivity
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
+    // used to restore view after configuration changes
     private void restoreView() {
         switch (mLastViewValue) {
             case LAST_VIEW_CALENDAR:
@@ -281,6 +281,4 @@ public class TasksActivity extends DaggerAppCompatActivity
                 break;
         }
     }
-
-
 }
