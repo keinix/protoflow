@@ -83,7 +83,8 @@ public class TasksViewModel extends AndroidViewModel {
     public List<Task> format7DayTasks(List<Task> tasks) {
         tasks = addDateToRepeatedTasks(tasks);
         tasks = sortTasksByDate(tasks);
-        //tasks = addDaySeparatorItems(tasks);
+        tasks = addDaySeparatorItems(tasks);
+        Log.d(TAG, "sorted tasks: " + tasks);
         return tasks;
     }
 
@@ -124,49 +125,58 @@ public class TasksViewModel extends AndroidViewModel {
     }
 
     private List<Task> addDateToRepeatedTasks(List<Task> tasks) {
-        for (int i = tasks.size() -1; i >= 0; i--) {
+        orderNext7DaysDatesFromMondayToSunday();
+        List<Task> outputTasks = new ArrayList<>();
+        for (int i = 0; i < tasks.size(); i++) {
             if (tasks.get(i).isRepeatsOnADay()) {
-                tasks.remove(i);
-                tasks.addAll(convertRepeatedTaskToTasksWithDates(tasks.get(i)));
+                outputTasks.addAll(convertRepeatedTaskToTasksWithDates(tasks.get(i)));
+            } else {
+                outputTasks.add(tasks.get(i));
             }
         }
-        return tasks;
+        return outputTasks;
     }
 
     private List<Task> convertRepeatedTaskToTasksWithDates(Task task) {
-        boolean taskWasScheduled = false;
+        long addedDate = -1;
         List<Task> convertedTasks = new ArrayList<>();
         if (task.getScheduledDateUtc() > 0) {
             convertedTasks.add(task);
-            taskWasScheduled = true;
+            addedDate = task.getScheduledDateUtc();
         }
-        orderNext7DaysDatesFromMondayToSunday();
 
         if (task.isRepeatsOnMonday()) {
-            task.setScheduledDateUtc(mNext7DaysUtc.get(0));
-            if (!taskWasScheduled || !convertedTasks.contains(task)) convertedTasks.add(task);
+            if (addedDate != mNext7DaysUtc.get(0)) {
+                convertedTasks.add(task.cloneWithNewDate(mNext7DaysUtc.get(0)));
+            }
         } if (task.isRepeatsOnTuesday()) {
-            task.setScheduledDateUtc(mNext7DaysUtc.get(1));
-            if (!taskWasScheduled || !convertedTasks.contains(task)) convertedTasks.add(task);
+            if (addedDate != mNext7DaysUtc.get(1)) {
+                convertedTasks.add(task.cloneWithNewDate(mNext7DaysUtc.get(1)));
+            }
         } if (task.isRepeatsOnWednesday()) {
-            task.setScheduledDateUtc(mNext7DaysUtc.get(2));
-            if (!taskWasScheduled || !convertedTasks.contains(task)) convertedTasks.add(task);
+            if (addedDate != mNext7DaysUtc.get(2)) {
+                convertedTasks.add(task.cloneWithNewDate(mNext7DaysUtc.get(2)));
+            }
         } if (task.isRepeatsOnThursday()) {
-            task.setScheduledDateUtc(mNext7DaysUtc.get(3));
-            if (!taskWasScheduled || !convertedTasks.contains(task)) convertedTasks.add(task);
+            if (addedDate != mNext7DaysUtc.get(3)) {
+                convertedTasks.add(task.cloneWithNewDate(mNext7DaysUtc.get(3)));
+            }
         } if (task.isRepeatsOnFriday()) {
-            task.setScheduledDateUtc(mNext7DaysUtc.get(4));
-            if (!taskWasScheduled || !convertedTasks.contains(task)) convertedTasks.add(task);
+            if (addedDate != mNext7DaysUtc.get(4)) {
+                convertedTasks.add(task.cloneWithNewDate(mNext7DaysUtc.get(4)));
+            }
         } if (task.isRepeatsOnSaturday()) {
-            task.setScheduledDateUtc(mNext7DaysUtc.get(5));
-            if (!taskWasScheduled || !convertedTasks.contains(task)) convertedTasks.add(task);
+            if (addedDate != mNext7DaysUtc.get(5)) {
+                convertedTasks.add(task.cloneWithNewDate(mNext7DaysUtc.get(5)));
+            }
         } if (task.isRepeatsOnSunday()) {
-            task.setScheduledDateUtc(mNext7DaysUtc.get(6));
-            if (!taskWasScheduled || !convertedTasks.contains(task)) convertedTasks.add(task);
+            if (addedDate != mNext7DaysUtc.get(6)) {
+                convertedTasks.add(task.cloneWithNewDate(mNext7DaysUtc.get(6)));
+            }
         }
-
         return convertedTasks;
     }
+
 
     private void orderNext7DaysDatesFromMondayToSunday() {
         Calendar calendar = Calendar.getInstance();
@@ -180,19 +190,26 @@ public class TasksViewModel extends AndroidViewModel {
     }
 
     // This method is called when looking at the 7 day view
-    // mTasks contains the task for all 7 days this method adds a new task before each new day
+    //  this method adds a new task before each new day
     // DATE_HEADING task name will trigger a ViewHolder that displays a date separator
-    private List<Task> addDaySeparatorItems(List<Task> tasks) {
+    private List<Task> addDaySeparatorItems(@NonNull List<Task> tasks) {
+        List<Task> outputTasks = new ArrayList<>();
+        Task firstDateSeparator = new Task(DATE_HEADING);
+        firstDateSeparator.setScheduledDateUtc(tasks.get(0).getScheduledDateUtc());
+        outputTasks.add(firstDateSeparator);
+        outputTasks.add(tasks.get(0));
+
         for (int i = 0; i < tasks.size() - 1; i++) {
             long date1 = tasks.get(i).getScheduledDateUtc();
             long date2 = tasks.get(i + 1).getScheduledDateUtc();
             if (date1 != date2) {
-                Task task = new Task(DATE_HEADING);
-                task.setScheduledDateUtc(date2);
-                tasks.add(i, task);
+                Task dateSeparator = new Task(DATE_HEADING);
+                dateSeparator.setScheduledDateUtc(date2);
+                outputTasks.add(dateSeparator);
             }
+            outputTasks.add(tasks.get(i + 1));
         }
-        return tasks;
+        return outputTasks;
     }
 
     private List<Task> sortTasksByDate(List<Task> tasks) {

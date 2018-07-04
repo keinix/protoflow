@@ -64,6 +64,25 @@ public class Task {
         this.name = name;
     }
 
+    public Task cloneWithNewDate(long date) {
+        Task newTask = new Task(getName());
+        newTask.setId(getId());
+        newTask.setRoutines(getRoutines());
+        newTask.setDurationInMinutes(getDurationInMinutes());
+        newTask.setScheduledDateUtc(date);
+        newTask.setStartTimeUtc(getStartTimeUtc());
+        newTask.setNotes(getNotes());
+        newTask.setRepeatsOnADay(isRepeatsOnADay());
+        newTask.setRepeatsOnMonday(isRepeatsOnMonday());
+        newTask.setRepeatsOnTuesday(isRepeatsOnTuesday());
+        newTask.setRepeatsOnWednesday(isRepeatsOnWednesday());
+        newTask.setRepeatsOnThursday(isRepeatsOnThursday());
+        newTask.setRepeatsOnFriday(isRepeatsOnFriday());
+        newTask.setRepeatsOnSaturday(isRepeatsOnSaturday());
+        newTask.setRepeatsOnSunday(isRepeatsOnSunday());
+        return newTask;
+    }
+
 
     // Getters and Setters
     @NonNull
@@ -202,6 +221,8 @@ public class Task {
 
         return Objects.hash(scheduledDateUtc);
     }
+
+
 
     @Override
     public String toString() {
