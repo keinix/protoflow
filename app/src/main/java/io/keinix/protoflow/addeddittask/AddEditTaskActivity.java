@@ -8,6 +8,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.drawable.Drawable;
 import android.support.constraint.Group;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -82,6 +83,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     private boolean notesAreChecked;
 
     public static final String EXTRA_TASK_ID = "EXTRA_TASK_ID";
+    public static final String TAG = AddEditTaskActivity.class.getSimpleName();
 
     // ------------------DI------------------
     @Inject
@@ -98,6 +100,9 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
 
     @Inject
     int mTaskIdToEdit;
+
+    @Inject
+    long mDateFromPreviousView;
 
     //----------------OnCLicks----------------
 
@@ -249,7 +254,10 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
             LiveData<Task> task = mViewModel.getTaskToEdit(mTaskIdToEdit);
             task.observe(this, this::setUpUiToEditTask);
         }
+        if (mDateFromPreviousView > 0) setDateFromPreviousView();
+
     }
+
 
     // ------------------Private------------------
     /**
@@ -369,5 +377,12 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
                 setDayUiAsUnSelected(dayTextView);
             }
         }
+    }
+
+    private void setDateFromPreviousView() {
+        mDatePicker.get().setStartDate(mDateFromPreviousView);
+        String selectedDate = mDatePicker.get().getStartDateTimeStamp();
+        mViewModel.setStartDateUtc(mDateFromPreviousView);
+        scheduleSelected(cancelSelectedImageButton, startDateTextView, selectedDate);
     }
 }

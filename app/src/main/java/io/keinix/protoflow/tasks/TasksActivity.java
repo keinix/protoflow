@@ -56,9 +56,10 @@ public class TasksActivity extends DaggerAppCompatActivity
 
     private TasksViewModel mViewModel;
     private LiveData<List<Task>> mDisplayedTasks;
+    private long mDateOfCurrentView;
     public static final String TAG = TasksActivity.class.getSimpleName();
-
     public static final int REQUEST_CODE_ADD_TASK_TO_7_DAYS = 1001;
+    public static final String INTENT_DATE_OF_CURRENT_VIEW = "INTENT_DATE_OF_CURRENT_VIEW";
 
     // ------------------DI------------------
 
@@ -80,6 +81,7 @@ public class TasksActivity extends DaggerAppCompatActivity
         if (getTitle().equals(sevenDaysString)) {
             startActivityForResult(intent, REQUEST_CODE_ADD_TASK_TO_7_DAYS);
         } else {
+            intent.putExtra(INTENT_DATE_OF_CURRENT_VIEW, mDateOfCurrentView);
             startActivity(intent);
         }
     }
@@ -123,6 +125,7 @@ public class TasksActivity extends DaggerAppCompatActivity
                 getTasksForToday();
                 break;
             case R.id.nav_7_days:
+                mDateOfCurrentView = 0;
                 getTasksFor7Days();
         }
 
@@ -149,8 +152,9 @@ public class TasksActivity extends DaggerAppCompatActivity
     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
         mDatePicker.get().setStartDate(year, month, day);
         setTitle(mDatePicker.get().getStartDateTimeStampWithDay());
-        long startDateUtc = mDatePicker.get().getStartDateUtc();
-         mViewModel.getLiveCalendarDay(startDateUtc).observe(this, this::displayTasksForDay);
+        mDateOfCurrentView = mDatePicker.get().getStartDateUtc();
+         mViewModel.getLiveCalendarDay(mDateOfCurrentView)
+                 .observe(this, this::displayTasksForDay);
     }
 
     // --------------Lifecycle--------------
@@ -205,7 +209,8 @@ public class TasksActivity extends DaggerAppCompatActivity
     private void getTasksForToday() {
         setTitle(todayString);
         mDatePicker.get().setStartDate(System.currentTimeMillis());
-        mViewModel.getLiveCalendarDay(mDatePicker.get().getStartDateUtc())
+        mDateOfCurrentView = mDatePicker.get().getStartDateUtc();
+        mViewModel.getLiveCalendarDay(mDateOfCurrentView)
                 .observe(this, this::displayTasksForDay);
     }
 
