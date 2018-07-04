@@ -51,6 +51,10 @@ public class TasksViewModel extends AndroidViewModel {
         return mTaskRepository.getNext7CalendarDays(getDatesForNext7Days());
     }
 
+    public LiveData<List<Task>> getAllRepeatedTasks() {
+        return mTaskRepository.getAllRepeatedTasks();
+    }
+
     /**
      * @param calendarDay you want to get the tasks from
      * @return all task on CalendarDay as well as task that repeat on that day

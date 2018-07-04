@@ -77,6 +77,9 @@ public interface TaskDao {
     @Query("SELECT * from task_table WHERE repeats_on_sunday = 1")
     LiveData<List<Task>> getAllTasksForDateSunday();
 
+    @Query("SELECT * from task_table WHERE repeats_on_a_day = 1")
+    LiveData<List<Task>> getAllRepeatedTasks();
+
 
 
     @Update
