@@ -249,8 +249,8 @@ public class TasksActivity extends DaggerAppCompatActivity
                 mDisplayedTasks = mViewModel.getAllRepeatedTasks();
             }
             mDisplayedTasks.observe(this, tasks -> {
-                List<Task> formattedTasks = mViewModel.format7DayTasks(tasks);
-                if (formattedTasks != null) {
+                if (tasks.size() != 0) {
+                    List<Task> formattedTasks = mViewModel.format7DayTasks(tasks);
                     mAdapter.setTasks(formattedTasks);
                 } else {
                     mAdapter.clearTasks();

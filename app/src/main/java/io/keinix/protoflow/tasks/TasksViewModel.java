@@ -88,7 +88,7 @@ public class TasksViewModel extends AndroidViewModel {
 
     // -----------------public------------------
 
-    public List<Task> format7DayTasks(List<Task> tasks) {
+    public List<Task> format7DayTasks(@NonNull List<Task> tasks) {
         tasks = addDateToRepeatedTasks(tasks);
         tasks = sortTasksByDate(tasks);
         tasks = addDaySeparatorItems(tasks);
@@ -189,6 +189,8 @@ public class TasksViewModel extends AndroidViewModel {
         return convertedTasks;
     }
 
+    // mNext7DaysUtc is sorted so repeated tasks that have no Date can be given one
+    // so they appear under the correct day in the 7 day view
     private void orderNext7DaysDatesFromMondayToSunday() {
         Calendar calendar = Calendar.getInstance();
         for (int i = 0; i < mNext7DaysUtc.size(); i++) {
