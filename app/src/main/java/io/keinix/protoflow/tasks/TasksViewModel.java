@@ -133,6 +133,7 @@ public class TasksViewModel extends AndroidViewModel {
 
     private List<Task> addDateToRepeatedTasks(List<Task> tasks) {
         orderNext7DaysDatesFromMondayToSunday();
+        Log.d(TAG, "next 7 Dates after sort: " + mNext7DaysUtc);
         List<Task> outputTasks = new ArrayList<>();
         for (int i = 0; i < tasks.size(); i++) {
             if (tasks.get(i).isRepeatsOnADay()) {
@@ -193,7 +194,8 @@ public class TasksViewModel extends AndroidViewModel {
         for (int i = 0; i < mNext7DaysUtc.size(); i++) {
             calendar.setTimeInMillis(mNext7DaysUtc.get(i));
             if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
-                Collections.rotate(mNext7DaysUtc, i - 1);
+                int rotateDistance = mNext7DaysUtc.size() - i;
+                Collections.rotate(mNext7DaysUtc, rotateDistance);
                 break;
             }
         }

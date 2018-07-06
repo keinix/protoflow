@@ -149,7 +149,7 @@ public class TasksActivity extends DaggerAppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_ADD_TASK_TO_7_DAYS) {
-            getTasksFor7Days();
+            //getTasksFor7Days();
         }
     }
 
