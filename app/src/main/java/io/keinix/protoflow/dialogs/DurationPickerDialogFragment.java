@@ -10,9 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.NumberPicker;
 
+import java.lang.reflect.UndeclaredThrowableException;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import io.keinix.protoflow.R;
 
 /**
@@ -26,6 +29,7 @@ public class DurationPickerDialogFragment extends DialogFragment {
     private int mStartHour;
     private int mSelectedMinute;
     private int mSelectedHour;
+    private Unbinder mUnbinder;
     private onDurationSetListener mOnDurationSetListener;
 
     /**
@@ -65,11 +69,17 @@ public class DurationPickerDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_duration_picker, container, false);
-        ButterKnife.bind(this, view);
+        mUnbinder = ButterKnife.bind(this, view);
         mOnDurationSetListener = (onDurationSetListener) getActivity();
         initNumPicker();
         initNumPickerListener();
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mUnbinder.unbind();
     }
 
     private void initNumPicker() {

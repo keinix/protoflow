@@ -28,4 +28,8 @@
     <string name="tasks_toolbar_title_today">Today</string>
     <string name="tasks_toolbar_title_7_days">Next 7 Days</string>
 
+
+    <string name="new_project_hint">Project name</string>
+    <string name="new_project_title">New Project</string>
+
 </resources>

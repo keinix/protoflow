@@ -37,10 +37,12 @@ import io.keinix.protoflow.addeddittask.AddEditTaskActivity;
 import io.keinix.protoflow.data.CalendarDay;
 import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.dialogs.DatePickerDialogFragment;
+import io.keinix.protoflow.dialogs.NewProjectDialogFragment;
 
 public class TasksActivity extends DaggerAppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        DatePickerDialog.OnDateSetListener {
+        DatePickerDialog.OnDateSetListener,
+        NewProjectDialogFragment.OnNewProjectCreatedListener {
 
     // --------------view Binding--------------
 
@@ -76,6 +78,9 @@ public class TasksActivity extends DaggerAppCompatActivity
 
     @Inject
     Lazy<DatePickerDialogFragment> mDatePicker;
+
+    @Inject
+    Lazy<NewProjectDialogFragment> mNewProjectDialog;
 
 
     // ----------------OnClick----------------
@@ -173,6 +178,11 @@ public class TasksActivity extends DaggerAppCompatActivity
         restoreView();
     }
 
+    @Override
+    public void onProjectCreated() {
+
+    }
+
     // --------------Lifecycle--------------
 
     @Override
@@ -263,6 +273,7 @@ public class TasksActivity extends DaggerAppCompatActivity
         subMenu.add("new Project")
                 .setIcon(R.drawable.ic_project_black_24)
                 .setCheckable(true);
+        mNewProjectDialog.get().show(getSupportFragmentManager(), "new_project_dialog");
     }
 
     // used to restore view after configuration changes
@@ -285,4 +296,5 @@ public class TasksActivity extends DaggerAppCompatActivity
                 break;
         }
     }
+
 }
