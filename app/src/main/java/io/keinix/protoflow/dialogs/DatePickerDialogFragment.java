@@ -55,7 +55,6 @@ public class DatePickerDialogFragment extends DialogFragment {
 
     /**
      * Call setStartDate() before calling this method
-     *
      * @return Formatted String for current Start Date
      */
     public String getStartDateTimeStamp() {

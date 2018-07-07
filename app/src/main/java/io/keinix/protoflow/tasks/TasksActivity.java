@@ -18,8 +18,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.widget.DatePicker;
-
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -59,7 +60,6 @@ public class TasksActivity extends DaggerAppCompatActivity
     private long mDateOfCurrentView;
     private String mLastViewValue;
     public static final String TAG = TasksActivity.class.getSimpleName();
-    public static final int REQUEST_CODE_ADD_TASK_TO_7_DAYS = 1001;
     public static final String EXTRA_DATE_OF_CURRENT_VIEW = "EXTRA_DATE_OF_CURRENT_VIEW";
     public static final String KEY_DATE_OF_CURRENT_VIEW = "KEY_DATE_OF_CURRENT_VIEW";
     public static final String KEY_LAST_VIEW = "KEY_LAST_VIEW";
@@ -84,7 +84,7 @@ public class TasksActivity extends DaggerAppCompatActivity
     void fabClick() {
         Intent intent = new Intent(TasksActivity.this, AddEditTaskActivity.class);
         if (getTitle().equals(sevenDaysString)) {
-            startActivityForResult(intent, REQUEST_CODE_ADD_TASK_TO_7_DAYS);
+            startActivity(intent);
         } else {
             intent.putExtra(EXTRA_DATE_OF_CURRENT_VIEW, mDateOfCurrentView);
             startActivity(intent);
@@ -135,22 +135,15 @@ public class TasksActivity extends DaggerAppCompatActivity
                 mLastViewValue = LAST_VIEW_7_DAYS;
                 mDateOfCurrentView = 0;
                 getTasksFor7Days();
+            case R.id.nav_add_project:
+                addProject();
+                Log.d(TAG, "Has sub menu: " + item.hasSubMenu());
+                break;
+            // default case should be project
         }
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    // If a new task is created within the 7 day range it will not have been included in the live
-    // Data so the view will not update automatically. In this case when adding a new task
-    // while the 7 day view is active a result is used to determine if the UI needs to be
-    // reloaded
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_ADD_TASK_TO_7_DAYS) {
-            //getTasksFor7Days();
-        }
     }
 
     // This callback is used when A DatePickerDialog is shown from the calendar
@@ -193,7 +186,7 @@ public class TasksActivity extends DaggerAppCompatActivity
         mViewModel = ViewModelProviders.of(this, mFactory).get(TasksViewModel.class);
         if (savedInstanceState == null) {
             mLastViewValue = LAST_VIEW_TODAY;
-            getTasksForToday();
+            restoreView();
         }
     }
 
@@ -264,19 +257,30 @@ public class TasksActivity extends DaggerAppCompatActivity
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
+    private void addProject() {
+        MenuItem item = navigationView.getMenu().findItem(R.id.nav_projects);
+        SubMenu subMenu = item.getSubMenu();
+        subMenu.add("new Project")
+                .setIcon(R.drawable.ic_project_black_24)
+                .setCheckable(true);
+    }
+
     // used to restore view after configuration changes
     private void restoreView() {
         switch (mLastViewValue) {
             case LAST_VIEW_CALENDAR:
+                navigationView.setCheckedItem(R.id.nav_calendar);
                 mDatePicker.get().setStartDate(mDateOfCurrentView);
                 setTitle(mDatePicker.get().getStartDateTimeStampWithDay());
                 mViewModel.getLiveCalendarDay(mDateOfCurrentView)
                         .observe(this, this::displayTasksForDay);
                 break;
             case LAST_VIEW_TODAY:
+                navigationView.setCheckedItem(R.id.nav_today);
                 getTasksForToday();
                 break;
             case LAST_VIEW_7_DAYS:
+                navigationView.setCheckedItem(R.id.nav_7_days);
                 getTasksFor7Days();
                 break;
         }

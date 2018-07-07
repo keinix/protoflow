@@ -7,14 +7,17 @@
         android:id="@+id/nav_calendar_group">
         <item
             android:id="@+id/nav_calendar"
+            android:orderInCategory="0"
             android:icon="@drawable/ic_calendar_black_24"
             android:title="@string/nav_drawer_calendar"/>
         <item
             android:id="@+id/nav_today"
+            android:orderInCategory="0"
             android:icon="@drawable/ic_today_black_24"
             android:title="@string/nav_drawer_today"/>
         <item
             android:id="@+id/nav_7_days"
+            android:orderInCategory="0"
             android:icon="@drawable/ic_week_black_24"
             android:title="@string/nav_drawer_7_days"/>
     </group>
@@ -23,22 +26,29 @@
         android:id="@+id/nav_tasks_group">
             <item
                 android:id="@+id/nav_tasks"
+                android:orderInCategory="1"
                 android:icon="@drawable/ic_tasks_black_24"
                 android:title="@string/nav_drawer_tasks"/>
             <item
                 android:id="@+id/nav_routines"
+                android:orderInCategory="1"
                 android:icon="@drawable/ic_routines_black_24"
                 android:title="@string/nav_drawer_routines"/>
     </group>
 
+    <group android:id="@+id/nav_projects_group">
+        <item android:title="@string/nav_drawer_projects"
+              android:orderInCategory="2"
+            android:id="@+id/nav_projects">
+            <menu>
+                <item
+                    android:id="@+id/nav_add_project"
+                    android:orderInCategory="2"
+                    android:icon="@drawable/ic_add_black_24"
+                    android:title="@string/nav_add_project"/>
+            </menu>
+        </item>
 
-    <item android:title="@string/nav_drawer_projects">
-        <menu>
-            <item
-                android:id="@+id/nav_add_project"
-                android:icon="@drawable/ic_add_black_24"
-                android:title="@string/nav_add_project"/>
-        </menu>
-    </item>
+    </group>
 
 </menu>

@@ -220,12 +220,10 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
             case R.id.menu_create_task:
                 if (!taskNameIsEmpty()) {
                     initTaskCreation();
-                    setResult(RESULT_OK);
                     finish();
                 }
                 break;
             case R.id.menu_clear_task:
-                setResult(RESULT_CANCELED);
                 finish();
         }
         return super.onOptionsItemSelected(item);
