@@ -142,11 +142,9 @@ public class TasksActivity extends DaggerAppCompatActivity
                 getTasksFor7Days();
             case R.id.nav_add_project:
                 addProject();
-                Log.d(TAG, "Has sub menu: " + item.hasSubMenu());
                 break;
             // default case should be project
         }
-
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
