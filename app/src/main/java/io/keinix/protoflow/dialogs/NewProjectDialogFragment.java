@@ -9,7 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import butterknife.BindColor;
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -18,12 +22,20 @@ import io.keinix.protoflow.R;
 
 public class NewProjectDialogFragment extends DialogFragment {
 
+    @BindView(R.id.edit_text_new_project_name) EditText newProjectEditText;
+    @BindString(R.string.new_project_no_title_warning) String noTitleString;
+    @BindString(R.string.new_project_no_title_toast) String noTitleToastString;
+    @BindColor(R.color.errorHintText) int red;
+
     private Unbinder mUnbinder;
 
     @OnClick(R.id.button_new_project_ok)
     void onNewProjectCreated() {
-        mListener.onProjectCreated();
-        dismiss();
+        String projectName = newProjectEditText.getText().toString();
+        if (checkProjectNameIsNotBack(projectName)) {
+            mListener.onProjectCreated(projectName);
+            dismiss();
+        }
     }
 
     @OnClick(R.id.button_new_project_cancel)
@@ -34,7 +46,7 @@ public class NewProjectDialogFragment extends DialogFragment {
     private OnNewProjectCreatedListener mListener;
 
     public interface OnNewProjectCreatedListener {
-        void onProjectCreated();
+        void onProjectCreated(String projectName);
     }
 
     @NonNull
@@ -56,5 +68,16 @@ public class NewProjectDialogFragment extends DialogFragment {
     public void onDestroyView() {
         super.onDestroyView();
         mUnbinder.unbind();
+    }
+
+    private boolean checkProjectNameIsNotBack(String name) {
+        if (name.length() > 0 ) {
+            return true;
+        } else {
+            Toast.makeText(getActivity(), noTitleToastString, Toast.LENGTH_SHORT).show();
+            newProjectEditText.setHintTextColor(red);
+            newProjectEditText.setHint(noTitleString);
+            return false;
+        }
     }
 }

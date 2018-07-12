@@ -15,12 +15,10 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.widget.DatePicker;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -68,6 +66,7 @@ public class TasksActivity extends DaggerAppCompatActivity
     public static final String LAST_VIEW_TODAY = "VALUE_LAST_VIEW_TODAY";
     public static final String LAST_VIEW_CALENDAR = "VALUE_LAST_VIEW_CALENDAR";
     public static final String LAST_VIEW_7_DAYS = "VALUE_LAST_VIEW_7_DAYS";
+
     // ------------------DI------------------
 
     @Inject
@@ -141,7 +140,7 @@ public class TasksActivity extends DaggerAppCompatActivity
                 mDateOfCurrentView = 0;
                 getTasksFor7Days();
             case R.id.nav_add_project:
-                addProject();
+                mNewProjectDialog.get().show(getSupportFragmentManager(), "new_project_dialog");
                 break;
             // default case should be project
         }
@@ -177,8 +176,8 @@ public class TasksActivity extends DaggerAppCompatActivity
     }
 
     @Override
-    public void onProjectCreated() {
-
+    public void onProjectCreated(String projectName) {
+        addProject(projectName);
     }
 
     // --------------Lifecycle--------------
@@ -265,13 +264,12 @@ public class TasksActivity extends DaggerAppCompatActivity
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    private void addProject() {
+    private void addProject(String projectName) {
         MenuItem item = navigationView.getMenu().findItem(R.id.nav_projects);
         SubMenu subMenu = item.getSubMenu();
-        subMenu.add("new Project")
+        subMenu.add(projectName)
                 .setIcon(R.drawable.ic_project_black_24)
                 .setCheckable(true);
-        mNewProjectDialog.get().show(getSupportFragmentManager(), "new_project_dialog");
     }
 
     // used to restore view after configuration changes
@@ -294,5 +292,4 @@ public class TasksActivity extends DaggerAppCompatActivity
                 break;
         }
     }
-
 }

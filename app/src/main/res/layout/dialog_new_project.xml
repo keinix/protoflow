@@ -13,7 +13,7 @@
         android:layout_width="400dp"
         android:layout_height="80dp"
         android:background="@color/colorAccent"
-        android:paddingLeft="16dp"
+        android:paddingLeft="20dp"
         android:paddingTop="10dp"
         android:text="@string/new_project_title"
         android:textColor="@color/white"

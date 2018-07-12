@@ -53,5 +53,8 @@ dependencies {
     implementation "com.google.dagger:dagger-android-support:$rootProject.daggerVersion"
     annotationProcessor "com.google.dagger:dagger-android-processor:$rootProject.daggerVersion"
 
+    // Color Picker
+    implementation 'com.github.skydoves:colorpickerpreference:1.0.2'
+
 
 }

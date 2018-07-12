@@ -222,8 +222,6 @@ public class Task {
         return Objects.hash(scheduledDateUtc);
     }
 
-
-
     @Override
     public String toString() {
         return "Task{" +
