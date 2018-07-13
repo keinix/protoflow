@@ -28,6 +28,41 @@
             app:layout_constraintTop_toTopOf="parent"/>
 
         <ImageButton
+            android:id="@+id/image_button_project"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="8dp"
+            android:background="@null"
+            android:src="@drawable/ic_project_black_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edit_text_task_name"/>
+
+        <TextView
+            android:id="@+id/text_view_project"
+            android:layout_width="wrap_content"
+            android:layout_height="22dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:paddingRight="200dp"
+            android:text="@string/add_task_not_in_project"
+            android:textSize="15sp"
+            app:layout_constraintStart_toEndOf="@+id/image_button_project"
+            app:layout_constraintTop_toBottomOf="@+id/edit_text_task_name"/>
+
+        <ImageButton
+            android:id="@+id/image_button_cancel_project"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="@null"
+            android:src="@drawable/ic_round_cancel_white_18"
+            android:tint="@color/cancel"
+            android:visibility="invisible"
+            app:layout_constraintStart_toEndOf="@+id/text_view_project"
+            app:layout_constraintTop_toTopOf="@+id/text_view_project"/>
+
+        <ImageButton
             android:id="@+id/image_button_timer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -36,7 +71,7 @@
             android:background="@null"
             android:src="@drawable/ic_timer_black_24"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edit_text_task_name"/>
+            app:layout_constraintTop_toBottomOf="@+id/image_button_project"/>
 
         <TextView
             android:id="@+id/text_view_duration"
@@ -45,23 +80,22 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:paddingRight="200dp"
-            android:textSize="15sp"
             android:text="@string/add_task_duration"
+            android:textSize="15sp"
             app:layout_constraintStart_toEndOf="@+id/image_button_scheduled"
-            app:layout_constraintTop_toBottomOf="@+id/edit_text_task_name"/>
+            app:layout_constraintTop_toBottomOf="@+id/text_view_project"/>
 
         <ImageButton
             android:id="@+id/image_button_cancel_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="20dp"
             android:background="@null"
             android:src="@drawable/ic_round_cancel_white_18"
             android:tint="@color/cancel"
+            android:visibility="invisible"
             app:layout_constraintStart_toEndOf="@+id/text_view_duration"
-            app:layout_constraintTop_toBottomOf="@+id/edit_text_task_name"
-            android:visibility="invisible"/>
+            app:layout_constraintTop_toTopOf="@+id/text_view_duration"/>
 
         <ImageButton
             android:id="@+id/image_button_scheduled"
@@ -91,13 +125,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="23dp"
             android:background="@null"
             android:src="@drawable/ic_round_cancel_white_18"
             android:tint="@color/cancel"
             android:visibility="invisible"
             app:layout_constraintStart_toEndOf="@+id/text_view_start_date"
-            app:layout_constraintTop_toBottomOf="@+id/text_view_duration"/>
+            app:layout_constraintTop_toTopOf="@+id/text_view_start_date"/>
 
         <ImageButton
             android:id="@+id/image_button_start_time"
