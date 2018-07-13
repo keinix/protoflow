@@ -12,8 +12,10 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.keinix.protoflow.data.CalendarDay;
+import io.keinix.protoflow.data.Project;
 import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.data.source.local.CalendarDayDao;
+import io.keinix.protoflow.data.source.local.ProjectDao;
 import io.keinix.protoflow.data.source.local.TaskDao;
 
 @Singleton
@@ -21,17 +23,23 @@ public class TaskRepository {
 
     private TaskDao mTaskDao;
     private CalendarDayDao mCalendarDayDao;
+    private ProjectDao mProjectDao;
     private LiveData<List<Task>> mAllTasks;
 
     @Inject
-    public TaskRepository(TaskDao taskDao, CalendarDayDao calendarDayDao) {
+    public TaskRepository(TaskDao taskDao, CalendarDayDao calendarDayDao, ProjectDao projectDao) {
         mTaskDao = taskDao;
         mCalendarDayDao = calendarDayDao;
+        mProjectDao = projectDao;
         mAllTasks = mTaskDao.getAllTasks();
     }
 
     public LiveData<List<Task>> getAllTasks() {
         return mAllTasks;
+    }
+
+    public LiveData<List<Project>> getAllProjects() {
+        return mProjectDao.getAllProjects();
     }
 
     public LiveData<Task> getTask(int id) {
@@ -104,6 +112,10 @@ public class TaskRepository {
         new insertAsyncTask(mTaskDao, mCalendarDayDao).execute(task);
     }
 
+    public void insertProject(Project project) {
+        new insertAsyncTask.insertProjectAsync(mProjectDao).execute(project);
+    }
+
     //INSERT ASYNC
     private static class insertAsyncTask extends AsyncTask<Task, Void, Void> {
 
@@ -124,6 +136,22 @@ public class TaskRepository {
             return null;
         }
 
+        //INSERT PROJECT ASYNC
+        private static class insertProjectAsync extends AsyncTask<Project, Void, Void> {
+
+            private ProjectDao asyncProjectDao;
+
+            public insertProjectAsync(ProjectDao projectDao) {
+                asyncProjectDao = projectDao;
+            }
+
+            @Override
+            protected Void doInBackground(Project... projects) {
+                asyncProjectDao.insert(projects[0]);
+                return null;
+            }
+        }
+
         private void insertTaskIdIntoDay(long id, long dayInMillis) {
             CalendarDay calendarDay = calendarDayDao.getCalendarDay(dayInMillis);
             if (calendarDay == null) {
@@ -139,6 +167,7 @@ public class TaskRepository {
         }
     }
 
+    //TODO:add calendarDay as a ForignKey so it will update automatically
     //UPDATE ASYNC
     private static class updateAsyncTask extends AsyncTask<Task, Void, Void> {
 
@@ -154,4 +183,6 @@ public class TaskRepository {
             return null;
         }
     }
+
+
 }

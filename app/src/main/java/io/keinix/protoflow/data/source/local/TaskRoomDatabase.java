@@ -5,11 +5,13 @@ import android.arch.persistence.room.RoomDatabase;
 
 import javax.inject.Singleton;
 
+import io.keinix.protoflow.data.Project;
 import io.keinix.protoflow.data.Task;
 
 @Singleton
-@Database(entities = {Task.class}, version = 4, exportSchema = false)
+@Database(entities = {Task.class, Project.class}, version = 5, exportSchema = false)
 public abstract class TaskRoomDatabase extends RoomDatabase {
 
     public abstract TaskDao taskDao();
+    public abstract ProjectDao projectDao();
 }

@@ -2,18 +2,28 @@ package io.keinix.protoflow.data;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.util.Objects;
 
-@Entity(tableName = "task_table")
+import static android.arch.persistence.room.ForeignKey.CASCADE;
+
+@Entity(tableName = "task_table",
+    foreignKeys = @ForeignKey(entity = Project.class,
+        parentColumns = "id",
+        childColumns = "project_id",
+        onDelete = CASCADE))
 public class Task {
 
     //TODO:might need to add column info
     @PrimaryKey (autoGenerate = true)
     private int id = 0;
+
+    @ColumnInfo(name = "project_id")
+    private int projectId;
 
     @NonNull
     @ColumnInfo(name = "name")
@@ -105,6 +115,15 @@ public class Task {
 
     public int getId() {
         return id;
+    }
+
+    @Nullable
+    public int getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(@Nullable int projectId) {
+        this.projectId = projectId;
     }
 
     public void setId(int id) {

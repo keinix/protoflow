@@ -33,6 +33,7 @@ import dagger.android.support.DaggerAppCompatActivity;
 import io.keinix.protoflow.R;
 import io.keinix.protoflow.addeddittask.AddEditTaskActivity;
 import io.keinix.protoflow.data.CalendarDay;
+import io.keinix.protoflow.data.Project;
 import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.dialogs.DatePickerDialogFragment;
 import io.keinix.protoflow.dialogs.NewProjectDialogFragment;
@@ -80,7 +81,6 @@ public class TasksActivity extends DaggerAppCompatActivity
 
     @Inject
     Lazy<NewProjectDialogFragment> mNewProjectDialog;
-
 
     // ----------------OnClick----------------
 
@@ -139,6 +139,7 @@ public class TasksActivity extends DaggerAppCompatActivity
                 mLastViewValue = LAST_VIEW_7_DAYS;
                 mDateOfCurrentView = 0;
                 getTasksFor7Days();
+                break;
             case R.id.nav_add_project:
                 mNewProjectDialog.get().show(getSupportFragmentManager(), "new_project_dialog");
                 break;
@@ -155,7 +156,7 @@ public class TasksActivity extends DaggerAppCompatActivity
         mDatePicker.get().setStartDate(year, month, day);
         setTitle(mDatePicker.get().getStartDateTimeStampWithDay());
         mDateOfCurrentView = mDatePicker.get().getStartDateUtc();
-         mViewModel.getLiveCalendarDay(mDateOfCurrentView)
+        mViewModel.getLiveCalendarDay(mDateOfCurrentView)
                  .observe(this, this::displayTasksForDay);
     }
 
@@ -177,7 +178,9 @@ public class TasksActivity extends DaggerAppCompatActivity
 
     @Override
     public void onProjectCreated(String projectName) {
-        addProject(projectName);
+        Project project = new Project(projectName);
+        mViewModel.insertProject(project);
+        updateProjectsInMenu(project);
     }
 
     // --------------Lifecycle--------------
@@ -188,9 +191,9 @@ public class TasksActivity extends DaggerAppCompatActivity
         setContentView(R.layout.activity_tasks);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+        mViewModel = ViewModelProviders.of(this, mFactory).get(TasksViewModel.class);
         setupNavDrawer();
         setUpRecyclerView();
-        mViewModel = ViewModelProviders.of(this, mFactory).get(TasksViewModel.class);
         if (savedInstanceState == null) {
             mLastViewValue = LAST_VIEW_TODAY;
             restoreView();
@@ -205,6 +208,11 @@ public class TasksActivity extends DaggerAppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+        LiveData<List<Project>> liveProjects = mViewModel.getAllProjects();
+        liveProjects.observe(this, projects -> {
+            updateProjectsInMenu(projects);
+            liveProjects.removeObservers(this);
+        });
     }
 
     // calendarDay can be null if no task was scheduled for that day
@@ -264,12 +272,26 @@ public class TasksActivity extends DaggerAppCompatActivity
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    private void addProject(String projectName) {
+    // add a new project to the menu
+    private void updateProjectsInMenu(Project project) {
         MenuItem item = navigationView.getMenu().findItem(R.id.nav_projects);
         SubMenu subMenu = item.getSubMenu();
-        subMenu.add(projectName)
+        subMenu.add(project.getName())
                 .setIcon(R.drawable.ic_project_black_24)
                 .setCheckable(true);
+    }
+
+    // populate the the menu when it's first created
+    private void updateProjectsInMenu(List<Project> projects) {
+        MenuItem item = navigationView.getMenu().findItem(R.id.nav_projects);
+        SubMenu subMenu = item.getSubMenu();
+        if (projects != null) {
+            for (Project project : projects) {
+                subMenu.add(project.getName())
+                        .setIcon(R.drawable.ic_project_black_24)
+                        .setCheckable(true);
+            }
+        }
     }
 
     // used to restore view after configuration changes
