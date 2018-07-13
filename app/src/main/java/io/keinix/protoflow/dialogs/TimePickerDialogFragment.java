@@ -10,7 +10,9 @@ import android.text.format.DateFormat;
 import java.util.Calendar;
 
 import butterknife.Unbinder;
+import io.keinix.protoflow.di.ActivityScope;
 
+@ActivityScope
 public class TimePickerDialogFragment extends DialogFragment {
 
     private int mStartHour;

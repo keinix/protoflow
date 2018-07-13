@@ -17,10 +17,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.keinix.protoflow.R;
+import io.keinix.protoflow.di.ActivityScope;
 
 /**
  * Activities that show this Dialog must implement {@link onDurationSetListener}
  */
+@ActivityScope
 public class DurationPickerDialogFragment extends DialogFragment {
     @BindView(R.id.number_picker_min) NumberPicker minNumPicker;
     @BindView(R.id.number_picker_hr) NumberPicker hourNumPicker;

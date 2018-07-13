@@ -2,6 +2,8 @@ package io.keinix.protoflow.addeddittask;
 
 import dagger.Module;
 import dagger.Provides;
+import io.keinix.protoflow.adapters.ProjectPickerAdapter;
+import io.keinix.protoflow.adapters.ProjectPickerAdapter.OnProjectSelectedListener;
 import io.keinix.protoflow.di.ActivityScope;
 import io.keinix.protoflow.dialogs.DatePickerDialogFragment;
 import io.keinix.protoflow.dialogs.DurationPickerDialogFragment;
@@ -34,6 +36,16 @@ public abstract class AddEditTaskModule {
     @ActivityScope
     @Provides static long dateFromPreviousView(AddEditTaskActivity addEditTaskActivity) {
         return addEditTaskActivity.getIntent().getLongExtra(TasksActivity.EXTRA_DATE_OF_CURRENT_VIEW, 0);
+    }
+
+    @ActivityScope
+    @Provides static ProjectPickerAdapter projectPickerAdapter(OnProjectSelectedListener listener) {
+        return new ProjectPickerAdapter(listener);
+    }
+
+    @ActivityScope
+    @Provides static OnProjectSelectedListener onProjectSelectedListener(AddEditTaskActivity addEditTaskActivity) {
+        return (OnProjectSelectedListener) addEditTaskActivity;
     }
 
 }

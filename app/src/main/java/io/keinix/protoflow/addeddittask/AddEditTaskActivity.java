@@ -58,6 +58,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     @BindString(R.string.add_task_unscheduled) String unscheduled;
     @BindString(R.string.add_task_start_time) String startTimeString;
     @BindString(R.string.add_task_task_name) String taskName;
+    @BindString(R.string.add_task_not_in_project) String projectString;
 
     @BindView(R.id.scroll_view_add_edit) ScrollView addEditScrollView;
     @BindView(R.id.checkbox_notes) CheckBox notesCheckbox;
@@ -67,10 +68,12 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     @BindView(R.id.image_button_cancel_duration) ImageButton cancelSelectedDurationImageButton;
     @BindView(R.id.image_button_cancel_start_time) ImageButton cancelStartTimeImageButton;
     @BindView(R.id.image_button_cancel_start_date) ImageButton cancelSelectedImageButton;
+    @BindView(R.id.image_button_cancel_project) ImageButton cancelProjectImageButton;
     @BindView(R.id.group_days) Group daysGroup;
     @BindView(R.id.text_view_duration) TextView durationTextView;
     @BindView(R.id.text_view_start_date) TextView startDateTextView;
     @BindView(R.id.text_view_start_time) TextView startTimeTextView;
+    @BindView(R.id.text_view_project) TextView projectTextView;
     @BindViews({R.id.text_view_repeat_monday, R.id.text_view_repeat_tuesday,
             R.id.text_view_repeat_wednesday, R.id.text_view_repeat_thursday,
             R.id.text_view_repeat_friday, R.id.text_view_repeat_saturday,
@@ -155,6 +158,12 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     @OnClick({R.id.image_button_timer, R.id.text_view_duration})
     void launchDurationPicker() {
         mDurationPicker.get().show(getSupportFragmentManager(), "duration_picker");
+    }
+
+    @OnClick(R.id.image_button_cancel_project)
+    void removeFromProject() {
+        scheduleCanceled(cancelProjectImageButton, projectTextView, projectString);
+        //TODO: update viewmodel and remove task from project if confirmed
     }
 
     @OnClick(R.id.image_button_cancel_start_date)

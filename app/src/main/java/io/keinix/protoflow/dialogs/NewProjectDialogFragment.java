@@ -19,7 +19,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.keinix.protoflow.R;
+import io.keinix.protoflow.di.ActivityScope;
 
+@ActivityScope
 public class NewProjectDialogFragment extends DialogFragment {
 
     @BindView(R.id.edit_text_new_project_name) EditText newProjectEditText;
