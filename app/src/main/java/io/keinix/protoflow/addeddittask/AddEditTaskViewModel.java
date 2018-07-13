@@ -16,6 +16,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.keinix.protoflow.R;
+import io.keinix.protoflow.data.Project;
 import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.data.source.TaskRepository;
 
@@ -55,6 +56,10 @@ public class AddEditTaskViewModel extends AndroidViewModel {
 
     LiveData<Task> getTaskToEdit(int id) {
         return mTaskRepository.getTask(id);
+    }
+
+    LiveData<List<Project>> getAllProjects() {
+        return mTaskRepository.getAllProjects();
     }
 
     // -----------public: view layer------------

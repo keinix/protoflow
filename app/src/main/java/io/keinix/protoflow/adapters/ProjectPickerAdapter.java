@@ -10,13 +10,16 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.protoflow.R;
 import io.keinix.protoflow.data.Project;
+import io.keinix.protoflow.di.ActivityScope;
 
+@ActivityScope
 public class ProjectPickerAdapter extends RecyclerView.Adapter<ProjectPickerAdapter.ProjectPickerViewHolder> {
-
 
     private List<Project> mProjects;
     private OnProjectSelectedListener mListener;
@@ -25,6 +28,7 @@ public class ProjectPickerAdapter extends RecyclerView.Adapter<ProjectPickerAdap
         void onProjectSelected(Project project);
     }
 
+    @Inject
     public ProjectPickerAdapter(OnProjectSelectedListener listener) {
         mListener = listener;
     }
@@ -56,6 +60,7 @@ public class ProjectPickerAdapter extends RecyclerView.Adapter<ProjectPickerAdap
 
     public void setProjects(List<Project> projects) {
         mProjects = projects;
+        notifyDataSetChanged();
     }
 
     public class ProjectPickerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

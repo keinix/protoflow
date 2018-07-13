@@ -1,12 +1,16 @@
 package io.keinix.protoflow.addeddittask;
 
+import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
+import dagger.android.ContributesAndroidInjector;
 import io.keinix.protoflow.adapters.ProjectPickerAdapter;
 import io.keinix.protoflow.adapters.ProjectPickerAdapter.OnProjectSelectedListener;
 import io.keinix.protoflow.di.ActivityScope;
+import io.keinix.protoflow.di.FragmentScope;
 import io.keinix.protoflow.dialogs.DatePickerDialogFragment;
 import io.keinix.protoflow.dialogs.DurationPickerDialogFragment;
+import io.keinix.protoflow.dialogs.ProjectPickerDialogFragment;
 import io.keinix.protoflow.dialogs.TimePickerDialogFragment;
 import io.keinix.protoflow.tasks.TasksActivity;
 
@@ -29,6 +33,16 @@ public abstract class AddEditTaskModule {
     }
 
     @ActivityScope
+    @Provides static ProjectPickerDialogFragment projectPickerDialogFragment() {
+        return new ProjectPickerDialogFragment();
+    }
+
+    @FragmentScope
+    @ContributesAndroidInjector
+    abstract ProjectPickerDialogFragment projectPickerDialogFragmentInjector();
+
+
+    @ActivityScope
     @Provides static int taskIdExtra(AddEditTaskActivity addEditTaskActivity) {
         return addEditTaskActivity.getIntent().getIntExtra(AddEditTaskActivity.EXTRA_TASK_ID, -1);
     }
@@ -43,9 +57,11 @@ public abstract class AddEditTaskModule {
         return new ProjectPickerAdapter(listener);
     }
 
+//    @ActivityScope
+//    @Provides static OnProjectSelectedListener onProjectSelectedListener(AddEditTaskActivity addEditTaskActivity) {
+//        return addEditTaskActivity;
+//    }
     @ActivityScope
-    @Provides static OnProjectSelectedListener onProjectSelectedListener(AddEditTaskActivity addEditTaskActivity) {
-        return (OnProjectSelectedListener) addEditTaskActivity;
-    }
+    @Binds abstract ProjectPickerAdapter.OnProjectSelectedListener provideListener(AddEditTaskActivity addEditTaskActivity);
 
 }

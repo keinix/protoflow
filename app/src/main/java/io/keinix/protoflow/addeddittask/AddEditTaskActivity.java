@@ -37,14 +37,18 @@ import butterknife.OnClick;
 import dagger.Lazy;
 import dagger.android.support.DaggerAppCompatActivity;
 import io.keinix.protoflow.R;
+import io.keinix.protoflow.adapters.ProjectPickerAdapter;
+import io.keinix.protoflow.data.Project;
 import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.dialogs.DatePickerDialogFragment;
 import io.keinix.protoflow.dialogs.DurationPickerDialogFragment;
+import io.keinix.protoflow.dialogs.ProjectPickerDialogFragment;
 import io.keinix.protoflow.dialogs.TimePickerDialogFragment;
 
 public class AddEditTaskActivity extends DaggerAppCompatActivity
         implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,
-        DurationPickerDialogFragment.onDurationSetListener {
+        DurationPickerDialogFragment.onDurationSetListener,
+        ProjectPickerAdapter.OnProjectSelectedListener {
 
     // -------------View Binding-------------
     @BindDrawable(R.drawable.shape_repeat_day_circle_backgroud) Drawable circle;
@@ -100,6 +104,9 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
 
     @Inject
     Lazy<DurationPickerDialogFragment> mDurationPicker;
+
+    @Inject
+    Lazy<ProjectPickerDialogFragment> mProjectPicker;
 
     @Inject
     int mTaskIdToEdit;
@@ -217,6 +224,12 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         scheduleSelected(cancelSelectedDurationImageButton, durationTextView, timeStamp);
     }
 
+    // callback from mProjectPicker
+    @Override
+    public void onProjectSelected(Project project) {
+
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.add_edit_tasks, menu);
@@ -262,7 +275,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
             task.observe(this, this::setUpUiToEditTask);
         }
         if (mDateFromPreviousView > 0) setDateFromPreviousView();
-
+        mViewModel.getAllProjects().observe(this, mProjectPicker.get()::setProjects);
     }
 
 
