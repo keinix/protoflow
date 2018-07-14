@@ -32,6 +32,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
     private long mStartDateUtc;
     private int mTaskDurationInMinutes;
     private long mStartTimeUtc;
+    private Project mProject;
 
     private static final int MILISECONDS_IN_HOUR = 3600000;
     private static final int MINISECONDS_IN_MINUTE = 60000;
@@ -324,5 +325,13 @@ public class AddEditTaskViewModel extends AndroidViewModel {
     @Nullable
     public SparseBooleanArray getIsDaySelectedArray() {
         return mIsDaySelectedArray;
+    }
+
+    public Project getProject() {
+        return mProject;
+    }
+
+    public void setProject(Project project) {
+        mProject = project;
     }
 }

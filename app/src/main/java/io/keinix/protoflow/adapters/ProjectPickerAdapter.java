@@ -78,6 +78,7 @@ public class ProjectPickerAdapter extends RecyclerView.Adapter<ProjectPickerAdap
         public ProjectPickerViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
         }
 
         @Override

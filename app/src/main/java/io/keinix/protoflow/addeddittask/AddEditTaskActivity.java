@@ -1,6 +1,7 @@
 package io.keinix.protoflow.addeddittask;
 
 import android.app.DatePickerDialog;
+import android.app.Fragment;
 import android.app.TimePickerDialog;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProvider;
@@ -106,7 +107,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     Lazy<DurationPickerDialogFragment> mDurationPicker;
 
     @Inject
-    Lazy<ProjectPickerDialogFragment> mProjectPicker;
+    ProjectPickerDialogFragment mProjectPicker;
 
     @Inject
     int mTaskIdToEdit;
@@ -165,6 +166,12 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     @OnClick({R.id.image_button_timer, R.id.text_view_duration})
     void launchDurationPicker() {
         mDurationPicker.get().show(getSupportFragmentManager(), "duration_picker");
+    }
+
+    @OnClick({R.id.image_button_project, R.id.text_view_project})
+    void launchProjectPicker() {
+        mViewModel.getAllProjects().observe(this, mProjectPicker::setProjects);
+        mProjectPicker.show(getSupportFragmentManager(), "project_picker");
     }
 
     @OnClick(R.id.image_button_cancel_project)
@@ -227,7 +234,9 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     // callback from mProjectPicker
     @Override
     public void onProjectSelected(Project project) {
-
+        scheduleSelected(cancelProjectImageButton, projectTextView, project.getName());
+        mProjectPicker.dismiss();
+        mViewModel.setProject(project);
     }
 
     @Override
@@ -275,9 +284,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
             task.observe(this, this::setUpUiToEditTask);
         }
         if (mDateFromPreviousView > 0) setDateFromPreviousView();
-        mViewModel.getAllProjects().observe(this, mProjectPicker.get()::setProjects);
     }
-
 
     // ------------------Private------------------
     /**
@@ -337,6 +344,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         setDurationFromViewModel();
         setStartTimeFromViewModel();
         setStartDateFromViewModel();
+        setProjectFromViewModel();
     }
 
     private void setStartDateFromViewModel() {
@@ -358,6 +366,13 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         if (mViewModel.getTaskDurationInMinutes() > 0) {
             scheduleSelected(cancelSelectedDurationImageButton,
                     durationTextView, mViewModel.getTaskDurationTimeStamp());
+        }
+    }
+
+    private void setProjectFromViewModel() {
+        Project project = mViewModel.getProject();
+        if (project != null) {
+            scheduleSelected(cancelProjectImageButton, projectTextView, project.getName());
         }
     }
 
