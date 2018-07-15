@@ -50,6 +50,10 @@ public class TaskRepository {
         return mCalendarDayDao.getCalendarDay(date);
     }
 
+    public LiveData<List<Task>> getTasksInProject(int projectId) {
+        return mTaskDao.getTaskInProject(projectId);
+    }
+
     public LiveData<CalendarDay> getLiveCalendarDay(long date) {
         return mCalendarDayDao.getLiveCalendarDay(date);
     }

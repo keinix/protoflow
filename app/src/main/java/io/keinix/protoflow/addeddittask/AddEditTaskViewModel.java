@@ -174,6 +174,9 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         if (mIsDaySelectedArray != null) {
             setRepeatedDaysInTask(task);
         }
+        if (mProject != null) {
+            task.setProjectId(mProject.getId());
+        }
         task.setScheduledDateUtc(mStartDateUtc);
         Log.d(TAG, "Start Date that is being set in AddEditTask: " + mStartDateUtc);
         task.setStartTimeUtc(mStartTimeUtc);

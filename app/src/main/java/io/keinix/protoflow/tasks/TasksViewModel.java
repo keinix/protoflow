@@ -27,6 +27,7 @@ public class TasksViewModel extends AndroidViewModel {
     private TaskRepository mTaskRepository;
     private LiveData<List<Task>> mAllTasks;
     private List<Long> mNext7DaysUtc;
+    private List<Project> mProjects;
 
     public static final String TAG = TasksViewModel.class.getSimpleName();
     @Inject
@@ -55,6 +56,10 @@ public class TasksViewModel extends AndroidViewModel {
 
     public LiveData<List<Task>> getAllRepeatedTasks() {
         return mTaskRepository.getAllRepeatedTasks();
+    }
+
+    public LiveData<List<Task>> getTasksInProject(int projectId) {
+        return mTaskRepository.getTasksInProject(projectId);
     }
 
     public LiveData<List<Project>> getAllProjects() {
@@ -238,5 +243,16 @@ public class TasksViewModel extends AndroidViewModel {
     private List<Task> sortTasksByDate(List<Task> tasks) {
         tasks.sort(Comparator.comparingLong(Task::getScheduledDateUtc));
         return tasks;
+    }
+
+    // -------getters and setters--------
+
+
+    public List<Project> getProjects() {
+        return mProjects;
+    }
+
+    public void setProjects(List<Project> projects) {
+        mProjects = projects;
     }
 }

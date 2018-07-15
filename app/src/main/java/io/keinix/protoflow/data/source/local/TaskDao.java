@@ -25,6 +25,9 @@ public interface TaskDao {
     @Query("SELECT * from task_table")
     LiveData<List<Task>> getAllTasks();
 
+    @Query("SELECT * from task_table WHERE project_id = :projectId")
+    LiveData<List<Task>> getTaskInProject(int projectId);
+
     @Query("SELECT * from task_table WHERE id = :id LIMIT 1")
     LiveData<Task> getTask(int id);
 
