@@ -21,4 +21,7 @@ public interface ProjectDao {
 
     @Query("SELECT * from project_table")
     LiveData<List<Project>> getAllProjects();
+
+    @Query("SELECT * from project_table WHERE id = :id LIMIT 1")
+    LiveData<Project> getProject(int id);
 }

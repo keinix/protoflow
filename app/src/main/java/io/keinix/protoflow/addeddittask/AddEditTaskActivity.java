@@ -45,6 +45,7 @@ import io.keinix.protoflow.dialogs.DatePickerDialogFragment;
 import io.keinix.protoflow.dialogs.DurationPickerDialogFragment;
 import io.keinix.protoflow.dialogs.ProjectPickerDialogFragment;
 import io.keinix.protoflow.dialogs.TimePickerDialogFragment;
+import io.keinix.protoflow.tasks.TasksActivity;
 
 public class AddEditTaskActivity extends DaggerAppCompatActivity
         implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,
@@ -284,6 +285,13 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
             task.observe(this, this::setUpUiToEditTask);
         }
         if (mDateFromPreviousView > 0) setDateFromPreviousView();
+        int projectId = getIntent().getIntExtra(TasksActivity.EXTRA_CURRENT_PROJECT_ID, -1);
+        if (projectId >= 0) {
+            mViewModel.getProject(projectId).observe(this, project -> {
+                mViewModel.setProject(project);
+                scheduleSelected(cancelProjectImageButton, projectTextView, project.getName());
+            });
+        }
     }
 
     // ------------------Private------------------
@@ -385,7 +393,10 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
             notesEditText.setText(task.getNotes());
         }
         if (task.isRepeatsOnADay()) repeatCheckbox.setChecked(true);
-        loadUiData();
+        mViewModel.getProject(task.getProjectId()).observe(this, project -> {
+            mViewModel.setProject(project);
+            loadUiData();
+        });
     }
 
     private void setDayUiAsUnSelected(TextView day) {
@@ -420,4 +431,5 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         mViewModel.setStartDateUtc(mDateFromPreviousView);
         scheduleSelected(cancelSelectedImageButton, startDateTextView, selectedDate);
     }
+
 }

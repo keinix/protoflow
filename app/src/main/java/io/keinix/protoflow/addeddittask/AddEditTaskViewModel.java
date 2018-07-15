@@ -63,6 +63,10 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         return mTaskRepository.getAllProjects();
     }
 
+    public LiveData<Project> getProject(int id) {
+        return mTaskRepository.getProject(id);
+    }
+
     // -----------public: view layer------------
 
     /**

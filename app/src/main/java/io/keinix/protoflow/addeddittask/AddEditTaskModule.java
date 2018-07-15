@@ -52,6 +52,7 @@ public abstract class AddEditTaskModule {
         return addEditTaskActivity.getIntent().getLongExtra(TasksActivity.EXTRA_DATE_OF_CURRENT_VIEW, 0);
     }
 
+
     @ActivityScope
     @Provides static ProjectPickerAdapter projectPickerAdapter(OnProjectSelectedListener listener) {
         return new ProjectPickerAdapter(listener);

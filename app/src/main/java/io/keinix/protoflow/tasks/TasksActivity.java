@@ -63,8 +63,10 @@ public class TasksActivity extends DaggerAppCompatActivity
     private long mDateOfCurrentView;
     private String mLastViewValue;
     private String mNameOfCurrentProject;
+    private Project mProject;
     public static final String TAG = TasksActivity.class.getSimpleName();
     public static final String EXTRA_DATE_OF_CURRENT_VIEW = "EXTRA_DATE_OF_CURRENT_VIEW";
+    public static final String EXTRA_CURRENT_PROJECT_ID = "EXTRA_CURRENT_PROJECT_ID";
     public static final String KEY_DATE_OF_CURRENT_VIEW = "KEY_DATE_OF_CURRENT_VIEW";
     public static final String KEY_CURRENT_PROJECT_NAME = "KEY_CURRENT_PROJECT_NAME";
     public static final String KEY_LAST_VIEW = "KEY_LAST_VIEW";
@@ -93,6 +95,9 @@ public class TasksActivity extends DaggerAppCompatActivity
     void fabClick() {
         Intent intent = new Intent(TasksActivity.this, AddEditTaskActivity.class);
         if (getTitle().equals(sevenDaysString)) {
+            startActivity(intent);
+        } else if (mLastViewValue.equals(LAST_VIEW_7_PROJECT)) {
+            intent.putExtra(EXTRA_CURRENT_PROJECT_ID, mProject.getId());
             startActivity(intent);
         } else {
             intent.putExtra(EXTRA_DATE_OF_CURRENT_VIEW, mDateOfCurrentView);
@@ -308,6 +313,7 @@ public class TasksActivity extends DaggerAppCompatActivity
     private void loadTasksForProject(MenuItem item) {
         String name = item.getTitle().toString();
         Project project = getSelectedProject(name);
+        mProject = project;
         setTitle(project.getName());
         mNameOfCurrentProject = project.getName();
         mDisplayedTasks = mViewModel.getTasksInProject(project.getId());
@@ -322,6 +328,7 @@ public class TasksActivity extends DaggerAppCompatActivity
 
     private void loadTasksForProject(String name) {
         Project project = getSelectedProject(name);
+        mProject = project;
         setTitle(project.getName());
         mNameOfCurrentProject = project.getName();
         mDisplayedTasks = mViewModel.getTasksInProject(project.getId());

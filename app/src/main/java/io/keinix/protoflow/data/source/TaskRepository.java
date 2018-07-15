@@ -70,6 +70,10 @@ public class TaskRepository {
         return mTaskDao.getAllTasksFor7Days(taskIds);
     }
 
+    public LiveData<Project> getProject(int id) {
+        return mProjectDao.getProject(id);
+    }
+
     public LiveData<List<Task>> getAllRepeatedTasks() {
         return mTaskDao.getAllRepeatedTasks();
     }
