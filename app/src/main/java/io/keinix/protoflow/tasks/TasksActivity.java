@@ -67,7 +67,6 @@ public class TasksActivity extends DaggerAppCompatActivity
     public static final String EXTRA_DATE_OF_CURRENT_VIEW = "EXTRA_DATE_OF_CURRENT_VIEW";
     public static final String EXTRA_PROJECT = "EXTRA_PROJECT";
     public static final String KEY_DATE_OF_CURRENT_VIEW = "KEY_DATE_OF_CURRENT_VIEW";
-    public static final String KEY_CURRENT_PROJECT_NAME = "KEY_CURRENT_PROJECT_NAME";
     public static final String KEY_LAST_VIEW = "KEY_LAST_VIEW";
     public static final String LAST_VIEW_TODAY = "VALUE_LAST_VIEW_TODAY";
     public static final String LAST_VIEW_CALENDAR = "VALUE_LAST_VIEW_CALENDAR";
@@ -159,16 +158,6 @@ public class TasksActivity extends DaggerAppCompatActivity
         return true;
     }
 
-    // This callback is used when A DatePickerDialog is shown from the calendar
-    // option in the nav drawer
-    @Override
-    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-        mDatePicker.get().setStartDate(year, month, day);
-        setTitle(mDatePicker.get().getStartDateTimeStampWithDay());
-        mDateOfCurrentView = mDatePicker.get().getStartDateUtc();
-        mViewModel.getLiveCalendarDay(mDateOfCurrentView)
-                 .observe(this, this::displayTasksForDay);
-    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -186,16 +175,27 @@ public class TasksActivity extends DaggerAppCompatActivity
         restoreView();
     }
 
+    // Callback from mDatePicker
+    @Override
+    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+        mDatePicker.get().setStartDate(year, month, day);
+        setTitle(mDatePicker.get().getStartDateTimeStampWithDay());
+        mDateOfCurrentView = mDatePicker.get().getStartDateUtc();
+        mViewModel.getLiveCalendarDay(mDateOfCurrentView)
+                .observe(this, this::displayTasksForDay);
+    }
+
+    // Callback from mNewProjectDialog
     @Override
     public void onProjectCreated(String projectName) {
         Project project = new Project(projectName);
         mViewModel.insertProject(project);
         mProject = project;
         mViewModel.setProject(project);
-        updateProjectsInMenu(project);
         mLastViewValue = LAST_VIEW_PROJECT;
         displayTasksInProject(project);
     }
+
 
     // --------------Lifecycle--------------
 
@@ -320,47 +320,31 @@ public class TasksActivity extends DaggerAppCompatActivity
                 if (mProjects == null) {
                     updateProjectsInMenu(projects);
                 } else {
-                    updateProjectsInMenu(projects.get(projects.size() - 1));
+                    updateProjectsInMenu(projects.subList(projects.size() -1, projects.size()));
                 }
                 mProjects = projects;
             }
         });
     }
 
-    // (add button nav bar) add a new project to the menu
-    private void updateProjectsInMenu(Project project) {
-        MenuItem item = navigationView.getMenu().findItem(R.id.nav_projects);
-        SubMenu subMenu = item.getSubMenu();
-        subMenu.add(project.getName())
-                .setOnMenuItemClickListener(v -> {
-                    displayTasksInProject(project);
-                    mProject = project;
-                    mViewModel.setProject(project);
-                    drawer.closeDrawer(GravityCompat.START);
-                    mLastViewValue = LAST_VIEW_PROJECT;
-                    return true;
-                })
-                .setIcon(R.drawable.ic_project_black_24)
-                .setCheckable(true);
-    }
-
-    // populate the the menu when it's first created
     private void updateProjectsInMenu(List<Project> projects) {
         MenuItem item = navigationView.getMenu().findItem(R.id.nav_projects);
         SubMenu subMenu = item.getSubMenu();
         for (Project project : projects) {
             subMenu.add(project.getName())
-                    .setOnMenuItemClickListener(v -> {
-                        displayTasksInProject(project);
-                        mProject = project;
-                        mViewModel.setProject(project);
-                        drawer.closeDrawer(GravityCompat.START);
-                        mLastViewValue = LAST_VIEW_PROJECT;
-                        return true;
-                    })
+                    .setOnMenuItemClickListener(v -> onProjectClicked(project))
                     .setIcon(R.drawable.ic_project_black_24)
                     .setCheckable(true);
         }
+    }
+
+    private boolean onProjectClicked(Project project) {
+        displayTasksInProject(project);
+        mProject = project;
+        mViewModel.setProject(project);
+        drawer.closeDrawer(GravityCompat.START);
+        mLastViewValue = LAST_VIEW_PROJECT;
+        return true;
     }
 
     private void displayTasksInProject(Project project) {

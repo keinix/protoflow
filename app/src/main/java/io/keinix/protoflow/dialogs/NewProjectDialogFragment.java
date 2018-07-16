@@ -37,12 +37,14 @@ public class NewProjectDialogFragment extends DialogFragment {
         if (checkProjectNameIsNotBack(projectName)) {
             mListener.onProjectCreated(projectName);
             dismiss();
+            newProjectEditText.setText("");
         }
     }
 
     @OnClick(R.id.button_new_project_cancel)
     void onNewProjectCanceled() {
         dismiss();
+        newProjectEditText.setText("");
     }
 
     private OnNewProjectCreatedListener mListener;
