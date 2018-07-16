@@ -111,6 +111,9 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     ProjectPickerDialogFragment mProjectPicker;
 
     @Inject
+    Project mProject;
+
+    @Inject
     int mTaskIdToEdit;
 
     @Inject
@@ -285,12 +288,9 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
             task.observe(this, this::setUpUiToEditTask);
         }
         if (mDateFromPreviousView > 0) setDateFromPreviousView();
-        int projectId = getIntent().getIntExtra(TasksActivity.EXTRA_CURRENT_PROJECT_ID, -1);
-        if (projectId >= 0) {
-            mViewModel.getProject(projectId).observe(this, project -> {
-                mViewModel.setProject(project);
-                scheduleSelected(cancelProjectImageButton, projectTextView, project.getName());
-            });
+        if (mProject != null) {
+                scheduleSelected(cancelProjectImageButton, projectTextView, mProject.getName());
+                mViewModel.setProject(mProject);
         }
     }
 

@@ -62,18 +62,17 @@ public class TasksActivity extends DaggerAppCompatActivity
     private List<Project> mProjects;
     private long mDateOfCurrentView;
     private String mLastViewValue;
-    private String mNameOfCurrentProject;
     private Project mProject;
     public static final String TAG = TasksActivity.class.getSimpleName();
     public static final String EXTRA_DATE_OF_CURRENT_VIEW = "EXTRA_DATE_OF_CURRENT_VIEW";
-    public static final String EXTRA_CURRENT_PROJECT_ID = "EXTRA_CURRENT_PROJECT_ID";
+    public static final String EXTRA_PROJECT = "EXTRA_PROJECT";
     public static final String KEY_DATE_OF_CURRENT_VIEW = "KEY_DATE_OF_CURRENT_VIEW";
     public static final String KEY_CURRENT_PROJECT_NAME = "KEY_CURRENT_PROJECT_NAME";
     public static final String KEY_LAST_VIEW = "KEY_LAST_VIEW";
     public static final String LAST_VIEW_TODAY = "VALUE_LAST_VIEW_TODAY";
     public static final String LAST_VIEW_CALENDAR = "VALUE_LAST_VIEW_CALENDAR";
     public static final String LAST_VIEW_7_DAYS = "VALUE_LAST_VIEW_7_DAYS";
-    public static final String LAST_VIEW_7_PROJECT = "LAST_VIEW_7_PROJECT";
+    public static final String LAST_VIEW_PROJECT = "LAST_VIEW_PROJECT";
 
     // ------------------DI------------------
 
@@ -96,8 +95,8 @@ public class TasksActivity extends DaggerAppCompatActivity
         Intent intent = new Intent(TasksActivity.this, AddEditTaskActivity.class);
         if (getTitle().equals(sevenDaysString)) {
             startActivity(intent);
-        } else if (mLastViewValue.equals(LAST_VIEW_7_PROJECT)) {
-            intent.putExtra(EXTRA_CURRENT_PROJECT_ID, mProject.getId());
+        } else if (mLastViewValue.equals(LAST_VIEW_PROJECT)) {
+            intent.putExtra(EXTRA_PROJECT, mProject);
             startActivity(intent);
         } else {
             intent.putExtra(EXTRA_DATE_OF_CURRENT_VIEW, mDateOfCurrentView);
@@ -134,6 +133,7 @@ public class TasksActivity extends DaggerAppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        // OnClicks for Projects are set individually when they are added to the menu
         int id = item.getItemId();
 
         switch (id) {
@@ -152,10 +152,8 @@ public class TasksActivity extends DaggerAppCompatActivity
                 break;
             case R.id.nav_add_project:
                 mNewProjectDialog.get().show(getSupportFragmentManager(), "new_project_dialog");
+                mLastViewValue = LAST_VIEW_PROJECT;
                 break;
-            default:
-                mLastViewValue = LAST_VIEW_7_PROJECT;
-                loadTasksForProject(item);
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -177,7 +175,6 @@ public class TasksActivity extends DaggerAppCompatActivity
         super.onSaveInstanceState(outState);
         outState.putString(KEY_LAST_VIEW, mLastViewValue);
         outState.putLong(KEY_DATE_OF_CURRENT_VIEW, mDateOfCurrentView);
-        outState.putString(KEY_CURRENT_PROJECT_NAME, mNameOfCurrentProject);
 
     }
 
@@ -186,7 +183,6 @@ public class TasksActivity extends DaggerAppCompatActivity
         super.onRestoreInstanceState(savedInstanceState);
         mDateOfCurrentView = savedInstanceState.getLong(KEY_DATE_OF_CURRENT_VIEW);
         mLastViewValue = savedInstanceState.getString(KEY_LAST_VIEW);
-        mNameOfCurrentProject = savedInstanceState.getString(KEY_CURRENT_PROJECT_NAME);
         restoreView();
     }
 
@@ -194,7 +190,11 @@ public class TasksActivity extends DaggerAppCompatActivity
     public void onProjectCreated(String projectName) {
         Project project = new Project(projectName);
         mViewModel.insertProject(project);
+        mProject = project;
+        mViewModel.setProject(project);
         updateProjectsInMenu(project);
+        mLastViewValue = LAST_VIEW_PROJECT;
+        displayTasksInProject(project);
     }
 
     // --------------Lifecycle--------------
@@ -222,14 +222,39 @@ public class TasksActivity extends DaggerAppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-        LiveData<List<Project>> liveProjects = mViewModel.getAllProjects();
-        liveProjects.observe(this, projects -> {
-            mViewModel.setProjects(projects);
-            mProjects = projects;
-            updateProjectsInMenu(projects);
-            liveProjects.removeObservers(this);
-        });
+        setUpProjectInNavDrawer();
     }
+
+    private void setUpRecyclerView() {
+        recyclerView.setAdapter(mAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    // used to restore view after configuration changes
+    private void restoreView() {
+        switch (mLastViewValue) {
+            case LAST_VIEW_CALENDAR:
+                navigationView.setCheckedItem(R.id.nav_calendar);
+                mDatePicker.get().setStartDate(mDateOfCurrentView);
+                setTitle(mDatePicker.get().getStartDateTimeStampWithDay());
+                mViewModel.getLiveCalendarDay(mDateOfCurrentView)
+                        .observe(this, this::displayTasksForDay);
+                break;
+            case LAST_VIEW_TODAY:
+                navigationView.setCheckedItem(R.id.nav_today);
+                getTasksForToday();
+                break;
+            case LAST_VIEW_7_DAYS:
+                navigationView.setCheckedItem(R.id.nav_7_days);
+                getTasksFor7Days();
+                break;
+            case LAST_VIEW_PROJECT:
+                displayTasksInProject(mViewModel.getProject());
+                break;
+        }
+    }
+
+    //~~~~~~~Methods for scheduled task~~~~~~~
 
     // calendarDay can be null if no task was scheduled for that day
     private void displayTasksForDay(@Nullable CalendarDay calendarDay) {
@@ -283,16 +308,38 @@ public class TasksActivity extends DaggerAppCompatActivity
         });
     }
 
-    private void setUpRecyclerView() {
-        recyclerView.setAdapter(mAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    //~~~~~~~Methods for Projects~~~~~~~
+
+    // only one project can be added at a time from the nav menu's
+    // add button, so if mProjects is not null (e.g. it is not the initial load
+    // (of the menu) only one project need to be added to the menu from projects
+    private void setUpProjectInNavDrawer() {
+        LiveData<List<Project>> liveProjects = mViewModel.getAllProjects();
+        liveProjects.observe(this, projects -> {
+            if (projects != null) {
+                if (mProjects == null) {
+                    updateProjectsInMenu(projects);
+                } else {
+                    updateProjectsInMenu(projects.get(projects.size() - 1));
+                }
+                mProjects = projects;
+            }
+        });
     }
 
-    // add a new project to the menu
+    // (add button nav bar) add a new project to the menu
     private void updateProjectsInMenu(Project project) {
         MenuItem item = navigationView.getMenu().findItem(R.id.nav_projects);
         SubMenu subMenu = item.getSubMenu();
         subMenu.add(project.getName())
+                .setOnMenuItemClickListener(v -> {
+                    displayTasksInProject(project);
+                    mProject = project;
+                    mViewModel.setProject(project);
+                    drawer.closeDrawer(GravityCompat.START);
+                    mLastViewValue = LAST_VIEW_PROJECT;
+                    return true;
+                })
                 .setIcon(R.drawable.ic_project_black_24)
                 .setCheckable(true);
     }
@@ -301,21 +348,23 @@ public class TasksActivity extends DaggerAppCompatActivity
     private void updateProjectsInMenu(List<Project> projects) {
         MenuItem item = navigationView.getMenu().findItem(R.id.nav_projects);
         SubMenu subMenu = item.getSubMenu();
-        if (projects != null) {
-            for (Project project : projects) {
-                subMenu.add(project.getName())
-                        .setIcon(R.drawable.ic_project_black_24)
-                        .setCheckable(true);
-            }
+        for (Project project : projects) {
+            subMenu.add(project.getName())
+                    .setOnMenuItemClickListener(v -> {
+                        displayTasksInProject(project);
+                        mProject = project;
+                        mViewModel.setProject(project);
+                        drawer.closeDrawer(GravityCompat.START);
+                        mLastViewValue = LAST_VIEW_PROJECT;
+                        return true;
+                    })
+                    .setIcon(R.drawable.ic_project_black_24)
+                    .setCheckable(true);
         }
     }
 
-    private void loadTasksForProject(MenuItem item) {
-        String name = item.getTitle().toString();
-        Project project = getSelectedProject(name);
-        mProject = project;
+    private void displayTasksInProject(Project project) {
         setTitle(project.getName());
-        mNameOfCurrentProject = project.getName();
         mDisplayedTasks = mViewModel.getTasksInProject(project.getId());
         mDisplayedTasks.observe(this, tasks -> {
             if (tasks.size() > 0) {
@@ -324,54 +373,5 @@ public class TasksActivity extends DaggerAppCompatActivity
                 mAdapter.clearTasks();
             }
         });
-    }
-
-    private void loadTasksForProject(String name) {
-        Project project = getSelectedProject(name);
-        mProject = project;
-        setTitle(project.getName());
-        mNameOfCurrentProject = project.getName();
-        mDisplayedTasks = mViewModel.getTasksInProject(project.getId());
-        mDisplayedTasks.observe(this, tasks -> {
-            if (tasks.size() > 0) {
-                mAdapter.setTasks(tasks);
-            } else {
-                mAdapter.clearTasks();
-            }
-        });
-    }
-
-    private Project getSelectedProject(String name) {
-        for (Project project : mProjects) {
-            if (project.getName().equals(name)) {
-                return project;
-            }
-        }
-        return null;
-    }
-
-    // used to restore view after configuration changes
-    private void restoreView() {
-        switch (mLastViewValue) {
-            case LAST_VIEW_CALENDAR:
-                navigationView.setCheckedItem(R.id.nav_calendar);
-                mDatePicker.get().setStartDate(mDateOfCurrentView);
-                setTitle(mDatePicker.get().getStartDateTimeStampWithDay());
-                mViewModel.getLiveCalendarDay(mDateOfCurrentView)
-                        .observe(this, this::displayTasksForDay);
-                break;
-            case LAST_VIEW_TODAY:
-                navigationView.setCheckedItem(R.id.nav_today);
-                getTasksForToday();
-                break;
-            case LAST_VIEW_7_DAYS:
-                navigationView.setCheckedItem(R.id.nav_7_days);
-                getTasksFor7Days();
-                break;
-            case LAST_VIEW_7_PROJECT:
-                mProjects = mViewModel.getProjects();
-                loadTasksForProject(mNameOfCurrentProject);
-                break;
-        }
     }
 }

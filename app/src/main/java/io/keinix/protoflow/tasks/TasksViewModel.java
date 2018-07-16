@@ -27,7 +27,7 @@ public class TasksViewModel extends AndroidViewModel {
     private TaskRepository mTaskRepository;
     private LiveData<List<Task>> mAllTasks;
     private List<Long> mNext7DaysUtc;
-    private List<Project> mProjects;
+    private Project mProject;
 
     public static final String TAG = TasksViewModel.class.getSimpleName();
     @Inject
@@ -108,6 +108,7 @@ public class TasksViewModel extends AndroidViewModel {
         tasks = addDaySeparatorItems(tasks);
         return tasks;
     }
+
 
     // ----------------private-----------------
 
@@ -247,12 +248,11 @@ public class TasksViewModel extends AndroidViewModel {
 
     // -------getters and setters--------
 
-
-    public List<Project> getProjects() {
-        return mProjects;
+    public Project getProject() {
+        return mProject;
     }
 
-    public void setProjects(List<Project> projects) {
-        mProjects = projects;
+    public void setProject(Project project) {
+        mProject = project;
     }
 }
