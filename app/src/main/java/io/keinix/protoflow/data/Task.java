@@ -9,14 +9,23 @@ import android.support.annotation.Nullable;
 
 import java.util.Objects;
 
+import io.keinix.protoflow.util.ListItem;
+
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 @Entity(tableName = "task_table",
-    foreignKeys = @ForeignKey(entity = Project.class,
-        parentColumns = "id",
-        childColumns = "project_id",
-        onDelete = CASCADE))
-public class Task {
+    foreignKeys = {
+        @ForeignKey(entity = Project.class,
+                parentColumns = "id",
+                childColumns = "project_id",
+                onDelete = CASCADE),
+
+        @ForeignKey(entity = Routine.class,
+                parentColumns = "id",
+                childColumns = "routine_id",
+                onDelete = CASCADE)
+    })
+public class Task implements ListItem{
 
     //TODO:might need to add column info
     @PrimaryKey (autoGenerate = true)
@@ -24,6 +33,9 @@ public class Task {
 
     @ColumnInfo(name = "project_id")
     private int projectId;
+
+    @ColumnInfo( name = "routine_id")
+    private int routineId;
 
     @NonNull
     @ColumnInfo(name = "name")
@@ -72,6 +84,11 @@ public class Task {
 
     public Task(@NonNull String name) {
         this.name = name;
+    }
+
+    @Override
+    public int getItemType() {
+        return ListItem.TYPE_TASK;
     }
 
     public Task cloneWithNewDate(long date) {
@@ -225,6 +242,14 @@ public class Task {
 
     public void setRepeatsOnADay(boolean repeatsOnADay) {
         this.repeatsOnADay = repeatsOnADay;
+    }
+
+    public int getRoutineId() {
+        return routineId;
+    }
+
+    public void setRoutineId(int routineId) {
+        this.routineId = routineId;
     }
 
     @Override

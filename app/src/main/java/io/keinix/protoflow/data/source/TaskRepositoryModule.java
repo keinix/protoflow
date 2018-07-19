@@ -11,6 +11,7 @@ import io.keinix.protoflow.data.Project;
 import io.keinix.protoflow.data.source.local.CalendarDayDao;
 import io.keinix.protoflow.data.source.local.CalendarDayDatabase;
 import io.keinix.protoflow.data.source.local.ProjectDao;
+import io.keinix.protoflow.data.source.local.RoutineDao;
 import io.keinix.protoflow.data.source.local.TaskDao;
 import io.keinix.protoflow.data.source.local.TaskRoomDatabase;
 
@@ -41,13 +42,18 @@ public abstract class TaskRepositoryModule {
     }
 
     @Singleton
+    @Provides static RoutineDao provideRoutineDao(TaskRoomDatabase db) {
+        return db.routineDao();
+    }
+
+    @Singleton
     @Provides static ProjectDao projectDao(TaskRoomDatabase db) {
         return db.projectDao();
     }
 
     @Singleton
-    @Provides static TaskRepository taskRepository(TaskDao dao, CalendarDayDao cDao, ProjectDao pDao) {
-        return new TaskRepository(dao, cDao, pDao);
+    @Provides static TaskRepository taskRepository(TaskDao dao, CalendarDayDao cDao, ProjectDao pDao, RoutineDao rDao) {
+        return new TaskRepository(dao, cDao, pDao, rDao);
     }
 
 }

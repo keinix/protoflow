@@ -249,12 +249,14 @@ public class TasksActivity extends DaggerAppCompatActivity
                 getTasksFor7Days();
                 break;
             case LAST_VIEW_PROJECT:
-                displayTasksInProject(mViewModel.getProject());
+                mProject = mViewModel.getProject();
+                displayTasksInProject(mProject);
+                setProjectAsClickInNavMenu(mProject);
                 break;
         }
     }
 
-    //~~~~~~~Methods for scheduled task~~~~~~~
+    //~~~~~~~Methods for scheduled tasks~~~~~~~
 
     // calendarDay can be null if no task was scheduled for that day
     private void displayTasksForDay(@Nullable CalendarDay calendarDay) {
@@ -357,5 +359,11 @@ public class TasksActivity extends DaggerAppCompatActivity
                 mAdapter.clearTasks();
             }
         });
+    }
+
+    private void setProjectAsClickInNavMenu(Project project) {
+        MenuItem item = navigationView.getMenu().findItem(R.id.nav_projects);
+        SubMenu subMenu = item.getSubMenu();
+        subMenu.getItem().setChecked(true);
     }
 }

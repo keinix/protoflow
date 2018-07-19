@@ -16,6 +16,7 @@ import io.keinix.protoflow.data.Project;
 import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.data.source.local.CalendarDayDao;
 import io.keinix.protoflow.data.source.local.ProjectDao;
+import io.keinix.protoflow.data.source.local.RoutineDao;
 import io.keinix.protoflow.data.source.local.TaskDao;
 
 @Singleton
@@ -24,13 +25,16 @@ public class TaskRepository {
     private TaskDao mTaskDao;
     private CalendarDayDao mCalendarDayDao;
     private ProjectDao mProjectDao;
+    private RoutineDao mRoutineDao;
     private LiveData<List<Task>> mAllTasks;
 
     @Inject
-    public TaskRepository(TaskDao taskDao, CalendarDayDao calendarDayDao, ProjectDao projectDao) {
+    public TaskRepository(TaskDao taskDao, CalendarDayDao calendarDayDao, ProjectDao projectDao,
+                          RoutineDao routineDao) {
         mTaskDao = taskDao;
         mCalendarDayDao = calendarDayDao;
         mProjectDao = projectDao;
+        mRoutineDao = routineDao;
         mAllTasks = mTaskDao.getAllTasks();
     }
 

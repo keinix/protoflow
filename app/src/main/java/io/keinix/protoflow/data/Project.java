@@ -9,12 +9,11 @@ import android.os.Parcelable;
 public class Project implements Parcelable {
 
     @PrimaryKey (autoGenerate = true)
-    private int id = 0;
+    private int id;
 
     private String name;
 
     public Project(String name) {
-        this.id = id;
         this.name = name;
     }
 

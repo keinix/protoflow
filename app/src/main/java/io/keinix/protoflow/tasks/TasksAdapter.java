@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -36,6 +37,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
     public static final int ITEM_VIEW_TYPE_DATE = 102;
     private Context mContext;
     private List<Task> mTasks;
+    private Map<Integer, List<Task>> routinesToTasks;
 
     @Inject
     public TasksAdapter(Context context) {
@@ -97,10 +99,15 @@ public class TasksAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
+    public void setRoutines(List<Task> tasks) {
+
+    }
+
     public void clearTasks() {
         mTasks = null;
         notifyDataSetChanged();
     }
+
 
     // -------------View Holders--------------
 
@@ -177,6 +184,18 @@ public class TasksAdapter extends RecyclerView.Adapter {
             String dateString = DatePickerDialogFragment
                     .getStartDateTimeStampWithDay(mTasks.get(position).getScheduledDateUtc());
             dateSeparatorTextView.setText(dateString);
+        }
+    }
+
+    class RoutineViewHolder extends RecyclerView.ViewHolder {
+
+        public RoutineViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+
+        public void bindView(int position) {
+
         }
     }
 }
