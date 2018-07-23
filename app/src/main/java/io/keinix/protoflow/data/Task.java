@@ -85,6 +85,8 @@ public class Task implements ListItem {
 
     public Task(@NonNull String name) {
         this.name = name;
+        // -1 is set b/c the 0 value will cause them to be pulled for
+        // projects/routines that have have a 0 id
         projectId = -1;
         routineId = -1;
     }

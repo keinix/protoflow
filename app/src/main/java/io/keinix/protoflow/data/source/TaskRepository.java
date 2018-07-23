@@ -13,11 +13,13 @@ import javax.inject.Singleton;
 
 import io.keinix.protoflow.data.CalendarDay;
 import io.keinix.protoflow.data.Project;
+import io.keinix.protoflow.data.Routine;
 import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.data.source.local.CalendarDayDao;
 import io.keinix.protoflow.data.source.local.ProjectDao;
 import io.keinix.protoflow.data.source.local.RoutineDao;
 import io.keinix.protoflow.data.source.local.TaskDao;
+import io.keinix.protoflow.util.ListItem;
 
 @Singleton
 public class TaskRepository {
@@ -36,6 +38,10 @@ public class TaskRepository {
         mProjectDao = projectDao;
         mRoutineDao = routineDao;
         mAllTasks = mTaskDao.getAllTasks();
+    }
+
+    public LiveData<List<Routine>> getAllRoutines() {
+        return mRoutineDao.getAllRoutines();
     }
 
     public LiveData<List<Task>> getAllTasks() {
@@ -179,7 +185,6 @@ public class TaskRepository {
         }
     }
 
-    //TODO:add calendarDay as a ForignKey so it will update automatically
     //UPDATE ASYNC
     private static class updateAsyncTask extends AsyncTask<Task, Void, Void> {
 

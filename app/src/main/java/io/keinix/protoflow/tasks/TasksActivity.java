@@ -54,6 +54,7 @@ public class TasksActivity extends DaggerAppCompatActivity
 
     @BindString(R.string.tasks_toolbar_title_today) String todayString;
     @BindString(R.string.tasks_toolbar_title_7_days) String sevenDaysString;
+    @BindString(R.string.tasks_toolbar_title_routines) String routinesString;
 
     // ----------Member variables------------
 
@@ -72,6 +73,7 @@ public class TasksActivity extends DaggerAppCompatActivity
     public static final String LAST_VIEW_CALENDAR = "VALUE_LAST_VIEW_CALENDAR";
     public static final String LAST_VIEW_7_DAYS = "VALUE_LAST_VIEW_7_DAYS";
     public static final String LAST_VIEW_PROJECT = "LAST_VIEW_PROJECT";
+    public static final String LAST_VIEW_ROUTINE = "LAST_VIEW_ROUTINE";
 
     // ------------------DI------------------
 
@@ -152,6 +154,10 @@ public class TasksActivity extends DaggerAppCompatActivity
             case R.id.nav_add_project:
                 mNewProjectDialog.get().show(getSupportFragmentManager(), "new_project_dialog");
                 mLastViewValue = LAST_VIEW_PROJECT;
+                break;
+            case R.id.nav_routines:
+                mLastViewValue = LAST_VIEW_ROUTINE;
+                displayAllRoutines();
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);
@@ -253,6 +259,10 @@ public class TasksActivity extends DaggerAppCompatActivity
                 displayTasksInProject(mProject);
                 setProjectAsClickInNavMenu(mProject);
                 break;
+            case LAST_VIEW_ROUTINE:
+                navigationView.setCheckedItem(R.id.nav_routines);
+                displayAllRoutines();
+                break;
         }
     }
 
@@ -273,14 +283,14 @@ public class TasksActivity extends DaggerAppCompatActivity
             if (tasks == null) {
                 mAdapter.clearTasks();
             } else {
-                mAdapter.setTasks(tasks);
+                mAdapter.setListItems(tasks);
             }
         });
     }
 
     private void getTaskForDate(CalendarDay calendarDay) {
         mDisplayedTasks = mViewModel.getAllTasksOnDay(calendarDay);
-        mDisplayedTasks.observe(this, mAdapter::setTasks);
+        mDisplayedTasks.observe(this, mAdapter::setListItems);
     }
 
     private void getTasksForToday() {
@@ -302,7 +312,7 @@ public class TasksActivity extends DaggerAppCompatActivity
             mDisplayedTasks.observe(this, tasks -> {
                 if (tasks.size() != 0) {
                     List<Task> formattedTasks = mViewModel.format7DayTasks(tasks);
-                    mAdapter.setTasks(formattedTasks);
+                    mAdapter.setListItems(formattedTasks);
                 } else {
                     mAdapter.clearTasks();
                 }
@@ -354,16 +364,30 @@ public class TasksActivity extends DaggerAppCompatActivity
         mDisplayedTasks = mViewModel.getTasksInProject(project.getId());
         mDisplayedTasks.observe(this, tasks -> {
             if (tasks.size() > 0) {
-                mAdapter.setTasks(tasks);
+                mAdapter.setListItems(tasks);
             } else {
                 mAdapter.clearTasks();
             }
         });
     }
 
+    //TODO: fix this
     private void setProjectAsClickInNavMenu(Project project) {
         MenuItem item = navigationView.getMenu().findItem(R.id.nav_projects);
         SubMenu subMenu = item.getSubMenu();
         subMenu.getItem().setChecked(true);
+    }
+
+    //~~~~~~~Methods for Routines~~~~~~~
+
+    private void displayAllRoutines() {
+        setTitle(routinesString);
+        mViewModel.getAllRoutines().observe(this, routines -> {
+            if (routines.size() > 0) {
+                mAdapter.setListItems(routines);
+            } else {
+                mAdapter.clearTasks();
+            }
+        });
     }
 }

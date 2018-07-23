@@ -14,8 +14,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.keinix.protoflow.R;
 import io.keinix.protoflow.data.CalendarDay;
 import io.keinix.protoflow.data.Project;
+import io.keinix.protoflow.data.Routine;
 import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.data.source.TaskRepository;
 
@@ -68,6 +70,10 @@ public class TasksViewModel extends AndroidViewModel {
 
     public void insertProject(Project project) {
         mTaskRepository.insertProject(project);
+    }
+
+    public LiveData<List<Routine>> getAllRoutines() {
+        return mTaskRepository.getAllRoutines();
     }
 
     /**
