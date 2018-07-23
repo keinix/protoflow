@@ -1,5 +1,7 @@
 package io.keinix.protoflow.addeddittask;
 
+import android.support.annotation.Nullable;
+
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
@@ -53,6 +55,7 @@ public abstract class AddEditTaskModule {
         return addEditTaskActivity.getIntent().getLongExtra(TasksActivity.EXTRA_DATE_OF_CURRENT_VIEW, 0);
     }
 
+    @Nullable
     @ActivityScope
     @Provides static Project getProjectFromIntent(AddEditTaskActivity addEditTaskActivity) {
         return addEditTaskActivity.getIntent().getParcelableExtra(TasksActivity.EXTRA_PROJECT);

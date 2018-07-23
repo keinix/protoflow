@@ -25,6 +25,7 @@ import io.keinix.protoflow.addeddittask.AddEditTaskActivity;
 import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.di.ActivityScope;
 import io.keinix.protoflow.dialogs.DatePickerDialogFragment;
+import io.keinix.protoflow.util.ListItem;
 
 @ActivityScope
 public class TasksAdapter extends RecyclerView.Adapter {
@@ -35,9 +36,9 @@ public class TasksAdapter extends RecyclerView.Adapter {
     public static final String DATE_HEADING = "$$$DATE_HEADING$$$";
     public static final int ITEM_VIEW_TYPE_TASK = 101;
     public static final int ITEM_VIEW_TYPE_DATE = 102;
+    public static final int ITEM_VIEW_TYPE_ROUTINE = 103;
     private Context mContext;
-    private List<Task> mTasks;
-    private Map<Integer, List<Task>> routinesToTasks;
+    private List<? extends ListItem> mTasks;
 
     @Inject
     public TasksAdapter(Context context) {
@@ -83,12 +84,16 @@ public class TasksAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int position) {
-        String taskName = mTasks.get(position).getName();
-        switch (taskName) {
-            case DATE_HEADING:
-                return ITEM_VIEW_TYPE_DATE;
-            default:
-                return ITEM_VIEW_TYPE_TASK;
+        if (mTasks.get(position).getItemType() == ListItem.TYPE_TASK) {
+            String taskName = ((Task) mTasks.get(position)).getName();
+            switch (taskName) {
+                case DATE_HEADING:
+                    return ITEM_VIEW_TYPE_DATE;
+                default:
+                    return ITEM_VIEW_TYPE_TASK;
+            }
+        } else {
+            return ITEM_VIEW_TYPE_ROUTINE;
         }
     }
 
@@ -97,10 +102,6 @@ public class TasksAdapter extends RecyclerView.Adapter {
     public void setTasks(List<Task> tasks) {
         mTasks = tasks;
         notifyDataSetChanged();
-    }
-
-    public void setRoutines(List<Task> tasks) {
-
     }
 
     public void clearTasks() {
@@ -125,7 +126,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
         }
 
         void bindView(int position) {
-            Task task = mTasks.get(position);
+            Task task = (Task) mTasks.get(position);
             taskNameTextView.setText(task.getName());
             setUpPlay(task);
             setDetails(task);
@@ -181,8 +182,9 @@ public class TasksAdapter extends RecyclerView.Adapter {
         }
 
         public void bindView(int position) {
+            Task task = ((Task) mTasks.get(position));
             String dateString = DatePickerDialogFragment
-                    .getStartDateTimeStampWithDay(mTasks.get(position).getScheduledDateUtc());
+                    .getStartDateTimeStampWithDay(task.getScheduledDateUtc());
             dateSeparatorTextView.setText(dateString);
         }
     }

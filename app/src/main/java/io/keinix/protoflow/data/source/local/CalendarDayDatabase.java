@@ -10,9 +10,9 @@ import io.keinix.protoflow.data.CalendarDay;
 import io.keinix.protoflow.util.RoomTypeConverters;
 
 @Singleton
-@Database(entities = {CalendarDay.class}, version = 1, exportSchema = false)
+@Database(entities = {CalendarDay.class}, version = 2, exportSchema = false)
 @TypeConverters({RoomTypeConverters.class})
-public abstract class CalendarDayDatabase extends RoomDatabase{
+public abstract class CalendarDayDatabase extends RoomDatabase {
 
     public abstract CalendarDayDao calendarDayDao();
 }

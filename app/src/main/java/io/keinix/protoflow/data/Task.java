@@ -13,19 +13,20 @@ import io.keinix.protoflow.util.ListItem;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
-@Entity(tableName = "task_table",
-    foreignKeys = {
-        @ForeignKey(entity = Project.class,
-                parentColumns = "id",
-                childColumns = "project_id",
-                onDelete = CASCADE),
-
-        @ForeignKey(entity = Routine.class,
-                parentColumns = "id",
-                childColumns = "routine_id",
-                onDelete = CASCADE)
-    })
-public class Task implements ListItem{
+@Entity(tableName = "task_table"
+//    foreignKeys = {
+//        @ForeignKey(entity = Project.class,
+//                parentColumns = "id",
+//                childColumns = "project_id",
+//                onDelete = CASCADE)}
+//
+//        @ForeignKey(entity = Routine.class,
+//                parentColumns = "id",
+//                childColumns = "routine_id",
+//                onDelete = CASCADE)
+//    }
+    )
+public class Task implements ListItem {
 
     //TODO:might need to add column info
     @PrimaryKey (autoGenerate = true)
@@ -84,6 +85,8 @@ public class Task implements ListItem{
 
     public Task(@NonNull String name) {
         this.name = name;
+        projectId = -1;
+        routineId = -1;
     }
 
     @Override

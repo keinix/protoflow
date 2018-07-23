@@ -33,6 +33,7 @@ public abstract class TaskRepositoryModule {
     @Singleton
     @Provides static CalendarDayDatabase provideCalendarDb(Application context) {
         return Room.databaseBuilder(context, CalendarDayDatabase.class, "calendar_day_database")
+                .fallbackToDestructiveMigration()
                 .build();
     }
 

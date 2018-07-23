@@ -7,6 +7,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.support.constraint.Group;
 import android.os.Bundle;
 import android.util.Log;
@@ -111,7 +112,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     ProjectPickerDialogFragment mProjectPicker;
 
     @Inject
-    Project mProject;
+    @Nullable Project mProject;
 
     @Inject
     int mTaskIdToEdit;
