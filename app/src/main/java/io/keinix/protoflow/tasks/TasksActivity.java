@@ -196,10 +196,6 @@ public class TasksActivity extends DaggerAppCompatActivity
     public void onProjectCreated(String projectName) {
         Project project = new Project(projectName);
         mViewModel.insertProject(project);
-        mProject = project;
-        mViewModel.setProject(project);
-        mLastViewValue = LAST_VIEW_PROJECT;
-        displayTasksInProject(project);
     }
 
 
@@ -332,7 +328,9 @@ public class TasksActivity extends DaggerAppCompatActivity
                 if (mProjects == null) {
                     updateProjectsInMenu(projects);
                 } else {
+                    // called only when a new project is created
                     updateProjectsInMenu(projects.subList(projects.size() -1, projects.size()));
+                    onProjectClicked(projects.get(projects.size() -1));
                 }
                 mProjects = projects;
             }

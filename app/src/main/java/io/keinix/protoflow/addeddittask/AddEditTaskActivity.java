@@ -179,6 +179,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     @OnClick(R.id.image_button_cancel_project)
     void removeFromProject() {
         scheduleCanceled(cancelProjectImageButton, projectTextView, projectString);
+        mViewModel.setProject(null);
         //TODO: update viewmodel and remove task from project if confirmed
     }
 
