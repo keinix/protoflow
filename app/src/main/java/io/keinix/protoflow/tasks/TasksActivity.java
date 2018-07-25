@@ -35,14 +35,17 @@ import io.keinix.protoflow.R;
 import io.keinix.protoflow.addeddittask.AddEditTaskActivity;
 import io.keinix.protoflow.data.CalendarDay;
 import io.keinix.protoflow.data.Project;
+import io.keinix.protoflow.data.Routine;
 import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.dialogs.DatePickerDialogFragment;
 import io.keinix.protoflow.dialogs.NewProjectDialogFragment;
+import io.keinix.protoflow.dialogs.NewRoutineDialogFragment;
 
 public class TasksActivity extends DaggerAppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         DatePickerDialog.OnDateSetListener,
-        NewProjectDialogFragment.OnNewProjectCreatedListener {
+        NewProjectDialogFragment.OnNewProjectCreatedListener,
+        NewRoutineDialogFragment.OnNewRoutineCreatedListener {
 
     // --------------view Binding--------------
 
@@ -89,6 +92,9 @@ public class TasksActivity extends DaggerAppCompatActivity
     @Inject
     Lazy<NewProjectDialogFragment> mNewProjectDialog;
 
+    @Inject
+    Lazy<NewRoutineDialogFragment> mNewRoutineDialog;
+
     // ----------------OnClick----------------
 
     @OnClick(R.id.fab)
@@ -99,6 +105,8 @@ public class TasksActivity extends DaggerAppCompatActivity
         } else if (mLastViewValue.equals(LAST_VIEW_PROJECT)) {
             intent.putExtra(EXTRA_PROJECT, mProject);
             startActivity(intent);
+        } else if (mLastViewValue.equals(LAST_VIEW_ROUTINE)) {
+            mNewRoutineDialog.get().show(getSupportFragmentManager(), "new_routine");
         } else {
             intent.putExtra(EXTRA_DATE_OF_CURRENT_VIEW, mDateOfCurrentView);
             startActivity(intent);
@@ -198,6 +206,11 @@ public class TasksActivity extends DaggerAppCompatActivity
         mViewModel.insertProject(project);
     }
 
+    @Override
+    public void onRoutineCreated(String routineName) {
+        Routine routine = new Routine(routineName);
+        mViewModel.insertRoutine(routine);
+    }
 
     // --------------Lifecycle--------------
 

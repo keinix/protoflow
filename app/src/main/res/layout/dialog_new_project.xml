@@ -9,7 +9,7 @@
     tools:layout_editor_absoluteY="81dp">
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/text_view_new_project_header"
         android:layout_width="400dp"
         android:layout_height="80dp"
         android:background="@color/colorAccent"
@@ -30,7 +30,7 @@
         android:layout_marginTop="46dp"
         android:src="@drawable/shape_repeat_day_circle_backgroud"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2"/>
+        app:layout_constraintTop_toBottomOf="@+id/text_view_new_project_header"/>
 
     <EditText
         android:id="@+id/edit_text_new_project_name"
@@ -42,7 +42,7 @@
         android:hint="@string/new_project_hint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView2"
-        app:layout_constraintTop_toBottomOf="@+id/textView2"/>
+        app:layout_constraintTop_toBottomOf="@+id/text_view_new_project_header"/>
 
     <Button
         android:id="@+id/button_new_project_ok"

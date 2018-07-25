@@ -38,5 +38,7 @@
     <string name="new_project_no_title_warning">"Every project deserves a name!"</string>
     <string name="new_project_no_title_toast">"Project name is blank"</string>
 
+    <string name="new_routine_title">New Routine</string>
+
 
 </resources>

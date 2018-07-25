@@ -40,6 +40,10 @@ public class TaskRepository {
         mAllTasks = mTaskDao.getAllTasks();
     }
 
+    public void insertRoutine(Routine routine) {
+        new insertRoutineAsync(mRoutineDao).execute(routine);
+    }
+
     public LiveData<List<Routine>> getAllRoutines() {
         return mRoutineDao.getAllRoutines();
     }
@@ -197,6 +201,22 @@ public class TaskRepository {
         @Override
         protected Void doInBackground(Task... tasks) {
             asyncTaskDao.update(tasks[0]);
+            return null;
+        }
+    }
+
+    //INSERT ROUTINE ASYNC
+    private static class insertRoutineAsync extends AsyncTask<Routine, Void, Void> {
+
+        private RoutineDao asyncRoutineDao;
+
+        public insertRoutineAsync(RoutineDao routineDao) {
+            asyncRoutineDao = routineDao;
+        }
+
+        @Override
+        protected Void doInBackground(Routine... routines) {
+            asyncRoutineDao.insertRoutine(routines[0]);
             return null;
         }
     }

@@ -56,6 +56,10 @@ public class TasksAdapter extends RecyclerView.Adapter {
                 view = LayoutInflater.from(mContext)
                         .inflate(R.layout.item_date_separator, parent, false);
                 return new DateSeparatorViewHolder(view);
+            case ITEM_VIEW_TYPE_ROUTINE:
+                view = LayoutInflater.from(mContext)
+                        .inflate(R.layout.item_routine, parent, false);
+                return new RoutineViewHolder(view);
             default:
                 view = LayoutInflater.from(mContext)
                         .inflate(R.layout.item_task, parent, false);
@@ -68,6 +72,9 @@ public class TasksAdapter extends RecyclerView.Adapter {
         switch (getItemViewType(position)) {
             case ITEM_VIEW_TYPE_DATE:
                 ((DateSeparatorViewHolder) holder).bindView(position);
+                break;
+            case ITEM_VIEW_TYPE_ROUTINE:
+                ((RoutineViewHolder) holder).bindView(position);
                 break;
             default:
                 ((TaskViewHolder) holder).bindView(position);
@@ -192,6 +199,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
     }
 
     class RoutineViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.text_view_routine_name) TextView routineName;
 
         public RoutineViewHolder(View itemView) {
             super(itemView);
@@ -199,7 +207,8 @@ public class TasksAdapter extends RecyclerView.Adapter {
         }
 
         public void bindView(int position) {
-
+            Routine routine = (Routine) mListItems.get(position);
+            routineName.setText(routine.getName());
         }
     }
 }

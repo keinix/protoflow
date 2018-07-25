@@ -9,6 +9,7 @@ import dagger.Provides;
 import io.keinix.protoflow.di.ActivityScope;
 import io.keinix.protoflow.dialogs.DatePickerDialogFragment;
 import io.keinix.protoflow.dialogs.NewProjectDialogFragment;
+import io.keinix.protoflow.dialogs.NewRoutineDialogFragment;
 
 @Module
 public abstract class TasksModule {
@@ -26,6 +27,10 @@ public abstract class TasksModule {
     @ActivityScope
     @Provides static NewProjectDialogFragment provideNewProjectDialog() {
         return new NewProjectDialogFragment();
+    }
+    @ActivityScope
+    @Provides static NewRoutineDialogFragment provideNewRoutineDialog() {
+        return new NewRoutineDialogFragment();
     }
 
 }
