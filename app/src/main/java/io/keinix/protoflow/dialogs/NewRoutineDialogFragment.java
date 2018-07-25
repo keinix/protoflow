@@ -25,8 +25,8 @@ public class NewRoutineDialogFragment extends DialogFragment {
     @BindView(R.id.edit_text_new_project_name) EditText newProjectEditText;
     @BindView(R.id.text_view_new_project_header) TextView headerTextView;
 
-    @BindString(R.string.new_project_no_title_warning) String noTitleString;
-    @BindString(R.string.new_project_no_title_toast) String noTitleToastString;
+    @BindString(R.string.new_routine_no_title_warning) String noTitleString;
+    @BindString(R.string.new_routine_no_title_toast) String noTitleToastString;
     @BindString(R.string.new_routine_title) String routineTitleString;
 
     @BindColor(R.color.errorHintText) int red;

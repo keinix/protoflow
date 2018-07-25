@@ -33,12 +33,16 @@
     <string name="tasks_toolbar_title_routines">Routines</string>
 
 
-    <string name="new_project_hint">Project name</string>
     <string name="new_project_title">New Project</string>
+    <string name="new_project_hint">Project name</string>
     <string name="new_project_no_title_warning">"Every project deserves a name!"</string>
     <string name="new_project_no_title_toast">"Project name is blank"</string>
 
     <string name="new_routine_title">New Routine</string>
+    <string name="new_routine_hint">Routine Name</string>
+    <string name="new_routine_no_title_warning">"Routines need names too!"</string>
+    <string name="new_routine_no_title_toast">"Routine name is blank"</string>
+
 
 
 </resources>
