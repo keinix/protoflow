@@ -39,6 +39,7 @@ import dagger.android.support.DaggerAppCompatActivity;
 import io.keinix.protoflow.R;
 import io.keinix.protoflow.adapters.ProjectPickerAdapter;
 import io.keinix.protoflow.data.Project;
+import io.keinix.protoflow.data.Routine;
 import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.dialogs.DatePickerDialogFragment;
 import io.keinix.protoflow.dialogs.DurationPickerDialogFragment;
@@ -74,6 +75,9 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     @BindView(R.id.image_button_cancel_start_date) ImageButton cancelSelectedImageButton;
     @BindView(R.id.image_button_cancel_project) ImageButton cancelProjectImageButton;
     @BindView(R.id.group_days) Group daysGroup;
+    @BindView(R.id.group_project) Group projectGroup;
+    @BindView(R.id.group_routine) Group routineGroup;
+    @BindView(R.id.text_view_routine) TextView routineTextView;
     @BindView(R.id.text_view_duration) TextView durationTextView;
     @BindView(R.id.text_view_start_date) TextView startDateTextView;
     @BindView(R.id.text_view_start_time) TextView startTimeTextView;
@@ -110,6 +114,9 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
 
     @Inject
     @Nullable Project mProject;
+
+    @Inject
+    @Nullable Routine mRoutine;
 
     @Inject
     int mTaskIdToEdit;
@@ -291,6 +298,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
                 scheduleSelected(cancelProjectImageButton, projectTextView, mProject.getName());
                 mViewModel.setProject(mProject);
         }
+        setUpForRoutine();
     }
 
     // ------------------Private------------------
@@ -431,4 +439,12 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         scheduleSelected(cancelSelectedImageButton, startDateTextView, selectedDate);
     }
 
+    // routines can not be added to projects
+    private void setUpForRoutine() {
+        if (mRoutine != null) {
+            routineGroup.setVisibility(View.VISIBLE);
+            projectGroup.setVisibility(View.GONE);
+            routineTextView.setText(mRoutine.getName());
+        }
+    }
 }

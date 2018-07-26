@@ -70,6 +70,7 @@ public class TasksActivity extends DaggerAppCompatActivity
     public static final String TAG = TasksActivity.class.getSimpleName();
     public static final String EXTRA_DATE_OF_CURRENT_VIEW = "EXTRA_DATE_OF_CURRENT_VIEW";
     public static final String EXTRA_PROJECT = "EXTRA_PROJECT";
+    public static final String EXTRA_ROUTINE = "EXTRA_ROUTINE";
     public static final String KEY_DATE_OF_CURRENT_VIEW = "KEY_DATE_OF_CURRENT_VIEW";
     public static final String KEY_LAST_VIEW = "KEY_LAST_VIEW";
     public static final String LAST_VIEW_TODAY = "VALUE_LAST_VIEW_TODAY";

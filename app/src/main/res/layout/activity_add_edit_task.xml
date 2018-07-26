@@ -61,6 +61,44 @@
             android:visibility="invisible"
             app:layout_constraintStart_toEndOf="@+id/text_view_project"
             app:layout_constraintTop_toTopOf="@+id/text_view_project"/>
+        
+        <android.support.constraint.Group
+            android:id="@+id/group_project"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="image_button_cancel_project,
+            text_view_project, image_button_project"/>
+
+        <ImageButton
+            android:id="@+id/image_button_routine"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="8dp"
+            android:background="@null"
+            android:src="@drawable/ic_routines_black_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edit_text_task_name"/>
+
+        <TextView
+            android:id="@+id/text_view_routine"
+            android:layout_width="wrap_content"
+            android:layout_height="22dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:paddingRight="200dp"
+            android:text="@string/add_task_not_in_project"
+            android:textSize="15sp"
+            app:layout_constraintStart_toEndOf="@+id/image_button_project"
+            app:layout_constraintTop_toBottomOf="@+id/edit_text_task_name"/>
+        
+        <android.support.constraint.Group
+            android:id="@+id/group_routine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="text_view_routine,
+            image_button_routine"/>
 
         <ImageButton
             android:id="@+id/image_button_timer"

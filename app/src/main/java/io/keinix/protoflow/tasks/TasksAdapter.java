@@ -112,12 +112,10 @@ public class TasksAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
-
     public void clearTasks() {
         mListItems = null;
         notifyDataSetChanged();
     }
-
 
     // -------------View Holders--------------
 
@@ -198,7 +196,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
         }
     }
 
-    class RoutineViewHolder extends RecyclerView.ViewHolder {
+    class RoutineViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.text_view_routine_name) TextView routineName;
 
         public RoutineViewHolder(View itemView) {
@@ -209,6 +207,11 @@ public class TasksAdapter extends RecyclerView.Adapter {
         public void bindView(int position) {
             Routine routine = (Routine) mListItems.get(position);
             routineName.setText(routine.getName());
+        }
+
+        @Override
+        public void onClick(View view) {
+
         }
     }
 }

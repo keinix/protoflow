@@ -2,12 +2,14 @@ package io.keinix.protoflow.data;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import io.keinix.protoflow.util.ListItem;
 
 @Entity (tableName = "routine_table")
-public class Routine implements ListItem {
+public class Routine implements ListItem, Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -48,4 +50,33 @@ public class Routine implements ListItem {
                 ", name='" + name + '\'' +
                 '}';
     }
+
+    private Routine(Parcel parcel) {
+        id = parcel.readInt();
+        name = parcel.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
+        parcel.writeString(name);
+    }
+
+    public final static Creator<Routine>  CREATOR = new Creator<Routine>() {
+
+        @Override
+        public Routine createFromParcel(Parcel parcel) {
+            return new Routine(parcel);
+        }
+
+        @Override
+        public Routine[] newArray(int size) {
+            return new Routine[size];
+        }
+    };
 }

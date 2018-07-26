@@ -1,6 +1,7 @@
 package io.keinix.protoflow.dialogs;
 
 import android.app.Dialog;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,10 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import butterknife.BindColor;
+import butterknife.BindDrawable;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,12 +31,14 @@ public class NewProjectDialogFragment extends DialogFragment {
 
     @BindView(R.id.edit_text_new_project_name) EditText newProjectEditText;
     @BindView(R.id.text_view_new_project_header) TextView headerTextView;
+    @BindView(R.id.image_button_color_selector) ImageView colorSelectorImageButton;
 
     @BindString(R.string.new_project_no_title_warning) String noTitleString;
     @BindString(R.string.new_project_no_title_toast) String noTitleToastString;
     @BindString(R.string.new_project_title) String newProjectTitleString;
 
     @BindColor(R.color.errorHintText) int red;
+    @BindDrawable(R.drawable.ic_project_black_24) Drawable projectDrawable;
 
     private Unbinder mUnbinder;
 
@@ -71,6 +77,7 @@ public class NewProjectDialogFragment extends DialogFragment {
         mUnbinder =  ButterKnife.bind(this, view);
         mListener = (OnNewProjectCreatedListener) getActivity();
         headerTextView.setText(newProjectTitleString);
+        colorSelectorImageButton.setImageDrawable(projectDrawable);
         return view;
     }
 

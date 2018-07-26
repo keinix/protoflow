@@ -9,6 +9,7 @@ import dagger.android.ContributesAndroidInjector;
 import io.keinix.protoflow.adapters.ProjectPickerAdapter;
 import io.keinix.protoflow.adapters.ProjectPickerAdapter.OnProjectSelectedListener;
 import io.keinix.protoflow.data.Project;
+import io.keinix.protoflow.data.Routine;
 import io.keinix.protoflow.di.ActivityScope;
 import io.keinix.protoflow.di.FragmentScope;
 import io.keinix.protoflow.dialogs.DatePickerDialogFragment;
@@ -59,6 +60,12 @@ public abstract class AddEditTaskModule {
     @ActivityScope
     @Provides static Project getProjectFromIntent(AddEditTaskActivity addEditTaskActivity) {
         return addEditTaskActivity.getIntent().getParcelableExtra(TasksActivity.EXTRA_PROJECT);
+    }
+
+    @Nullable
+    @ActivityScope
+    @Provides static Routine getRoutineFromIntent(AddEditTaskActivity addEditTaskActivity) {
+        return addEditTaskActivity.getIntent().getParcelableExtra(TasksActivity.EXTRA_ROUTINE);
     }
 
 
