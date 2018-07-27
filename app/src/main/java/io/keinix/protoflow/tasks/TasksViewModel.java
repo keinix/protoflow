@@ -80,6 +80,10 @@ public class TasksViewModel extends AndroidViewModel {
         mTaskRepository.insertRoutine(routine);
     }
 
+    public LiveData<List<Task>> getChildTasksForRoutine(int routineId) {
+        return mTaskRepository.getRoutineChildTasks(routineId);
+    }
+
     /**
      * gets tasks scheduled for the day + tasks that repeat on that day
      * @param calendarDay you want to get the tasks from

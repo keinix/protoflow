@@ -1,5 +1,6 @@
 package io.keinix.protoflow.tasks;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -11,7 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -118,6 +121,24 @@ public class TasksAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
+    public void insertRoutineChildTasks(List<? extends ListItem> tasks) {
+        int routineId = ((Task) tasks.get(0)).getRoutineId();
+        int insertPosition = getRoutineIndex(routineId);
+        mListItems.add(insertPosition, tasks.get(0));
+    }
+
+    // ----------------private----------------
+
+    public int getRoutineIndex(int routineId) {
+        for (int i = 0; i < mListItems.size(); i++) {
+            if (mListItems.get(i).getItemType() == ListItem.TYPE_ROUTINE &&
+                    ((Routine) mListItems.get(i)).getId() == routineId) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     // -------------View Holders--------------
 
     class TaskViewHolder extends RecyclerView.ViewHolder {
@@ -207,8 +228,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
         void addTaskToRoutine() {
             Intent intent = new Intent(mContext, AddEditTaskActivity.class);
             intent.putExtra(TasksActivity.EXTRA_ROUTINE, mRoutine);
-            mContext.startActivity(intent);
-
+            ((Activity) mContext).startActivityForResult(intent, TasksActivity.REQUEST_CODE_ROUTINE);
         }
 
         public RoutineViewHolder(View itemView) {

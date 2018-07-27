@@ -44,6 +44,10 @@ public class TaskRepository {
         new insertRoutineAsync(mRoutineDao).execute(routine);
     }
 
+    public LiveData<List<Task>> getRoutineChildTasks(int routineId) {
+        return mTaskDao.getRoutineChildTasks(routineId);
+    }
+
     public LiveData<List<Routine>> getAllRoutines() {
         return mRoutineDao.getAllRoutines();
     }

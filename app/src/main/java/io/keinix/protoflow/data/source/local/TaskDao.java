@@ -34,6 +34,9 @@ public interface TaskDao {
     @Query("SELECT * from task_table WHERE id IN (:taskIds)")
     LiveData<List<Task>> getTasks(List<Integer> taskIds);
 
+    @Query("SELECT * from task_table WHERE routine_id = :routineId")
+    LiveData<List<Task>> getRoutineChildTasks(int routineId);
+
     // Returns Tasks that repeat on a given day AND tasks scheduled for that specific date
     // whose ids are specified in a CalendarDay object
     @Query("SELECT * from task_table WHERE repeats_on_monday = 1 OR id IN (:taskIds)")

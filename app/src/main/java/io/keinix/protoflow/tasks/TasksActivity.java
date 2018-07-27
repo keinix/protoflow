@@ -68,6 +68,7 @@ public class TasksActivity extends DaggerAppCompatActivity
     private String mLastViewValue;
     private Project mProject;
     public static final String TAG = TasksActivity.class.getSimpleName();
+    public static final int REQUEST_CODE_ROUTINE = 1001;
     public static final String EXTRA_DATE_OF_CURRENT_VIEW = "EXTRA_DATE_OF_CURRENT_VIEW";
     public static final String EXTRA_PROJECT = "EXTRA_PROJECT";
     public static final String EXTRA_ROUTINE = "EXTRA_ROUTINE";
@@ -211,6 +212,14 @@ public class TasksActivity extends DaggerAppCompatActivity
     public void onRoutineCreated(String routineName) {
         Routine routine = new Routine(routineName);
         mViewModel.insertRoutine(routine);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_ROUTINE && resultCode == RESULT_OK) {
+            getRoutineChildTasks(data.getParcelableExtra(EXTRA_ROUTINE));
+        }
     }
 
     // --------------Lifecycle--------------
@@ -401,5 +410,10 @@ public class TasksActivity extends DaggerAppCompatActivity
                 mAdapter.clearTasks();
             }
         });
+    }
+
+    private void getRoutineChildTasks(Routine routine) {
+        mViewModel.getChildTasksForRoutine(routine.getId())
+                .observe(this, mAdapter::insertRoutineChildTasks);
     }
 }
