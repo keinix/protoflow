@@ -66,8 +66,8 @@
             android:id="@+id/group_project"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="image_button_cancel_project,
-            text_view_project, image_button_project"/>
+            app:constraint_referenced_ids="text_view_project,
+             image_button_project"/>
 
         <ImageButton
             android:id="@+id/image_button_routine"
@@ -90,6 +90,7 @@
             android:paddingRight="200dp"
             android:text="@string/add_task_not_in_project"
             android:textSize="15sp"
+            android:textColor="@color/black"
             app:layout_constraintStart_toEndOf="@+id/image_button_project"
             app:layout_constraintTop_toBottomOf="@+id/edit_text_task_name"/>
         

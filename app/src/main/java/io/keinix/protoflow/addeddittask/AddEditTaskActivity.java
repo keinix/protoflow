@@ -360,6 +360,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         setStartTimeFromViewModel();
         setStartDateFromViewModel();
         setProjectFromViewModel();
+        routineTextView.setText(mViewModel.getRoutine().getName());
     }
 
     private void setStartDateFromViewModel() {
@@ -443,8 +444,12 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     private void setUpForRoutine() {
         if (mRoutine != null) {
             routineGroup.setVisibility(View.VISIBLE);
-            projectGroup.setVisibility(View.GONE);
+            projectGroup.setVisibility(View.INVISIBLE);
             routineTextView.setText(mRoutine.getName());
+            mViewModel.setRoutine(mRoutine);
+        } else {
+            projectGroup.setVisibility(View.VISIBLE);
+            routineGroup.setVisibility(View.GONE);
         }
     }
 }

@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.keinix.protoflow.R;
 import io.keinix.protoflow.addeddittask.AddEditTaskActivity;
 import io.keinix.protoflow.data.Routine;
@@ -197,7 +198,18 @@ public class TasksAdapter extends RecyclerView.Adapter {
     }
 
     class RoutineViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
         @BindView(R.id.text_view_routine_name) TextView routineName;
+
+        private Routine mRoutine;
+
+        @OnClick(R.id.image_button_add_task_to_routine)
+        void addTaskToRoutine() {
+            Intent intent = new Intent(mContext, AddEditTaskActivity.class);
+            intent.putExtra(TasksActivity.EXTRA_ROUTINE, mRoutine);
+            mContext.startActivity(intent);
+
+        }
 
         public RoutineViewHolder(View itemView) {
             super(itemView);
@@ -205,8 +217,8 @@ public class TasksAdapter extends RecyclerView.Adapter {
         }
 
         public void bindView(int position) {
-            Routine routine = (Routine) mListItems.get(position);
-            routineName.setText(routine.getName());
+            mRoutine = (Routine) mListItems.get(position);
+            routineName.setText(mRoutine.getName());
         }
 
         @Override

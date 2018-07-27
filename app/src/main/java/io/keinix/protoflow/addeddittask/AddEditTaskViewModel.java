@@ -17,6 +17,7 @@ import javax.inject.Inject;
 
 import io.keinix.protoflow.R;
 import io.keinix.protoflow.data.Project;
+import io.keinix.protoflow.data.Routine;
 import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.data.source.TaskRepository;
 
@@ -33,6 +34,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
     private int mTaskDurationInMinutes;
     private long mStartTimeUtc;
     private Project mProject;
+    private Routine mRoutine;
 
     private static final int MILISECONDS_IN_HOUR = 3600000;
     private static final int MINISECONDS_IN_MINUTE = 60000;
@@ -185,6 +187,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         Log.d(TAG, "Start Date that is being set in AddEditTask: " + mStartDateUtc);
         task.setStartTimeUtc(mStartTimeUtc);
         task.setDurationInMinutes(mTaskDurationInMinutes);
+        if (mRoutine != null) task.setRoutineId(mRoutine.getId());
         return task;
     }
 
@@ -340,5 +343,13 @@ public class AddEditTaskViewModel extends AndroidViewModel {
 
     public void setProject(Project project) {
         mProject = project;
+    }
+
+    public Routine getRoutine() {
+        return mRoutine;
+    }
+
+    public void setRoutine(Routine routine) {
+        mRoutine = routine;
     }
 }
