@@ -40,6 +40,7 @@ import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.dialogs.DatePickerDialogFragment;
 import io.keinix.protoflow.dialogs.NewProjectDialogFragment;
 import io.keinix.protoflow.dialogs.NewRoutineDialogFragment;
+import io.keinix.protoflow.util.ListItem;
 
 public class TasksActivity extends DaggerAppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,

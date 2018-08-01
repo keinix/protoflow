@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.constraint.Group;
@@ -45,6 +46,7 @@ import io.keinix.protoflow.dialogs.DatePickerDialogFragment;
 import io.keinix.protoflow.dialogs.DurationPickerDialogFragment;
 import io.keinix.protoflow.dialogs.ProjectPickerDialogFragment;
 import io.keinix.protoflow.dialogs.TimePickerDialogFragment;
+import io.keinix.protoflow.tasks.TasksActivity;
 
 public class AddEditTaskActivity extends DaggerAppCompatActivity
         implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,
@@ -261,10 +263,14 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
             case R.id.menu_create_task:
                 if (!taskNameIsEmpty()) {
                     initTaskCreation();
+                    Intent intent = new Intent();
+                    intent.putExtra(TasksActivity.EXTRA_ROUTINE, mRoutine);
+                    setResult(RESULT_OK, intent);
                     finish();
                 }
                 break;
             case R.id.menu_clear_task:
+                setResult(RESULT_CANCELED);
                 finish();
         }
         return super.onOptionsItemSelected(item);

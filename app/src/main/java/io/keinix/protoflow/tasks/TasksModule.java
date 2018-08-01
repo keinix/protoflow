@@ -1,6 +1,7 @@
 package io.keinix.protoflow.tasks;
 
 
+import android.app.Activity;
 import android.content.Context;
 
 import dagger.Binds;
@@ -15,8 +16,8 @@ import io.keinix.protoflow.dialogs.NewRoutineDialogFragment;
 public abstract class TasksModule {
 
     @ActivityScope
-    @Provides static TasksAdapter tasksAdapter(Context context) {
-        return new TasksAdapter(context);
+    @Provides static TasksAdapter tasksAdapter(Context context, Activity activity) {
+        return new TasksAdapter(context, activity);
     }
 
     @ActivityScope
@@ -33,4 +34,6 @@ public abstract class TasksModule {
         return new NewRoutineDialogFragment();
     }
 
+    @ActivityScope
+    @Binds abstract Activity bindActivity(TasksActivity tasksActivity);
 }

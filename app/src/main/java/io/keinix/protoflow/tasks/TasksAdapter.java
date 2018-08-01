@@ -43,11 +43,13 @@ public class TasksAdapter extends RecyclerView.Adapter {
     public static final int ITEM_VIEW_TYPE_DATE = 102;
     public static final int ITEM_VIEW_TYPE_ROUTINE = 103;
     private Context mContext;
-    private List<? extends ListItem> mListItems;
+    private List<ListItem> mListItems;
+    private Activity mActivity;
 
     @Inject
-    public TasksAdapter(Context context) {
+    public TasksAdapter(Context context, Activity activity) {
         mContext = context;
+        mActivity = activity;
     }
 
     // ----------------Override----------------
@@ -111,8 +113,9 @@ public class TasksAdapter extends RecyclerView.Adapter {
 
     // ----------------Public----------------
 
+    // let's try this new setter comes in as anything that extends then is casted to ListItems
     public void setListItems(List<? extends ListItem> listItems) {
-        mListItems = listItems;
+        mListItems = (List<ListItem>) listItems;
         notifyDataSetChanged();
     }
 
@@ -124,7 +127,9 @@ public class TasksAdapter extends RecyclerView.Adapter {
     public void insertRoutineChildTasks(List<? extends ListItem> tasks) {
         int routineId = ((Task) tasks.get(0)).getRoutineId();
         int insertPosition = getRoutineIndex(routineId);
-        mListItems.add(insertPosition, tasks.get(0));
+        mListItems.addAll(insertPosition, tasks);
+        notifyDataSetChanged();
+        //notifyItemRangeInserted(insertPosition, tasks.size());
     }
 
     // ----------------private----------------
@@ -228,7 +233,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
         void addTaskToRoutine() {
             Intent intent = new Intent(mContext, AddEditTaskActivity.class);
             intent.putExtra(TasksActivity.EXTRA_ROUTINE, mRoutine);
-            ((Activity) mContext).startActivityForResult(intent, TasksActivity.REQUEST_CODE_ROUTINE);
+            (mActivity).startActivityForResult(intent, TasksActivity.REQUEST_CODE_ROUTINE);
         }
 
         public RoutineViewHolder(View itemView) {
