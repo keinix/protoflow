@@ -47,7 +47,8 @@ public class TasksActivity extends DaggerAppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         DatePickerDialog.OnDateSetListener,
         NewProjectDialogFragment.OnNewProjectCreatedListener,
-        NewRoutineDialogFragment.OnNewRoutineCreatedListener {
+        NewRoutineDialogFragment.OnNewRoutineCreatedListener,
+        TasksAdapter.RoutineListener {
 
     // --------------view Binding--------------
 
@@ -222,6 +223,11 @@ public class TasksActivity extends DaggerAppCompatActivity
         if (requestCode == REQUEST_CODE_ROUTINE && resultCode == RESULT_OK) {
             getRoutineChildTasks(data.getParcelableExtra(EXTRA_ROUTINE));
         }
+    }
+
+    @Override
+    public void onRoutineExpanded(Routine routine) {
+        getRoutineChildTasks(routine);
     }
 
     // --------------Lifecycle--------------
@@ -422,6 +428,9 @@ public class TasksActivity extends DaggerAppCompatActivity
 
     private void getRoutineChildTasks(Routine routine) {
         mViewModel.getChildTasksForRoutine(routine.getId())
-                .observe(this, mAdapter::insertRoutineChildTasks);
+                .observe(this, tasks -> {
+                    mAdapter.insertRoutineChildTasks(tasks);
+                    routine.setChildTaskCount(tasks.size());
+                });
     }
 }
