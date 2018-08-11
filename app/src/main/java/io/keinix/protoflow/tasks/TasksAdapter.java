@@ -139,6 +139,14 @@ public class TasksAdapter extends RecyclerView.Adapter {
         //notifyItemRangeInserted(insertPosition, tasks.size());
     }
 
+    public void insertRoutineChildTasks(List<? extends ListItem> tasks, int insertOffset) {
+        int routineId = ((Task) tasks.get(0)).getRoutineId();
+        int insertPosition = getRoutineIndex(routineId) + 1 + insertOffset;
+        mListItems.addAll(insertPosition, tasks);
+        notifyDataSetChanged();
+        //notifyItemRangeInserted(insertPosition, tasks.size());
+    }
+
 
     // ----------------private----------------
 
@@ -163,6 +171,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
         List<ListItem> childTasks = mListItems.subList(firstChildIndex, lastChildPosition);
         mListItems.removeAll(childTasks);
         notifyItemRangeRemoved(firstChildIndex, lastChildPosition);
+        routine.setChildTaskCount(0);
     }
 
 
@@ -256,6 +265,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
             Intent intent = new Intent(mContext, AddEditTaskActivity.class);
             intent.putExtra(TasksActivity.EXTRA_ROUTINE, mRoutine);
             (mActivity).startActivityForResult(intent, TasksActivity.REQUEST_CODE_ROUTINE);
+            mRoutine.setExpanded(true);
         }
 
         @OnClick(R.id.image_button_routine_drop_down)

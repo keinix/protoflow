@@ -221,13 +221,15 @@ public class TasksActivity extends DaggerAppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_ROUTINE && resultCode == RESULT_OK) {
-            getRoutineChildTasks(data.getParcelableExtra(EXTRA_ROUTINE));
+            mLastViewValue = LAST_VIEW_ROUTINE;
+            Routine routine = data.getParcelableExtra(EXTRA_ROUTINE);
+            if (!mViewModel.routineHasObserver(routine.getId())) getRoutineChildTasks(routine);
         }
     }
 
     @Override
     public void onRoutineExpanded(Routine routine) {
-        getRoutineChildTasks(routine);
+        if (!mViewModel.routineHasObserver(routine.getId())) getRoutineChildTasks(routine);
     }
 
     // --------------Lifecycle--------------
@@ -247,11 +249,6 @@ public class TasksActivity extends DaggerAppCompatActivity
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d(TAG, "on Resume called");
-    }
     // ------------------Private------------------
 
     private void setupNavDrawer() {
@@ -429,8 +426,13 @@ public class TasksActivity extends DaggerAppCompatActivity
     private void getRoutineChildTasks(Routine routine) {
         mViewModel.getChildTasksForRoutine(routine.getId())
                 .observe(this, tasks -> {
-                    mAdapter.insertRoutineChildTasks(tasks);
+                    if (routine.getChildTaskCount() == 0) {
+                        mAdapter.insertRoutineChildTasks(tasks);
+                    } else {
+                        mAdapter.insertRoutineChildTasks(tasks.subList(tasks.size() -1, tasks.size()), routine.getChildTaskCount());
+                    }
                     routine.setChildTaskCount(tasks.size());
+                    mViewModel.notifyRoutineHasObserver(routine.getId());
                 });
     }
 }

@@ -5,6 +5,7 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,7 +15,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.keinix.protoflow.R;
 import io.keinix.protoflow.data.CalendarDay;
 import io.keinix.protoflow.data.Project;
 import io.keinix.protoflow.data.Routine;
@@ -30,6 +30,7 @@ public class TasksViewModel extends AndroidViewModel {
     private LiveData<List<Task>> mAllTasks;
     private List<Long> mNext7DaysUtc;
     private Project mProject;
+    private SparseBooleanArray mRoutineHasObserver;
 
     public static final String TAG = TasksViewModel.class.getSimpleName();
     @Inject
@@ -37,6 +38,7 @@ public class TasksViewModel extends AndroidViewModel {
         super(application);
         mTaskRepository = taskRepository;
         mAllTasks = mTaskRepository.getAllTasks();
+        mRoutineHasObserver = new SparseBooleanArray();
     }
 
     // -------public: model layer bridge--------
@@ -121,6 +123,14 @@ public class TasksViewModel extends AndroidViewModel {
         tasks = sortTasksByDate(tasks);
         tasks = addDaySeparatorItems(tasks);
         return tasks;
+    }
+
+    public void notifyRoutineHasObserver(int routineId) {
+        mRoutineHasObserver.put(routineId, true);
+    }
+
+    public boolean routineHasObserver(int routineId) {
+        return mRoutineHasObserver.get(routineId);
     }
 
 
