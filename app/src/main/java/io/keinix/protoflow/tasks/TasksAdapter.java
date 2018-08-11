@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import butterknife.BindColor;
 import butterknife.BindView;
@@ -126,7 +127,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
 
     public void insertRoutineChildTasks(List<? extends ListItem> tasks) {
         int routineId = ((Task) tasks.get(0)).getRoutineId();
-        int insertPosition = getRoutineIndex(routineId);
+        int insertPosition = getRoutineIndex(routineId) + 1;
         mListItems.addAll(insertPosition, tasks);
         notifyDataSetChanged();
         //notifyItemRangeInserted(insertPosition, tasks.size());
