@@ -229,7 +229,7 @@ public class TasksActivity extends DaggerAppCompatActivity
 
     @Override
     public void onRoutineExpanded(Routine routine) {
-        if (!mViewModel.routineHasObserver(routine.getId())) getRoutineChildTasks(routine);
+        expandChildTasks(routine);
     }
 
     // --------------Lifecycle--------------
@@ -424,6 +424,7 @@ public class TasksActivity extends DaggerAppCompatActivity
     }
 
     private void getRoutineChildTasks(Routine routine) {
+        Log.d(TAG, "getRoutineChildTasks is being called");
         mViewModel.getChildTasksForRoutine(routine.getId())
                 .observe(this, tasks -> {
                     if (routine.getChildTaskCount() == 0) {
@@ -431,8 +432,18 @@ public class TasksActivity extends DaggerAppCompatActivity
                     } else {
                         mAdapter.insertRoutineChildTasks(tasks.subList(tasks.size() -1, tasks.size()), routine.getChildTaskCount());
                     }
-                    routine.setChildTaskCount(tasks.size());
+                    Log.d(TAG, "Tasks from live data size: " + tasks.size());
+                    mAdapter.updateRoutinesChildCount(routine.getId(), tasks.size());
                     mViewModel.notifyRoutineHasObserver(routine.getId());
                 });
+    }
+
+    private void expandChildTasks(Routine routine) {
+        LiveData<List<Task>> childTasks = mViewModel.getChildTasksForRoutine(routine.getId());
+        childTasks.observe(this, tasks -> {
+                   routine.setChildTaskCount(tasks.size());
+                   mAdapter.insertRoutineChildTasks(tasks);
+                   childTasks.removeObservers(this);
+        });
     }
 }

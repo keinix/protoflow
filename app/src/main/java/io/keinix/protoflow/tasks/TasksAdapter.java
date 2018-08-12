@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.constraint.Group;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -147,6 +148,11 @@ public class TasksAdapter extends RecyclerView.Adapter {
         //notifyItemRangeInserted(insertPosition, tasks.size());
     }
 
+    public void updateRoutinesChildCount(int routineId, int childCount) {
+        int index = getRoutineIndex(routineId);
+        ((Routine) mListItems.get(index)).setChildTaskCount(childCount);
+    }
+
 
     // ----------------private----------------
 
@@ -168,6 +174,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
     private void collapseRoutine(Routine routine) {
         int firstChildIndex = getRoutineIndex(routine.getId()) + 1;
         int lastChildPosition = firstChildIndex + routine.getChildTaskCount();
+        Log.d(TAG, "child Task count: " + routine.getChildTaskCount());
         List<ListItem> childTasks = mListItems.subList(firstChildIndex, lastChildPosition);
         mListItems.removeAll(childTasks);
         notifyItemRangeRemoved(firstChildIndex, lastChildPosition);
@@ -278,12 +285,12 @@ public class TasksAdapter extends RecyclerView.Adapter {
             mRoutine.setExpanded(!mRoutine.isExpanded());
         }
 
-        public RoutineViewHolder(View itemView) {
+        private RoutineViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        public void bindView(int position) {
+        private void bindView(int position) {
             mRoutine = (Routine) mListItems.get(position);
             routineName.setText(mRoutine.getName());
         }
