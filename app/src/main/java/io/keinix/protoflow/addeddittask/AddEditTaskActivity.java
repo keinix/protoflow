@@ -366,7 +366,9 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         setStartTimeFromViewModel();
         setStartDateFromViewModel();
         setProjectFromViewModel();
-        routineTextView.setText(mViewModel.getRoutine().getName());
+        if (mViewModel.getRoutine() != null) {
+            routineTextView.setText(mViewModel.getRoutine().getName());
+        }
     }
 
     private void setStartDateFromViewModel() {

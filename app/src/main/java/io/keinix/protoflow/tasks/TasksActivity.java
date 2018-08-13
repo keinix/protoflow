@@ -416,7 +416,11 @@ public class TasksActivity extends DaggerAppCompatActivity
         mDisplayedTasks.removeObservers(this);
         mViewModel.getAllRoutines().observe(this, routines -> {
             if (routines.size() > 0) {
-                mAdapter.setListItems(routines);
+                if (mAdapter.getListItems().contains(routines.get(0))) {
+                    mAdapter.addNewRoutine(routines.get(routines.size() -1));
+                } else {
+                    mAdapter.setListItems(routines);
+                }
             } else {
                 mAdapter.clearTasks();
             }
@@ -441,9 +445,11 @@ public class TasksActivity extends DaggerAppCompatActivity
     private void expandChildTasks(Routine routine) {
         LiveData<List<Task>> childTasks = mViewModel.getChildTasksForRoutine(routine.getId());
         childTasks.observe(this, tasks -> {
-                   routine.setChildTaskCount(tasks.size());
-                   mAdapter.insertRoutineChildTasks(tasks);
-                   childTasks.removeObservers(this);
+            if (tasks.size() > 0) {
+                routine.setChildTaskCount(tasks.size());
+                mAdapter.insertRoutineChildTasks(tasks);
+                childTasks.removeObservers(this);
+            }
         });
     }
 }

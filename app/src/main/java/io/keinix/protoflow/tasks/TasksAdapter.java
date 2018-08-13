@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -153,6 +154,14 @@ public class TasksAdapter extends RecyclerView.Adapter {
         ((Routine) mListItems.get(index)).setChildTaskCount(childCount);
     }
 
+    public List<ListItem> getListItems() {
+        return mListItems;
+    }
+
+    public void addNewRoutine(Routine routine) {
+        mListItems.add(routine);
+        notifyItemInserted(mListItems.size() -1);
+    }
 
     // ----------------private----------------
 
@@ -208,8 +217,11 @@ public class TasksAdapter extends RecyclerView.Adapter {
 
         private void setDetails(Task task) {
             if (task.getStartTimeUtc() > 1) {
+                taskDetailsTextView.setVisibility(View.VISIBLE);
                 String detailsText = "Start: " + getTimeStamp(task);
                 taskDetailsTextView.setText(detailsText);
+            } else {
+                taskDetailsTextView.setVisibility(View.GONE);
             }
         }
 
@@ -264,6 +276,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
     class RoutineViewHolder extends RecyclerView.ViewHolder  {
 
         @BindView(R.id.text_view_routine_name) TextView routineName;
+        @BindView(R.id.image_button_routine_drop_down) ImageButton routineDropDownImageButton;
 
         private Routine mRoutine;
 
@@ -279,8 +292,10 @@ public class TasksAdapter extends RecyclerView.Adapter {
         void showChildTasks() {
             if (mRoutine.isExpanded()) {
                 collapseRoutine(mRoutine);
+                routineDropDownImageButton.setRotation(0);
             } else {
                 mRoutineListener.onRoutineExpanded(mRoutine);
+                routineDropDownImageButton.setRotation(180);
             }
             mRoutine.setExpanded(!mRoutine.isExpanded());
         }
@@ -288,6 +303,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
         private RoutineViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            routineDropDownImageButton.getDrawable().mutate();
         }
 
         private void bindView(int position) {
