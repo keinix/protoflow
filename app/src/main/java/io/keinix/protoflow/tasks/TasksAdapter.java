@@ -143,7 +143,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
 
     public void insertRoutineChildTasks(List<? extends ListItem> tasks, int insertOffset) {
         int routineId = ((Task) tasks.get(0)).getRoutineId();
-        int insertPosition = getRoutineIndex(routineId) + 1 + insertOffset;
+        int insertPosition = getRoutineIndex(routineId)  + insertOffset; // +1
         mListItems.addAll(insertPosition, tasks);
         notifyDataSetChanged();
         //notifyItemRangeInserted(insertPosition, tasks.size());
@@ -186,8 +186,8 @@ public class TasksAdapter extends RecyclerView.Adapter {
         Log.d(TAG, "child Task count: " + routine.getChildTaskCount());
         List<ListItem> childTasks = mListItems.subList(firstChildIndex, lastChildPosition);
         mListItems.removeAll(childTasks);
-        notifyItemRangeRemoved(firstChildIndex, lastChildPosition);
         routine.setChildTaskCount(0);
+        notifyItemRangeRemoved(firstChildIndex, lastChildPosition);
     }
 
 
