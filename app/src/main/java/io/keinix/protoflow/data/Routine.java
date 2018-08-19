@@ -7,6 +7,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
+import java.util.Objects;
+
 import io.keinix.protoflow.util.ListItem;
 
 @Entity (tableName = "routine_table")
@@ -72,6 +74,23 @@ public class Routine implements ListItem, Parcelable {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Routine)) return false;
+        Routine routine = (Routine) o;
+        return id == routine.id &&
+                isExpanded == routine.isExpanded &&
+                childTaskCount == routine.childTaskCount &&
+                Objects.equals(name, routine.name);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, name, isExpanded, childTaskCount);
     }
 
     private Routine(Parcel parcel) {

@@ -36,4 +36,5 @@ public abstract class TasksModule {
 
     @ActivityScope
     @Binds abstract Activity bindActivity(TasksActivity tasksActivity);
+
 }

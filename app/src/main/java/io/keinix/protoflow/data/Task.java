@@ -257,18 +257,49 @@ public class Task implements ListItem {
         this.routineId = routineId;
     }
 
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Task task = (Task) o;
+//        return scheduledDateUtc == task.scheduledDateUtc;
+//    }
+
+//    @Override
+//    public int hashCode() {
+//
+//        return Objects.hash(scheduledDateUtc);
+//    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Task)) return false;
         Task task = (Task) o;
-        return scheduledDateUtc == task.scheduledDateUtc;
+        return id == task.id &&
+                projectId == task.projectId &&
+                routineId == task.routineId &&
+                durationInMinutes == task.durationInMinutes &&
+                scheduledDateUtc == task.scheduledDateUtc &&
+                startTimeUtc == task.startTimeUtc &&
+                repeatsOnADay == task.repeatsOnADay &&
+                repeatsOnMonday == task.repeatsOnMonday &&
+                repeatsOnTuesday == task.repeatsOnTuesday &&
+                repeatsOnWednesday == task.repeatsOnWednesday &&
+                repeatsOnThursday == task.repeatsOnThursday &&
+                repeatsOnFriday == task.repeatsOnFriday &&
+                repeatsOnSaturday == task.repeatsOnSaturday &&
+                repeatsOnSunday == task.repeatsOnSunday &&
+                Objects.equals(name, task.name) &&
+                Objects.equals(routines, task.routines) &&
+                Objects.equals(notes, task.notes);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(scheduledDateUtc);
+        return Objects.hash(id, projectId, routineId, name, routines, durationInMinutes, scheduledDateUtc, startTimeUtc, notes, repeatsOnADay, repeatsOnMonday, repeatsOnTuesday, repeatsOnWednesday, repeatsOnThursday, repeatsOnFriday, repeatsOnSaturday, repeatsOnSunday);
     }
 
     @Override
