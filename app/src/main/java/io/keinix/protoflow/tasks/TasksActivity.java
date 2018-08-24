@@ -312,14 +312,15 @@ public class TasksActivity extends DaggerAppCompatActivity
             if (tasks == null) {
                 mAdapter.clearTasks();
             } else {
-                mAdapter.setListItems(tasks);
+                mAdapter.updateListItems(tasks);
             }
         });
     }
 
+    // change is here
     private void getTaskForDate(CalendarDay calendarDay) {
         mDisplayedTasks = mViewModel.getAllTasksOnDay(calendarDay);
-        mDisplayedTasks.observe(this, mAdapter::setListItems);
+        mDisplayedTasks.observe(this, mAdapter::updateListItems);
     }
 
     private void getTasksForToday() {
@@ -341,7 +342,7 @@ public class TasksActivity extends DaggerAppCompatActivity
             mDisplayedTasks.observe(this, tasks -> {
                 if (tasks.size() != 0) {
                     List<Task> formattedTasks = mViewModel.format7DayTasks(tasks);
-                    mAdapter.setListItems(formattedTasks);
+                    mAdapter.updateListItems(formattedTasks);
                 } else {
                     mAdapter.clearTasks();
                 }
@@ -395,7 +396,7 @@ public class TasksActivity extends DaggerAppCompatActivity
         mDisplayedTasks = mViewModel.getTasksInProject(project.getId());
         mDisplayedTasks.observe(this, tasks -> {
             if (tasks.size() > 0) {
-                mAdapter.setListItems(tasks);
+                mAdapter.updateListItems(tasks);
             } else {
                 mAdapter.clearTasks();
             }
@@ -419,7 +420,7 @@ public class TasksActivity extends DaggerAppCompatActivity
                 if (mAdapter.getListItems().contains(routines.get(0))) {
                     mAdapter.addNewRoutine(routines.get(routines.size() -1));
                 } else {
-                    mAdapter.setListItems(routines);
+                    mAdapter.updateListItems(routines);
                 }
             } else {
                 mAdapter.clearTasks();

@@ -54,7 +54,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
     }
 
     @Inject
-    public TasksAdapter(Context context, Activity activity;) {
+    public TasksAdapter(Context context, Activity activity) {
         mContext = context;
         mActivity = activity;
         mRoutineListener = (RoutineListener) activity;
@@ -165,13 +165,15 @@ public class TasksAdapter extends RecyclerView.Adapter {
     }
 
     public void updateListItems(List<? extends ListItem> listItems) {
-        ListItemDiffCallback diffCallback =
-                new ListItemDiffCallback(mListItems, (List<ListItem>) listItems);
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+            if (mListItems == null) mListItems = new ArrayList<>();
+            ListItemDiffCallback diffCallback =
+                    new ListItemDiffCallback(mListItems, (List<ListItem>) listItems);
+            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 
-        mListItems.clear();
-        mListItems.addAll(listItems);
-        diffResult.dispatchUpdatesTo(this);
+            mListItems.clear();
+            mListItems.addAll(listItems);
+            diffResult.dispatchUpdatesTo(this);
+
     }
 
     // ----------------private----------------

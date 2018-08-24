@@ -21,12 +21,12 @@ public class ListItemDiffCallback extends DiffUtil.Callback {
 
     @Override
     public int getOldListSize() {
-        return mOldListItems.size();
+        return mOldListItems != null ? mOldListItems.size() : 0;
     }
 
     @Override
     public int getNewListSize() {
-        return mNewListItems.size();
+        return mNewListItems != null ? mNewListItems.size() : 0;
     }
 
     @Override
