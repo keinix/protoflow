@@ -229,7 +229,9 @@ public class TasksActivity extends DaggerAppCompatActivity
 
     @Override
     public void onRoutineExpanded(Routine routine) {
-        expandChildTasks(routine);
+        mViewModel.updateRoutineExpandedValue(routine);
+        mAdapter.updateListItems(getRoutineListItems());
+//        expandChildTasks(routine);
     }
 
     // --------------Lifecycle--------------
@@ -412,21 +414,21 @@ public class TasksActivity extends DaggerAppCompatActivity
 
     //~~~~~~~Methods for Routines~~~~~~~
 
-    private void displayAllRoutines() {
-        setTitle(routinesString);
-        mDisplayedTasks.removeObservers(this);
-        mViewModel.getAllRoutines().observe(this, routines -> {
-            if (routines.size() > 0) {
-                if (mAdapter.getListItems().contains(routines.get(0))) {
-                    mAdapter.addNewRoutine(routines.get(routines.size() -1));
-                } else {
-                    mAdapter.updateListItems(routines);
-                }
-            } else {
-                mAdapter.clearTasks();
-            }
-        });
-    }
+//    private void displayAllRoutines() {
+//        setTitle(routinesString);
+//        mDisplayedTasks.removeObservers(this);
+//        mViewModel.getAllRoutines().observe(this, routines -> {
+//            if (routines.size() > 0) {
+//                if (mAdapter.getListItems().contains(routines.get(0))) {
+//                    mAdapter.addNewRoutine(routines.get(routines.size() -1));
+//                } else {
+//                    mAdapter.updateListItems(routines);
+//                }
+//            } else {
+//                mAdapter.clearTasks();
+//            }
+//        });
+//    }
 
     private void getRoutineChildTasks(Routine routine) {
         Log.d(TAG, "getRoutineChildTasks is being called");
@@ -452,5 +454,18 @@ public class TasksActivity extends DaggerAppCompatActivity
                 childTasks.removeObservers(this);
             }
         });
+    }
+
+    // NEW ---------->
+
+    private void displayAllRoutines() {
+        mDisplayedTasks.removeObservers(this);
+        mViewModel.getAllRoutines().observe(this, mViewModel::updateCachedRoutines);
+    }
+
+
+    private List<? extends ListItem> getRoutineListItems() {
+        List<? extends ListItem> listItems;
+        if (mViewModel.getRoutineListItems())
     }
 }

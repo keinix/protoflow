@@ -123,11 +123,6 @@ public class TasksAdapter extends RecyclerView.Adapter {
 
     // ----------------Public----------------
 
-    // let's try this new setter comes in as anything that extends then is casted to ListItems
-    public void setListItems(List<? extends ListItem> listItems) {
-        mListItems = (List<ListItem>) listItems;
-        notifyDataSetChanged();
-    }
 
     public void clearTasks() {
         mListItems = null;

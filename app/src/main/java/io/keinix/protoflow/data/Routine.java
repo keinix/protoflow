@@ -7,6 +7,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
+import java.util.List;
 import java.util.Objects;
 
 import io.keinix.protoflow.util.ListItem;
@@ -25,6 +26,9 @@ public class Routine implements ListItem, Parcelable {
 
     @Ignore
     private int childTaskCount;
+
+    @Ignore
+    private List<Task> cachedChildren;
 
     @Override
     public int getItemType() {
@@ -68,6 +72,14 @@ public class Routine implements ListItem, Parcelable {
         this.childTaskCount = childTaskCount;
     }
 
+    public List<Task> getCachedChildren() {
+        return cachedChildren;
+    }
+
+    public void setCachedChildren(List<Task> cachedChildren) {
+        this.cachedChildren = cachedChildren;
+    }
+
     @Override
     public String toString() {
         return "Routine{" +
@@ -81,16 +93,13 @@ public class Routine implements ListItem, Parcelable {
         if (this == o) return true;
         if (!(o instanceof Routine)) return false;
         Routine routine = (Routine) o;
-        return id == routine.id &&
-                isExpanded == routine.isExpanded &&
-                childTaskCount == routine.childTaskCount &&
-                Objects.equals(name, routine.name);
+        return id == routine.id;
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, name, isExpanded, childTaskCount);
+        return Objects.hash(id);
     }
 
     private Routine(Parcel parcel) {

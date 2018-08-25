@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 
@@ -12,6 +13,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -20,6 +23,7 @@ import io.keinix.protoflow.data.Project;
 import io.keinix.protoflow.data.Routine;
 import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.data.source.TaskRepository;
+import io.keinix.protoflow.util.ListItem;
 
 import static io.keinix.protoflow.tasks.TasksAdapter.DATE_HEADING;
 
@@ -31,6 +35,7 @@ public class TasksViewModel extends AndroidViewModel {
     private List<Long> mNext7DaysUtc;
     private Project mProject;
     private SparseBooleanArray mRoutineHasObserver;
+    private List<Routine> mCachedRoutines;
 
     public static final String TAG = TasksViewModel.class.getSimpleName();
     @Inject
@@ -131,6 +136,35 @@ public class TasksViewModel extends AndroidViewModel {
 
     public boolean routineHasObserver(int routineId) {
         return mRoutineHasObserver.get(routineId);
+    }
+
+    // NEW ------------->
+
+    @Nullable
+    public List<? extends ListItem> getRoutineListItems(Routine routine) {
+
+    }
+
+    public void updateCachedRoutineChildren(Routine routine, List<Task> children) {
+
+    }
+
+    public void updateRoutineExpandedValue(Routine routine) {
+
+    }
+
+    public void updateCachedRoutines(List<Routine> newRoutines) {
+        if (mCachedRoutines == null) mCachedRoutines = new ArrayList<>();
+
+        if (mCachedRoutines.size() == newRoutines.size()) {
+            updateACachedRoutine(newRoutines);
+
+        } else if (mCachedRoutines.size() < newRoutines.size()) {
+            addToCachedRoutines(newRoutines);
+
+        } else {
+            removeSomethingFromCachedRoutines(newRoutines);
+        }
     }
 
 
@@ -268,6 +302,37 @@ public class TasksViewModel extends AndroidViewModel {
     private List<Task> sortTasksByDate(List<Task> tasks) {
         tasks.sort(Comparator.comparingLong(Task::getScheduledDateUtc));
         return tasks;
+    }
+
+    // used to create a List of items that will appear in the recycler view
+    private List<? extends ListItem> convertRoutineMapToList() {
+        return null;
+    }
+
+    private void removeSomethingFromCachedRoutines(List<Routine> newRoutines) {
+        // routine deleted
+        Routine routineToRemove = null;
+        for (Routine routine : mCachedRoutines) {
+            if (!newRoutines.contains(routine)) {
+                routineToRemove = routine;
+                break;
+            }
+        }
+        if (routineToRemove !=null )mCachedRoutines.remove(routineToRemove);
+    }
+
+    private void addToCachedRoutines(List<Routine> newRoutines) {
+        // routine added
+        for (Routine routine : newRoutines) {
+            if (!mCachedRoutines.contains(routine)) mCachedRoutines.add(routine);
+        }
+    }
+
+    private void updateACachedRoutine(List<Routine> newRoutines) {
+        // routine Updated
+        for (int i = 0; i < mCachedRoutines.size(); i++) {
+            mCachedRoutines.get(i).setName(newRoutines.get(i).getName());
+        }
     }
 
     // -------getters and setters--------
