@@ -16,7 +16,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -223,14 +222,14 @@ public class TasksActivity extends DaggerAppCompatActivity
         if (requestCode == REQUEST_CODE_ROUTINE && resultCode == RESULT_OK) {
             mLastViewValue = LAST_VIEW_ROUTINE;
             Routine routine = data.getParcelableExtra(EXTRA_ROUTINE);
-            if (!mViewModel.routineHasObserver(routine.getId())) getRoutineChildTasks(routine);
+            //TODO: add case where routine is added
         }
     }
 
     @Override
     public void onRoutineExpanded(Routine routine) {
         mViewModel.updateRoutineExpandedValue(routine);
-        mAdapter.updateListItems(getRoutineListItems());
+        showHideRoutineChildTasks(routine);
 //        expandChildTasks(routine);
     }
 
@@ -414,58 +413,31 @@ public class TasksActivity extends DaggerAppCompatActivity
 
     //~~~~~~~Methods for Routines~~~~~~~
 
-//    private void displayAllRoutines() {
-//        setTitle(routinesString);
-//        mDisplayedTasks.removeObservers(this);
-//        mViewModel.getAllRoutines().observe(this, routines -> {
-//            if (routines.size() > 0) {
-//                if (mAdapter.getListItems().contains(routines.get(0))) {
-//                    mAdapter.addNewRoutine(routines.get(routines.size() -1));
-//                } else {
-//                    mAdapter.updateListItems(routines);
-//                }
-//            } else {
-//                mAdapter.clearTasks();
-//            }
-//        });
-//    }
-
-    private void getRoutineChildTasks(Routine routine) {
-        Log.d(TAG, "getRoutineChildTasks is being called");
-        mViewModel.getChildTasksForRoutine(routine.getId())
-                .observe(this, tasks -> {
-                    if (routine.getChildTaskCount() == 0) {
-                        mAdapter.insertRoutineChildTasks(tasks);
-                    } else {
-                        mAdapter.insertRoutineChildTasks(tasks.subList(tasks.size() -1, tasks.size()), routine.getChildTaskCount());
-                    }
-                    Log.d(TAG, "Tasks from live data size: " + tasks.size());
-                    mAdapter.updateRoutinesChildCount(routine.getId(), tasks.size());
-                    mViewModel.notifyRoutineHasObserver(routine.getId());
-                });
+    private void showHideRoutineChildTasks(Routine routine) {
+        if (!mViewModel.routineHasCachedChildren(routine)) {
+            getRoutineChildren(routine);
+        } else {
+            mAdapter.updateListItems(getRoutineListItems());
+        }
     }
 
-    private void expandChildTasks(Routine routine) {
-        LiveData<List<Task>> childTasks = mViewModel.getChildTasksForRoutine(routine.getId());
-        childTasks.observe(this, tasks -> {
-            if (tasks.size() > 0) {
-                routine.setChildTaskCount(tasks.size());
-                mAdapter.insertRoutineChildTasks(tasks);
-                childTasks.removeObservers(this);
-            }
-        });
+    private void getRoutineChildren(Routine routine) {
+        mViewModel.getChildTasksForRoutine(routine.getId()).observe(this, children -> {
+            mViewModel.setCachedRoutineChildren(routine, children);
+            mAdapter.updateListItems(getRoutineListItems());
+            });
     }
-
-    // NEW ---------->
 
     private void displayAllRoutines() {
         mDisplayedTasks.removeObservers(this);
-        mViewModel.getAllRoutines().observe(this, mViewModel::updateCachedRoutines);
+        mViewModel.getAllRoutines().observe(this, routines -> {
+            mViewModel.updateCachedRoutines(routines);
+            mAdapter.updateListItems(mViewModel.getRoutineListItems());
+        });
     }
 
 
     private List<? extends ListItem> getRoutineListItems() {
-        List<? extends ListItem> listItems;
-        if (mViewModel.getRoutineListItems())
+        return mViewModel.getRoutineListItems();
     }
 }

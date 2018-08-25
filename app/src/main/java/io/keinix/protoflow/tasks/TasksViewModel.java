@@ -140,19 +140,6 @@ public class TasksViewModel extends AndroidViewModel {
 
     // NEW ------------->
 
-    @Nullable
-    public List<? extends ListItem> getRoutineListItems(Routine routine) {
-
-    }
-
-    public void updateCachedRoutineChildren(Routine routine, List<Task> children) {
-
-    }
-
-    public void updateRoutineExpandedValue(Routine routine) {
-
-    }
-
     public void updateCachedRoutines(List<Routine> newRoutines) {
         if (mCachedRoutines == null) mCachedRoutines = new ArrayList<>();
 
@@ -164,6 +151,45 @@ public class TasksViewModel extends AndroidViewModel {
 
         } else {
             removeSomethingFromCachedRoutines(newRoutines);
+        }
+    }
+
+    @Nullable
+    public List<ListItem> getRoutineListItems() {
+        List<ListItem> listItems = new ArrayList<>();
+        for (Routine routine : mCachedRoutines) {
+            listItems.add(routine);
+            if (routine.isExpanded() && routine.getCachedChildren() != null) {
+                listItems.addAll(routine.getCachedChildren());
+            }
+        }
+        return listItems;
+    }
+
+
+    public void updateRoutineExpandedValue(Routine routine) {
+        for (Routine cachedRoutine : mCachedRoutines) {
+            if (cachedRoutine.getId() == routine.getId()) {
+                cachedRoutine.setExpanded(routine.isExpanded());
+                break;
+            }
+        }
+    }
+
+    public boolean routineHasCachedChildren(Routine routine) {
+     Routine routineBeingChecked = null;
+     for (Routine cachedRoutine : mCachedRoutines) {
+         if (cachedRoutine.getId() == routine.getId()) routineBeingChecked = cachedRoutine;
+     }
+     return routineBeingChecked.getCachedChildren() != null;
+    }
+
+    public void setCachedRoutineChildren(Routine routine, List<Task> children) {
+        for (Routine cachedRoutine : mCachedRoutines) {
+            if (cachedRoutine.getId() == routine.getId()) {
+                cachedRoutine.setCachedChildren(children);
+                break;
+            }
         }
     }
 
