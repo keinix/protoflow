@@ -222,7 +222,9 @@ public class TasksActivity extends DaggerAppCompatActivity
         if (requestCode == REQUEST_CODE_ROUTINE && resultCode == RESULT_OK) {
             mLastViewValue = LAST_VIEW_ROUTINE;
             Routine routine = data.getParcelableExtra(EXTRA_ROUTINE);
-            //TODO: add case where routine is added
+            routine.setExpanded(true);
+            mViewModel.updateRoutineExpandedValue(routine);
+            if (!mViewModel.routineHasCachedChildren(routine)) getRoutineChildren(routine);
         }
     }
 
@@ -230,7 +232,6 @@ public class TasksActivity extends DaggerAppCompatActivity
     public void onRoutineExpandedOrCollapsed(Routine routine) {
         mViewModel.updateRoutineExpandedValue(routine);
         showHideRoutineChildTasks(routine);
-//        expandChildTasks(routine);
     }
 
     // --------------Lifecycle--------------

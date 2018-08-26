@@ -289,8 +289,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
         void addTaskToRoutine() {
             Intent intent = new Intent(mContext, AddEditTaskActivity.class);
             intent.putExtra(TasksActivity.EXTRA_ROUTINE, mRoutine);
-            (mActivity).startActivityForResult(intent, TasksActivity.REQUEST_CODE_ROUTINE);
-            mRoutine.setExpanded(true);
+            mActivity.startActivityForResult(intent, TasksActivity.REQUEST_CODE_ROUTINE);
         }
 
         @OnClick(R.id.image_button_routine_drop_down)
