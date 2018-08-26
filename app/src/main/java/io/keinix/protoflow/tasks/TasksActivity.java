@@ -227,7 +227,7 @@ public class TasksActivity extends DaggerAppCompatActivity
     }
 
     @Override
-    public void onRoutineExpanded(Routine routine) {
+    public void onRoutineExpandedOrCollapsed(Routine routine) {
         mViewModel.updateRoutineExpandedValue(routine);
         showHideRoutineChildTasks(routine);
 //        expandChildTasks(routine);
@@ -435,7 +435,6 @@ public class TasksActivity extends DaggerAppCompatActivity
             mAdapter.updateListItems(mViewModel.getRoutineListItems());
         });
     }
-
 
     private List<? extends ListItem> getRoutineListItems() {
         return mViewModel.getRoutineListItems();

@@ -130,13 +130,6 @@ public class TasksViewModel extends AndroidViewModel {
         return tasks;
     }
 
-    public void notifyRoutineHasObserver(int routineId) {
-        mRoutineHasObserver.put(routineId, true);
-    }
-
-    public boolean routineHasObserver(int routineId) {
-        return mRoutineHasObserver.get(routineId);
-    }
 
     // NEW ------------->
 

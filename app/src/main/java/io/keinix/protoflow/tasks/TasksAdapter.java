@@ -7,13 +7,10 @@ import android.support.annotation.NonNull;
 import android.support.constraint.Group;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -50,7 +47,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
     private RoutineListener mRoutineListener;
 
     interface RoutineListener {
-        void onRoutineExpanded(Routine routine);
+        void onRoutineExpandedOrCollapsed(Routine routine);
     }
 
     @Inject
@@ -183,20 +180,20 @@ public class TasksAdapter extends RecyclerView.Adapter {
         return -1;
     }
 
-    /**
-     * @param routine who's child tasks will be hidden
-     * Tasks are removed from the main list and added to memory encase they
-     * are expanded later.
-     */
-    private void collapseRoutine(Routine routine) {
-        int firstChildIndex = getRoutineIndex(routine.getId()) + 1;
-        int lastChildPosition = firstChildIndex + routine.getChildTaskCount();
-        Log.d(TAG, "child Task count: " + routine.getChildTaskCount());
-        List<ListItem> childTasks = mListItems.subList(firstChildIndex, lastChildPosition);
-        mListItems.removeAll(childTasks);
-        routine.setChildTaskCount(0);
-        notifyItemRangeRemoved(firstChildIndex, lastChildPosition);
-    }
+//    /**
+//     * @param routine who's child tasks will be hidden
+//     * Tasks are removed from the main list and added to memory encase they
+//     * are expanded later.
+//     */
+//    private void collapseRoutine(Routine routine) {
+//        int firstChildIndex = getRoutineIndex(routine.getId()) + 1;
+//        int lastChildPosition = firstChildIndex + routine.getChildTaskCount();
+//        Log.d(TAG, "child Task count: " + routine.getChildTaskCount());
+//        List<ListItem> childTasks = mListItems.subList(firstChildIndex, lastChildPosition);
+//        mListItems.removeAll(childTasks);
+//        routine.setChildTaskCount(0);
+//        notifyItemRangeRemoved(firstChildIndex, lastChildPosition);
+//    }
 
 
     // -------------View Holders--------------
@@ -299,13 +296,12 @@ public class TasksAdapter extends RecyclerView.Adapter {
         @OnClick(R.id.image_button_routine_drop_down)
         void showChildTasks() {
             if (mRoutine.isExpanded()) {
-                collapseRoutine(mRoutine);
                 routineDropDownImageButton.setRotation(0);
             } else {
-                mRoutineListener.onRoutineExpanded(mRoutine);
                 routineDropDownImageButton.setRotation(180);
             }
             mRoutine.setExpanded(!mRoutine.isExpanded());
+            mRoutineListener.onRoutineExpandedOrCollapsed(mRoutine);
         }
 
         private RoutineViewHolder(View itemView) {
