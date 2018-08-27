@@ -191,6 +191,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     void removeFromProject() {
         scheduleCanceled(cancelProjectImageButton, projectTextView, projectString);
         mViewModel.setProject(null);
+        repeatCheckbox.setVisibility(View.VISIBLE);
         //TODO: update viewmodel and remove task from project if confirmed
     }
 
@@ -251,6 +252,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         scheduleSelected(cancelProjectImageButton, projectTextView, project.getName());
         mProjectPicker.dismiss();
         mViewModel.setProject(project);
+        repeatCheckbox.setVisibility(View.GONE);
     }
 
     @Override
@@ -360,6 +362,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         if (mDateFromPreviousView > 0) setDateFromPreviousView();
         if (mProject != null) {
             scheduleSelected(cancelProjectImageButton, projectTextView, mProject.getName());
+            repeatCheckbox.setVisibility(View.GONE);
             mViewModel.setProject(mProject);
         }
         setUpForRoutine();
@@ -467,9 +470,6 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         } else {
             projectGroup.setVisibility(View.VISIBLE);
             routineGroup.setVisibility(View.GONE);
-            repeatCheckbox.setVisibility(View.VISIBLE);
-            startTimeGroup.setVisibility(View.VISIBLE);
-            startDateGroup.setVisibility(View.VISIBLE);
         }
     }
 }
