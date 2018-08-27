@@ -121,7 +121,7 @@
             android:paddingRight="200dp"
             android:text="@string/add_task_duration"
             android:textSize="15sp"
-            app:layout_constraintStart_toEndOf="@+id/image_button_scheduled"
+            app:layout_constraintStart_toEndOf="@+id/image_button_timer"
             app:layout_constraintTop_toBottomOf="@+id/text_view_project"/>
 
         <ImageButton
@@ -135,6 +135,14 @@
             android:visibility="invisible"
             app:layout_constraintStart_toEndOf="@+id/text_view_duration"
             app:layout_constraintTop_toTopOf="@+id/text_view_duration"/>
+
+        <android.support.constraint.Group
+            android:id="@+id/group_start_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="image_button_scheduled,
+            text_view_start_date"
+            />
 
         <ImageButton
             android:id="@+id/image_button_scheduled"
@@ -170,6 +178,14 @@
             android:visibility="invisible"
             app:layout_constraintStart_toEndOf="@+id/text_view_start_date"
             app:layout_constraintTop_toTopOf="@+id/text_view_start_date"/>
+
+        <android.support.constraint.Group
+        android:id="@+id/group_start_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="image_button_start_time,
+            text_view_start_time"
+        />
 
         <ImageButton
             android:id="@+id/image_button_start_time"

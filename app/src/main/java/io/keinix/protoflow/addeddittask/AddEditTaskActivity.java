@@ -79,6 +79,8 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     @BindView(R.id.group_days) Group daysGroup;
     @BindView(R.id.group_project) Group projectGroup;
     @BindView(R.id.group_routine) Group routineGroup;
+    @BindView(R.id.group_start_time) Group startTimeGroup;
+    @BindView(R.id.group_start_date) Group startDateGroup;
     @BindView(R.id.text_view_routine) TextView routineTextView;
     @BindView(R.id.text_view_duration) TextView durationTextView;
     @BindView(R.id.text_view_start_date) TextView startDateTextView;
@@ -295,16 +297,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
                 .get(AddEditTaskViewModel.class);
         mViewModel.initNewIsDaySelectedArray(repeatDays);
 
-        if (mTaskIdToEdit >= 0) {
-            LiveData<Task> task = mViewModel.getTaskToEdit(mTaskIdToEdit);
-            task.observe(this, this::setUpUiToEditTask);
-        }
-        if (mDateFromPreviousView > 0) setDateFromPreviousView();
-        if (mProject != null) {
-                scheduleSelected(cancelProjectImageButton, projectTextView, mProject.getName());
-                mViewModel.setProject(mProject);
-        }
-        setUpForRoutine();
+        prepareUiElements();
     }
 
     // ------------------Private------------------
@@ -357,6 +350,19 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
         } else {
             return false;
         }
+    }
+
+    private void prepareUiElements() {
+        if (mTaskIdToEdit >= 0) {
+            LiveData<Task> task = mViewModel.getTaskToEdit(mTaskIdToEdit);
+            task.observe(this, this::setUpUiToEditTask);
+        }
+        if (mDateFromPreviousView > 0) setDateFromPreviousView();
+        if (mProject != null) {
+            scheduleSelected(cancelProjectImageButton, projectTextView, mProject.getName());
+            mViewModel.setProject(mProject);
+        }
+        setUpForRoutine();
     }
 
     // Called on configuration changes or if a task is being edited
@@ -455,9 +461,15 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
             projectGroup.setVisibility(View.INVISIBLE);
             routineTextView.setText(mRoutine.getName());
             mViewModel.setRoutine(mRoutine);
+            repeatCheckbox.setVisibility(View.GONE);
+            startTimeGroup.setVisibility(View.GONE);
+            startDateGroup.setVisibility(View.GONE);
         } else {
             projectGroup.setVisibility(View.VISIBLE);
             routineGroup.setVisibility(View.GONE);
+            repeatCheckbox.setVisibility(View.VISIBLE);
+            startTimeGroup.setVisibility(View.VISIBLE);
+            startDateGroup.setVisibility(View.VISIBLE);
         }
     }
 }
