@@ -431,6 +431,7 @@ public class TasksActivity extends DaggerAppCompatActivity
 
     private void displayAllRoutines() {
         mDisplayedTasks.removeObservers(this);
+        setTitle(routinesString);
         mViewModel.getAllRoutines().observe(this, routines -> {
             mViewModel.updateCachedRoutines(routines);
             mAdapter.updateListItems(mViewModel.getRoutineListItems());
