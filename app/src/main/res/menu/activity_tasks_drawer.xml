@@ -25,10 +25,10 @@
     <group android:checkableBehavior="single"
         android:id="@+id/nav_tasks_group">
             <item
-                android:id="@+id/nav_tasks"
+                android:id="@+id/nav_quick_list"
                 android:orderInCategory="1"
                 android:icon="@drawable/ic_tasks_black_24"
-                android:title="@string/nav_drawer_tasks"/>
+                android:title="@string/quick_list"/>
             <item
                 android:id="@+id/nav_routines"
                 android:orderInCategory="1"

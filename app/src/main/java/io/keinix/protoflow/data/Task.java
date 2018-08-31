@@ -83,6 +83,9 @@ public class Task implements ListItem {
     @ColumnInfo(name = "repeats_on_sunday")
     private boolean repeatsOnSunday;
 
+    @ColumnInfo(name = "is_in_quick_list")
+    private boolean isInQuickList;
+
     public Task(@NonNull String name) {
         this.name = name;
         // -1 is set b/c the 0 value will cause them to be pulled for
@@ -257,7 +260,15 @@ public class Task implements ListItem {
         this.routineId = routineId;
     }
 
-//    @Override
+    public boolean isInQuickList() {
+        return isInQuickList;
+    }
+
+    public void setInQuickList(boolean inQuickList) {
+        isInQuickList = inQuickList;
+    }
+
+    //    @Override
 //    public boolean equals(Object o) {
 //        if (this == o) return true;
 //        if (o == null || getClass() != o.getClass()) return false;

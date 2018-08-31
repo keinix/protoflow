@@ -59,6 +59,10 @@ public class TasksViewModel extends AndroidViewModel {
         return mTaskRepository.getTasks(taskIds);
     }
 
+    public LiveData<List<Task>> getTasksInQuickList() {
+        return mTaskRepository.getTasksInQuickList();
+    }
+
     public LiveData<List<CalendarDay>> getNext7CalendarDays() {
         return mTaskRepository.getNext7CalendarDays(getDatesForNext7Days());
     }

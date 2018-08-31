@@ -7,8 +7,8 @@
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="nav_drawer_tasks">Tasks</string>
     <string name="nav_drawer_7_days">7 Days</string>
+    <string name="quick_list">Quick List</string>
     <string name="nav_drawer_today">Today</string>
     <string name="nav_drawer_calendar">Calendar</string>
     <string name="nav_drawer_routines">Routines</string>

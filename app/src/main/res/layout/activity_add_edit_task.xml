@@ -223,14 +223,24 @@
             app:layout_constraintTop_toTopOf="@+id/text_view_start_time"/>
 
         <CheckBox
-            android:id="@+id/checkbox_repeat"
+            android:id="@+id/checkBox_quick_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
-            android:text="@string/add_task_repeat_switch"
+            android:text="@string/quick_list"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_view_start_time"/>
+
+        <CheckBox
+            android:id="@+id/checkbox_repeat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/add_task_repeat_switch"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/checkBox_quick_list"/>
 
 
         <TextView

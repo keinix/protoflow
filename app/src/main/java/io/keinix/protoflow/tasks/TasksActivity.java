@@ -60,6 +60,7 @@ public class TasksActivity extends DaggerAppCompatActivity
     @BindString(R.string.tasks_toolbar_title_today) String todayString;
     @BindString(R.string.tasks_toolbar_title_7_days) String sevenDaysString;
     @BindString(R.string.tasks_toolbar_title_routines) String routinesString;
+    @BindString(R.string.quick_list) String quickListString;
 
     // ----------Member variables------------
 
@@ -81,6 +82,7 @@ public class TasksActivity extends DaggerAppCompatActivity
     public static final String LAST_VIEW_7_DAYS = "VALUE_LAST_VIEW_7_DAYS";
     public static final String LAST_VIEW_PROJECT = "LAST_VIEW_PROJECT";
     public static final String LAST_VIEW_ROUTINE = "LAST_VIEW_ROUTINE";
+    public static final String LAST_VIEW_QUICK_LIST = "LAST_VIEW_QUICK_LIST";
 
     // ------------------DI------------------
 
@@ -170,6 +172,10 @@ public class TasksActivity extends DaggerAppCompatActivity
             case R.id.nav_routines:
                 mLastViewValue = LAST_VIEW_ROUTINE;
                 displayAllRoutines();
+                break;
+            case R.id.nav_quick_list:
+                mLastViewValue = LAST_VIEW_QUICK_LIST;
+                displayTasksInQuickList();
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);
@@ -293,6 +299,10 @@ public class TasksActivity extends DaggerAppCompatActivity
             case LAST_VIEW_ROUTINE:
                 navigationView.setCheckedItem(R.id.nav_routines);
                 displayAllRoutines();
+                break;
+            case LAST_VIEW_QUICK_LIST:
+                navigationView.setCheckedItem(R.id.checkBox_quick_list);
+                displayTasksInQuickList();
                 break;
         }
     }
@@ -440,5 +450,13 @@ public class TasksActivity extends DaggerAppCompatActivity
 
     private List<? extends ListItem> getRoutineListItems() {
         return mViewModel.getRoutineListItems();
+    }
+
+    //~~~~~~~Methods for Quick List~~~~~~~
+
+    private void displayTasksInQuickList() {
+        setTitle(quickListString);
+        mDisplayedTasks = mViewModel.getTasksInQuickList();
+        mDisplayedTasks.observe(this, mAdapter::updateListItems);
     }
 }

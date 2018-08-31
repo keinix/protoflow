@@ -69,6 +69,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
 
     @BindView(R.id.scroll_view_add_edit) ScrollView addEditScrollView;
     @BindView(R.id.checkbox_notes) CheckBox notesCheckbox;
+    @BindView(R.id.checkBox_quick_list) CheckBox quickListCheckbox;
     @BindView(R.id.checkbox_repeat) CheckBox repeatCheckbox;
     @BindView(R.id.edit_text_notes) EditText notesEditText;
     @BindView(R.id.edit_text_task_name) EditText taskNameEditText;
@@ -333,6 +334,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     private void initTaskCreation() {
         if (!repeatIsChecked) mViewModel.setIsDaySelectedArray(null);
         if (notesAreChecked) mViewModel.setTaskNotes(notesEditText.getText().toString());
+        if (quickListCheckbox.isChecked()) mViewModel.setInQuickList(true);
         if (mTaskIdToEdit >= 0) {
             mViewModel.updateExistingTask(taskNameEditText.getText().toString(), mTaskIdToEdit);
         } else {
@@ -467,6 +469,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
             repeatCheckbox.setVisibility(View.GONE);
             startTimeGroup.setVisibility(View.GONE);
             startDateGroup.setVisibility(View.GONE);
+            quickListCheckbox.setVisibility(View.GONE);
         } else {
             projectGroup.setVisibility(View.VISIBLE);
             routineGroup.setVisibility(View.GONE);

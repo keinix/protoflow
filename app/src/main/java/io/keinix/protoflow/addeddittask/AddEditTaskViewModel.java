@@ -33,6 +33,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
     private long mStartDateUtc;
     private int mTaskDurationInMinutes;
     private long mStartTimeUtc;
+    private boolean isInQuickList;
     private Project mProject;
     private Routine mRoutine;
 
@@ -183,6 +184,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         if (mProject != null) {
             task.setProjectId(mProject.getId());
         }
+        task.setInQuickList(isInQuickList);
         task.setScheduledDateUtc(mStartDateUtc);
         Log.d(TAG, "Start Date that is being set in AddEditTask: " + mStartDateUtc);
         task.setStartTimeUtc(mStartTimeUtc);
@@ -351,5 +353,13 @@ public class AddEditTaskViewModel extends AndroidViewModel {
 
     public void setRoutine(Routine routine) {
         mRoutine = routine;
+    }
+
+    public boolean isInQuickList() {
+        return isInQuickList;
+    }
+
+    public void setInQuickList(boolean inQuickList) {
+        isInQuickList = inQuickList;
     }
 }

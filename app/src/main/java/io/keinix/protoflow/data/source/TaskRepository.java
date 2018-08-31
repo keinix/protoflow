@@ -96,6 +96,10 @@ public class TaskRepository {
         return mTaskDao.getAllRepeatedTasks();
     }
 
+    public LiveData<List<Task>> getTasksInQuickList() {
+        return mTaskDao.getTasksInQuickList();
+    }
+
     /**
      * @param taskIds a list of ids for a given day. pass null if no events scheduled for day
      * @param repeatedDay day constant from {@link Calendar} used to get tasks that repeat on

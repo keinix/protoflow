@@ -10,7 +10,7 @@ import io.keinix.protoflow.data.Routine;
 import io.keinix.protoflow.data.Task;
 
 @Singleton
-@Database(entities = {Task.class, Project.class, Routine.class}, version = 9, exportSchema = false)
+@Database(entities = {Task.class, Project.class, Routine.class}, version = 10, exportSchema = false)
 public abstract class TaskRoomDatabase extends RoomDatabase {
 
     public abstract TaskDao taskDao();
