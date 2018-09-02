@@ -29,7 +29,7 @@ ext {
     roomVersion = '1.1.1'
     materialVersion = '1.0.0-alpha3'
     supportVersion = '27.1.1'
-
+    gsonVersion = '2.8.5'
 }
 
 task clean(type: Delete) {

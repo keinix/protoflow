@@ -3,16 +3,24 @@ package io.keinix.protoflow.data;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import io.keinix.protoflow.util.ListItem;
+import io.keinix.protoflow.util.RoomTypeConverters;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
-
+@TypeConverters({RoomTypeConverters.class})
 @Entity(tableName = "task_table"
 //    foreignKeys = {
 //        @ForeignKey(entity = Project.class,
@@ -27,6 +35,7 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 //    }
     )
 public class Task implements ListItem {
+
 
     //TODO:might need to add column info
     @PrimaryKey (autoGenerate = true)
@@ -85,6 +94,15 @@ public class Task implements ListItem {
 
     @ColumnInfo(name = "is_in_quick_list")
     private boolean isInQuickList;
+
+    @ColumnInfo(name = "is_task_complete")
+    private boolean isTaskComplete;
+
+    // A task can repeat on a given day. This is a map of the 7 days to
+    // a list of exact dates that a repeated task was completed on
+    @Nullable
+    @ColumnInfo(name = "repeated_task_completion_dates")
+    private HashMap<Integer, List<Long>> repeatedTaskCompletionDate;
 
     public Task(@NonNull String name) {
         this.name = name;
@@ -268,19 +286,39 @@ public class Task implements ListItem {
         isInQuickList = inQuickList;
     }
 
-    //    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//        Task task = (Task) o;
-//        return scheduledDateUtc == task.scheduledDateUtc;
-//    }
+    public void markTaskComplete() {
+        if (repeatsOnADay) throw  new IllegalArgumentException("use MarkRepeatedTaskComplete() " +
+                "instead if the Task repeats on a day.");
+        isTaskComplete = true;
+    }
 
-//    @Override
-//    public int hashCode() {
-//
-//        return Objects.hash(scheduledDateUtc);
-//    }
+    public void markRepeatedTaskComplete(long date) {
+        if (!repeatsOnADay) {
+            markTaskComplete();
+            return;
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(date);
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        if (repeatedTaskCompletionDate.get(day) == null) {
+            List<Long> list = new ArrayList<>();
+            list.add(date);
+            repeatedTaskCompletionDate.put(day, list);
+        } else {
+            repeatedTaskCompletionDate.get(day).add(date);
+        }
+    }
+
+    public boolean isTaskComplete() {
+        if (isRepeatsOnADay()) throw new IllegalArgumentException("use isRepeatedTaskComplete() " +
+                "instead if the Task repeats on a day.");
+        return isTaskComplete;
+    }
+
+    public boolean isRepeatedTaskComplete(long date) {
+        if (!repeatsOnADay) return isTaskComplete;
+
+    }
 
 
     @Override

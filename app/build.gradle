@@ -56,5 +56,9 @@ dependencies {
     // Color Picker
     implementation 'com.github.skydoves:colorpickerpreference:1.0.2'
 
+    //JSON
+    implementation "com.google.code.gson:gson:$rootProject.gsonVersion"
+
+
 
 }
