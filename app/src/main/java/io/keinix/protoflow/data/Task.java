@@ -2,8 +2,6 @@ package io.keinix.protoflow.data;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.ForeignKey;
-import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
@@ -13,13 +11,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import io.keinix.protoflow.util.ListItem;
 import io.keinix.protoflow.util.RoomTypeConverters;
 
-import static android.arch.persistence.room.ForeignKey.CASCADE;
 @TypeConverters({RoomTypeConverters.class})
 @Entity(tableName = "task_table"
 //    foreignKeys = {
@@ -286,20 +282,35 @@ public class Task implements ListItem {
         isInQuickList = inQuickList;
     }
 
-    public void markTaskComplete() {
-        if (repeatsOnADay) throw  new IllegalArgumentException("use MarkRepeatedTaskComplete() " +
+    public void toggleTaskComplete() {
+        if (repeatsOnADay) throw  new IllegalArgumentException("use ToggleRepeatedTaskComplete() " +
                 "instead if the Task repeats on a day.");
-        isTaskComplete = true;
+        isTaskComplete = !isTaskComplete;
     }
 
-    public void markRepeatedTaskComplete(long date) {
+    public void toggleRepeatedTaskComplete(long date) {
         if (!repeatsOnADay) {
-            markTaskComplete();
+            toggleTaskComplete();
             return;
         }
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);
         int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+        if (repeatedTaskCompletionDate.get(day) == null) {
+            markRepeatedTaskComplete(day, date);
+        } else if (repeatedTaskCompletionDate.get(day).contains(date)){
+            markRepeatedTaskComplete(day, date);
+        } else {
+            markRepeatedTaskIncomplete(day, date);
+        }
+    }
+
+    private void markRepeatedTaskIncomplete(int day, long date) {
+
+    }
+
+    private void markRepeatedTaskComplete(int day, long date) {
         if (repeatedTaskCompletionDate.get(day) == null) {
             List<Long> list = new ArrayList<>();
             list.add(date);
@@ -317,7 +328,14 @@ public class Task implements ListItem {
 
     public boolean isRepeatedTaskComplete(long date) {
         if (!repeatsOnADay) return isTaskComplete;
-
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(date);
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        if (repeatedTaskCompletionDate.get(day) == null) {
+            return false;
+        } else {
+            return repeatedTaskCompletionDate.get(day).contains(date);
+        }
     }
 
 

@@ -47,7 +47,8 @@ public class TasksActivity extends DaggerAppCompatActivity
         DatePickerDialog.OnDateSetListener,
         NewProjectDialogFragment.OnNewProjectCreatedListener,
         NewRoutineDialogFragment.OnNewRoutineCreatedListener,
-        TasksAdapter.RoutineListener {
+        TasksAdapter.RoutineListener,
+        TasksAdapter.TaskCompleteListener {
 
     // --------------view Binding--------------
 
@@ -238,6 +239,21 @@ public class TasksActivity extends DaggerAppCompatActivity
     public void onRoutineExpandedOrCollapsed(Routine routine) {
         mViewModel.updateRoutineExpandedValue(routine);
         showHideRoutineChildTasks(routine);
+    }
+
+    @Override
+    public void toggleTaskCompleted(Task task) {
+        if (task.isRepeatsOnADay()) {
+            task.toggleRepeatedTaskComplete();
+        } else {
+            task.toggleTaskComplete();
+        }
+        // update DB
+    }
+
+    @Override
+    public boolean isTaskComplete(Task task) {
+        return false;
     }
 
     // --------------Lifecycle--------------

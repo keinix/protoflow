@@ -3,6 +3,7 @@ package io.keinix.protoflow.tasks;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.constraint.Group;
 import android.support.v7.util.DiffUtil;
@@ -10,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -45,9 +47,15 @@ public class TasksAdapter extends RecyclerView.Adapter {
     private List<ListItem> mListItems;
     private Activity mActivity;
     private RoutineListener mRoutineListener;
+    private TaskCompleteListener mTaskCompleteListener;
 
     interface RoutineListener {
         void onRoutineExpandedOrCollapsed(Routine routine);
+    }
+
+    interface TaskCompleteListener {
+        void toggleTaskCompleted(Task task);
+        boolean isTaskComplete(Task task);
     }
 
     @Inject
@@ -55,6 +63,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
         mContext = context;
         mActivity = activity;
         mRoutineListener = (RoutineListener) activity;
+        mTaskCompleteListener = (TaskCompleteListener) activity;
     }
 
 
@@ -126,36 +135,6 @@ public class TasksAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
-    public void insertRoutineChildTasks(List<? extends ListItem> tasks) {
-        int routineId = ((Task) tasks.get(0)).getRoutineId();
-        int insertPosition = getRoutineIndex(routineId) + 1;
-        mListItems.addAll(insertPosition, tasks);
-        notifyDataSetChanged();
-        //notifyItemRangeInserted(insertPosition, tasks.size());
-    }
-
-    public void insertRoutineChildTasks(List<? extends ListItem> tasks, int insertOffset) {
-        int routineId = ((Task) tasks.get(0)).getRoutineId();
-        int insertPosition = getRoutineIndex(routineId)  + insertOffset; // +1
-        mListItems.addAll(insertPosition, tasks);
-        notifyDataSetChanged();
-        //notifyItemRangeInserted(insertPosition, tasks.size());
-    }
-
-    public void updateRoutinesChildCount(int routineId, int childCount) {
-        int index = getRoutineIndex(routineId);
-        ((Routine) mListItems.get(index)).setChildTaskCount(childCount);
-    }
-
-    public List<ListItem> getListItems() {
-        return mListItems;
-    }
-
-    public void addNewRoutine(Routine routine) {
-        mListItems.add(routine);
-        notifyItemInserted(mListItems.size() -1);
-    }
-
     public void updateListItems(List<? extends ListItem> listItems) {
             if (mListItems == null) mListItems = new ArrayList<>();
             ListItemDiffCallback diffCallback =
@@ -168,34 +147,6 @@ public class TasksAdapter extends RecyclerView.Adapter {
 
     }
 
-    // ----------------private----------------
-
-    private int getRoutineIndex(int routineId) {
-        for (int i = 0; i < mListItems.size(); i++) {
-            if (mListItems.get(i).getItemType() == ListItem.TYPE_ROUTINE &&
-                    ((Routine) mListItems.get(i)).getId() == routineId) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-//    /**
-//     * @param routine who's child tasks will be hidden
-//     * Tasks are removed from the main list and added to memory encase they
-//     * are expanded later.
-//     */
-//    private void collapseRoutine(Routine routine) {
-//        int firstChildIndex = getRoutineIndex(routine.getId()) + 1;
-//        int lastChildPosition = firstChildIndex + routine.getChildTaskCount();
-//        Log.d(TAG, "child Task count: " + routine.getChildTaskCount());
-//        List<ListItem> childTasks = mListItems.subList(firstChildIndex, lastChildPosition);
-//        mListItems.removeAll(childTasks);
-//        routine.setChildTaskCount(0);
-//        notifyItemRangeRemoved(firstChildIndex, lastChildPosition);
-//    }
-
-
     // -------------View Holders--------------
 
     class TaskViewHolder extends RecyclerView.ViewHolder {
@@ -203,6 +154,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
         @BindView(R.id.text_view_task_name) TextView taskNameTextView;
         @BindView(R.id.text_view_task_details) TextView taskDetailsTextView;
         @BindView(R.id.image_button_play_task) ImageButton playButton;
+        @BindView(R.id.checkbox_task_completed) CheckBox taskCompletedCheckBox;
         @BindView(R.id.group_duration) Group durationGroup;
         @BindView(R.id.text_view_duration_display) TextView durationTextView;
 
@@ -217,7 +169,8 @@ public class TasksAdapter extends RecyclerView.Adapter {
             setUpPlay(task);
             setDetails(task);
             playButton.setOnClickListener(v -> launchEditTask(task.getId()));
-            // "\u2022"
+            taskCompletedCheckBox.setOnClickListener(v -> mTaskCompleteListener.toggleTaskCompleted(task));
+            if (mTaskCompleteListener.isTaskComplete(task)) markTaskComplete(task);
         }
 
         private void setDetails(Task task) {
@@ -259,6 +212,14 @@ public class TasksAdapter extends RecyclerView.Adapter {
             Intent intent = new Intent(mContext, AddEditTaskActivity.class);
             intent.putExtra(AddEditTaskActivity.EXTRA_TASK_ID, taskId);
             mContext.startActivity(intent);
+        }
+
+        private void markTaskComplete(Task task) {
+            if (mTaskCompleteListener.isTaskComplete(task)) {
+                taskNameTextView.setPaintFlags(taskDetailsTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            } else {
+                taskNameTextView.setPaintFlags(taskDetailsTextView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+            }
         }
     }
 
