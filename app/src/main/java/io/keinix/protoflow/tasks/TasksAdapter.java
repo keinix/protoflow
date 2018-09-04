@@ -169,7 +169,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
             setUpPlay(task);
             setDetails(task);
             playButton.setOnClickListener(v -> launchEditTask(task.getId()));
-            taskCompletedCheckBox.setOnClickListener(v -> mTaskCompleteListener.toggleTaskCompleted(task));
+            taskCompletedCheckBox.setOnCheckedChangeListener((v, b) -> mTaskCompleteListener.toggleTaskCompleted(task));
             if (mTaskCompleteListener.isTaskComplete(task)) markTaskComplete(task);
         }
 

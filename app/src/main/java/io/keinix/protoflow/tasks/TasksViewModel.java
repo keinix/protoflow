@@ -95,6 +95,10 @@ public class TasksViewModel extends AndroidViewModel {
         return mTaskRepository.getRoutineChildTasks(routineId);
     }
 
+    public void updateTask(Task task) {
+        mTaskRepository.updateTask(task);
+    }
+
     /**
      * gets tasks scheduled for the day + tasks that repeat on that day
      * @param calendarDay you want to get the tasks from

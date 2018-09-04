@@ -293,6 +293,7 @@ public class Task implements ListItem {
             toggleTaskComplete();
             return;
         }
+
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);
         int day = calendar.get(Calendar.DAY_OF_WEEK);
@@ -307,7 +308,7 @@ public class Task implements ListItem {
     }
 
     private void markRepeatedTaskIncomplete(int day, long date) {
-
+        repeatedTaskCompletionDate.get(day).remove(date);
     }
 
     private void markRepeatedTaskComplete(int day, long date) {
