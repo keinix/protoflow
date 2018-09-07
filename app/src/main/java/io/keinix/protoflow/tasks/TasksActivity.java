@@ -244,12 +244,14 @@ public class TasksActivity extends DaggerAppCompatActivity
     @Override
     public void toggleTaskCompleted(Task task) {
         // get date from date picker
-        if (task.isRepeatsOnADay()) {
-            task.toggleRepeatedTaskComplete(mDateOfCurrentView);
+        Task newTask = task.cloneWithNewDate(task.getScheduledDateUtc());
+        if (newTask.isRepeatsOnADay()) {
+            newTask.toggleRepeatedTaskComplete(mDateOfCurrentView);
         } else {
-            task.toggleTaskComplete();
+            newTask.toggleTaskComplete();
         }
-        mViewModel.updateTask(task);
+
+        mViewModel.updateTask(newTask);
     }
 
     @Override

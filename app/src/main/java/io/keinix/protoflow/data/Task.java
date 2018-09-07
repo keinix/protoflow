@@ -6,6 +6,7 @@ import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -96,12 +97,12 @@ public class Task implements ListItem {
 
     // A task can repeat on a given day. This is a map of the 7 days to
     // a list of exact dates that a repeated task was completed on
-    @Nullable
     @ColumnInfo(name = "repeated_task_completion_dates")
     private HashMap<Integer, List<Long>> repeatedTaskCompletionDate;
 
     public Task(@NonNull String name) {
         this.name = name;
+        if (repeatedTaskCompletionDate == null) repeatedTaskCompletionDate = new HashMap<>();
         // -1 is set b/c the 0 value will cause them to be pulled for
         // projects/routines that have have a 0 id
         projectId = -1;
@@ -129,6 +130,8 @@ public class Task implements ListItem {
         newTask.setRepeatsOnFriday(isRepeatsOnFriday());
         newTask.setRepeatsOnSaturday(isRepeatsOnSaturday());
         newTask.setRepeatsOnSunday(isRepeatsOnSunday());
+        newTask.setTaskComplete(isTaskComplete());
+        newTask.setRepeatedTaskCompletionDate(getRepeatedTaskCompletionDate());
         return newTask;
     }
 
@@ -282,6 +285,18 @@ public class Task implements ListItem {
         isInQuickList = inQuickList;
     }
 
+    public void setTaskComplete(boolean taskComplete) {
+        isTaskComplete = taskComplete;
+    }
+
+    public HashMap<Integer, List<Long>> getRepeatedTaskCompletionDate() {
+        return repeatedTaskCompletionDate;
+    }
+
+    public void setRepeatedTaskCompletionDate(@Nullable HashMap<Integer, List<Long>> repeatedTaskCompletionDate) {
+        this.repeatedTaskCompletionDate = repeatedTaskCompletionDate;
+    }
+
     public void toggleTaskComplete() {
         if (repeatsOnADay) throw  new IllegalArgumentException("use ToggleRepeatedTaskComplete() " +
                 "instead if the Task repeats on a day.");
@@ -322,8 +337,8 @@ public class Task implements ListItem {
     }
 
     public boolean isTaskComplete() {
-        if (isRepeatsOnADay()) throw new IllegalArgumentException("use isRepeatedTaskComplete() " +
-                "instead if the Task repeats on a day.");
+//        if (isRepeatsOnADay()) throw new IllegalArgumentException("use isRepeatedTaskComplete() " +
+//                "instead if the Task repeats on a day.");
         return isTaskComplete;
     }
 
@@ -339,12 +354,12 @@ public class Task implements ListItem {
         }
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Task)) return false;
         Task task = (Task) o;
+        Log.d("EQUALS", "oldTaskComplete == " + isTaskComplete + "//" + "newTaskComplete == " + task.isTaskComplete);
         return id == task.id &&
                 projectId == task.projectId &&
                 routineId == task.routineId &&
@@ -359,15 +374,18 @@ public class Task implements ListItem {
                 repeatsOnFriday == task.repeatsOnFriday &&
                 repeatsOnSaturday == task.repeatsOnSaturday &&
                 repeatsOnSunday == task.repeatsOnSunday &&
+                isInQuickList == task.isInQuickList &&
+                isTaskComplete == task.isTaskComplete &&
                 Objects.equals(name, task.name) &&
                 Objects.equals(routines, task.routines) &&
-                Objects.equals(notes, task.notes);
+                Objects.equals(notes, task.notes) &&
+                Objects.equals(repeatedTaskCompletionDate, task.repeatedTaskCompletionDate);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, projectId, routineId, name, routines, durationInMinutes, scheduledDateUtc, startTimeUtc, notes, repeatsOnADay, repeatsOnMonday, repeatsOnTuesday, repeatsOnWednesday, repeatsOnThursday, repeatsOnFriday, repeatsOnSaturday, repeatsOnSunday);
+        return Objects.hash(id, projectId, routineId, name, routines, durationInMinutes, scheduledDateUtc, startTimeUtc, notes, repeatsOnADay, repeatsOnMonday, repeatsOnTuesday, repeatsOnWednesday, repeatsOnThursday, repeatsOnFriday, repeatsOnSaturday, repeatsOnSunday, isInQuickList, isTaskComplete, repeatedTaskCompletionDate);
     }
 
     @Override

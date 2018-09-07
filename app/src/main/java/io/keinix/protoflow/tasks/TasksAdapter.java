@@ -144,7 +144,6 @@ public class TasksAdapter extends RecyclerView.Adapter {
             mListItems.clear();
             mListItems.addAll(listItems);
             diffResult.dispatchUpdatesTo(this);
-
     }
 
     // -------------View Holders--------------
@@ -158,6 +157,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
         @BindView(R.id.group_duration) Group durationGroup;
         @BindView(R.id.text_view_duration_display) TextView durationTextView;
 
+
         TaskViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -170,7 +170,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
             setDetails(task);
             playButton.setOnClickListener(v -> launchEditTask(task.getId()));
             taskCompletedCheckBox.setOnCheckedChangeListener((v, b) -> mTaskCompleteListener.toggleTaskCompleted(task));
-            if (mTaskCompleteListener.isTaskComplete(task)) markTaskComplete(task);
+            markTaskComplete(task);
         }
 
         private void setDetails(Task task) {
@@ -218,7 +218,8 @@ public class TasksAdapter extends RecyclerView.Adapter {
             if (mTaskCompleteListener.isTaskComplete(task)) {
                 taskNameTextView.setPaintFlags(taskDetailsTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             } else {
-                taskNameTextView.setPaintFlags(taskDetailsTextView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+                //taskNameTextView.setPaintFlags(taskDetailsTextView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+                taskNameTextView.setPaintFlags(0);
             }
         }
     }

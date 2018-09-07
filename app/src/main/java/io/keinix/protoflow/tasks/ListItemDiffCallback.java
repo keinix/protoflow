@@ -2,6 +2,7 @@ package io.keinix.protoflow.tasks;
 
 import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
+import android.util.Log;
 
 import java.util.List;
 
@@ -56,6 +57,9 @@ public class ListItemDiffCallback extends DiffUtil.Callback {
 
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+        Log.d("DIFF", ((Task) mOldListItems.get(oldItemPosition)).getName() + "&&" +
+                ((Task) mNewListItems.get(newItemPosition)).getName() + "= " +
+                mOldListItems.get(oldItemPosition).equals(mNewListItems.get(newItemPosition)));
         return mOldListItems.get(oldItemPosition).equals(mNewListItems.get(newItemPosition));
     }
 
