@@ -114,6 +114,13 @@ public class Task implements ListItem {
         return ListItem.TYPE_TASK;
     }
 
+    /**
+     * this methods is used in the 7 days view to take a single task that repeats
+     * on multiple days and transform it into individual Task objects to be
+     * displayed in the recycler view.
+     * @param date
+     * @return a cloned task with the date changed
+     */
     public Task cloneWithNewDate(long date) {
         Task newTask = new Task(getName());
         newTask.setId(getId());
@@ -313,9 +320,8 @@ public class Task implements ListItem {
         calendar.setTimeInMillis(date);
         int day = calendar.get(Calendar.DAY_OF_WEEK);
 
-        if (repeatedTaskCompletionDate.get(day) == null) {
-            markRepeatedTaskComplete(day, date);
-        } else if (repeatedTaskCompletionDate.get(day).contains(date)){
+        if (repeatedTaskCompletionDate.get(day) == null ||
+                !repeatedTaskCompletionDate.get(day).contains(date)) {
             markRepeatedTaskComplete(day, date);
         } else {
             markRepeatedTaskIncomplete(day, date);
@@ -347,11 +353,9 @@ public class Task implements ListItem {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);
         int day = calendar.get(Calendar.DAY_OF_WEEK);
-        if (repeatedTaskCompletionDate.get(day) == null) {
-            return false;
-        } else {
-            return repeatedTaskCompletionDate.get(day).contains(date);
-        }
+        boolean test = repeatedTaskCompletionDate.get(day) != null && repeatedTaskCompletionDate.get(day).contains(date);
+        Log.d("REPETED COMPLETE: ",  "isRepeatedTaskComplete: " + test);
+        return repeatedTaskCompletionDate.get(day) != null && repeatedTaskCompletionDate.get(day).contains(date);
     }
 
     @Override
