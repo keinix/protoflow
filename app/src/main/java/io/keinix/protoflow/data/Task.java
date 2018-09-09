@@ -9,9 +9,12 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import io.keinix.protoflow.util.ListItem;
@@ -363,7 +366,8 @@ public class Task implements ListItem {
         if (this == o) return true;
         if (!(o instanceof Task)) return false;
         Task task = (Task) o;
-        Log.d("EQUALS", "oldTaskComplete == " + isTaskComplete + "//" + "newTaskComplete == " + task.isTaskComplete);
+        boolean test = repeatedTasksCompleteAreEqual(task);
+        Log.d("EQUALS", "repeated task map equals: " + test);
         return id == task.id &&
                 projectId == task.projectId &&
                 routineId == task.routineId &&
@@ -383,7 +387,30 @@ public class Task implements ListItem {
                 Objects.equals(name, task.name) &&
                 Objects.equals(routines, task.routines) &&
                 Objects.equals(notes, task.notes) &&
-                Objects.equals(repeatedTaskCompletionDate, task.repeatedTaskCompletionDate);
+                repeatedTasksCompleteAreEqual(task);
+    }
+
+    private boolean repeatedTasksCompleteAreEqual(Task task) {
+        if (!repeatsOnADay && !task.repeatsOnADay) return true;
+        if (repeatedTaskCompletionDate.size() != task.repeatedTaskCompletionDate.size()) return false;
+
+        // can keyStet() return null?
+        for (int i : repeatedTaskCompletionDate.keySet()) {
+            if (task.repeatedTaskCompletionDate.get(i) == null) return false;
+            if (!listsAreEqual(repeatedTaskCompletionDate.get(i),
+                    task.repeatedTaskCompletionDate.get(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean listsAreEqual(List<Long> l1, List<Long> l2) {
+        l1 = new ArrayList<>(l1);
+        l2 = new ArrayList<>(l2);
+        Collections.sort(l1);
+        Collections.sort(l2);
+        return l1.equals(l2);
     }
 
     @Override

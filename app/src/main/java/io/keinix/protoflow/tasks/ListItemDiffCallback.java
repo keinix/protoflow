@@ -57,9 +57,6 @@ public class ListItemDiffCallback extends DiffUtil.Callback {
 
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-        Log.d("DIFF", ((Task) mOldListItems.get(oldItemPosition)).getName() + "&&" +
-                ((Task) mNewListItems.get(newItemPosition)).getName() + "= " +
-                mOldListItems.get(oldItemPosition).equals(mNewListItems.get(newItemPosition)));
         return mOldListItems.get(oldItemPosition).equals(mNewListItems.get(newItemPosition));
     }
 
