@@ -16,6 +16,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -41,6 +42,7 @@ import io.keinix.protoflow.dialogs.DatePickerDialogFragment;
 import io.keinix.protoflow.dialogs.NewProjectDialogFragment;
 import io.keinix.protoflow.dialogs.NewRoutineDialogFragment;
 import io.keinix.protoflow.util.ListItem;
+import io.keinix.protoflow.util.SwipeToDeleteCallback;
 
 public class TasksActivity extends DaggerAppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -304,6 +306,8 @@ public class TasksActivity extends DaggerAppCompatActivity
     private void setUpRecyclerView() {
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(mAdapter));
+        itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
     // used to restore view after configuration changes

@@ -57,7 +57,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
         void onRoutineExpandedOrCollapsed(Routine routine);
     }
 
-    interface TaskCompleteListener {
+    public interface TaskCompleteListener {
         void toggleTaskCompleted(Task task);
         boolean isTaskComplete(Task task);
         void deleteTask(Task task);
@@ -152,9 +152,15 @@ public class TasksAdapter extends RecyclerView.Adapter {
             diffResult.dispatchUpdatesTo(this);
     }
 
-    // ----------------Private----------------
+    public void deleteTask(int position) {
+        Task task = ((Task) mListItems.get(position));
+        mRecentlyDeleteTask = task;
+        mTaskCompleteListener.deleteTask(task);
+        showUndoSnackbar();
+    }
 
-    private void showUndoSnackbar() {
+
+    public void showUndoSnackbar() {
         View view = mActivity.findViewById(R.id.drawer_layout);
         Snackbar snackbar = Snackbar.make(view, R.string.snack_bar_text, Snackbar.LENGTH_SHORT);
         snackbar.setAction(R.string.snack_bar_undo, v -> mTaskCompleteListener.insertTask(mRecentlyDeleteTask));
