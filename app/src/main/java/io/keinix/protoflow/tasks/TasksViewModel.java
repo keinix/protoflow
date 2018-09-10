@@ -51,6 +51,14 @@ public class TasksViewModel extends AndroidViewModel {
         return mAllTasks;
     }
 
+    public void deleteTask(Task task) {
+        mTaskRepository.deleteTask(task);
+    }
+
+    public void insertTask(Task task) {
+        mTaskRepository.insertTask(task);
+    }
+
     public LiveData<CalendarDay> getLiveCalendarDay(long date) {
         return mTaskRepository.getLiveCalendarDay(date);
     }

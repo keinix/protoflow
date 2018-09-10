@@ -6,11 +6,13 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.constraint.Group;
+import android.support.design.widget.Snackbar;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -36,6 +38,7 @@ import io.keinix.protoflow.util.ListItem;
 @ActivityScope
 public class TasksAdapter extends RecyclerView.Adapter {
 
+
     // ----------Member variables------------
 
     public static final String TAG = TasksAdapter.class.getSimpleName();
@@ -48,6 +51,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
     private Activity mActivity;
     private RoutineListener mRoutineListener;
     private TaskCompleteListener mTaskCompleteListener;
+    private Task mRecentlyDeleteTask;
 
     interface RoutineListener {
         void onRoutineExpandedOrCollapsed(Routine routine);
@@ -56,6 +60,8 @@ public class TasksAdapter extends RecyclerView.Adapter {
     interface TaskCompleteListener {
         void toggleTaskCompleted(Task task);
         boolean isTaskComplete(Task task);
+        void deleteTask(Task task);
+        void insertTask(Task task);
     }
 
     @Inject
@@ -146,6 +152,15 @@ public class TasksAdapter extends RecyclerView.Adapter {
             diffResult.dispatchUpdatesTo(this);
     }
 
+    // ----------------Private----------------
+
+    private void showUndoSnackbar() {
+        View view = mActivity.findViewById(R.id.drawer_layout);
+        Snackbar snackbar = Snackbar.make(view, R.string.snack_bar_text, Snackbar.LENGTH_SHORT);
+        snackbar.setAction(R.string.snack_bar_undo, v -> mTaskCompleteListener.insertTask(mRecentlyDeleteTask));
+        snackbar.show();
+    }
+
     // -------------View Holders--------------
 
     class TaskViewHolder extends RecyclerView.ViewHolder {
@@ -156,6 +171,8 @@ public class TasksAdapter extends RecyclerView.Adapter {
         @BindView(R.id.checkbox_task_completed) CheckBox taskCompletedCheckBox;
         @BindView(R.id.group_duration) Group durationGroup;
         @BindView(R.id.text_view_duration_display) TextView durationTextView;
+
+        @BindView(R.id.tempButton) Button tempButton;
 
 
         TaskViewHolder(View itemView) {
@@ -171,6 +188,11 @@ public class TasksAdapter extends RecyclerView.Adapter {
             playButton.setOnClickListener(v -> launchEditTask(task.getId()));
             taskCompletedCheckBox.setOnCheckedChangeListener((v, b) -> mTaskCompleteListener.toggleTaskCompleted(task));
             markTaskComplete(task);
+            tempButton.setOnClickListener(v -> {
+                mRecentlyDeleteTask = task;
+                mTaskCompleteListener.deleteTask(task);
+                showUndoSnackbar();
+            });
         }
 
         private void setDetails(Task task) {

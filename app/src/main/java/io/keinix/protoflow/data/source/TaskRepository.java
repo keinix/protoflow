@@ -48,6 +48,10 @@ public class TaskRepository {
         return mTaskDao.getRoutineChildTasks(routineId);
     }
 
+    public void deleteTask(Task task) {
+        new deleteAsyncTask(mTaskDao).execute(task);
+    }
+
     public LiveData<List<Routine>> getAllRoutines() {
         return mRoutineDao.getAllRoutines();
     }
@@ -144,6 +148,23 @@ public class TaskRepository {
 
     public void insertProject(Project project) {
         new insertAsyncTask.insertProjectAsync(mProjectDao).execute(project);
+    }
+
+
+    //DELETE ASYNC
+    private static class deleteAsyncTask extends AsyncTask<Task, Void, Void> {
+
+        private TaskDao mAsyncDao;
+
+        public deleteAsyncTask(TaskDao asyncDao) {
+            mAsyncDao = asyncDao;
+        }
+
+        @Override
+        protected Void doInBackground(Task... tasks) {
+            mAsyncDao.delete(tasks[0]);
+            return null;
+        }
     }
 
     //INSERT ASYNC

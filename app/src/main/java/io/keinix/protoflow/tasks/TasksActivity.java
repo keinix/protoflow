@@ -263,6 +263,16 @@ public class TasksActivity extends DaggerAppCompatActivity
         }
     }
 
+    @Override
+    public void deleteTask(Task task) {
+        mViewModel.deleteTask(task);
+    }
+
+    @Override
+    public void insertTask(Task task) {
+        mViewModel.insertTask(task);
+    }
+
     // --------------Lifecycle--------------
 
     @Override

@@ -43,6 +43,12 @@
     <string name="new_routine_no_title_warning">"Routines need names too!"</string>
     <string name="new_routine_no_title_toast">"Routine name is blank"</string>
 
+    <string name="snack_bar_undo">UNDO</string>
+    <string name="snack_bar_text">1 Task Deleted</string>
+
+
+
+
 
 
 </resources>

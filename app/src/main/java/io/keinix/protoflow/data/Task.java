@@ -366,8 +366,6 @@ public class Task implements ListItem {
         if (this == o) return true;
         if (!(o instanceof Task)) return false;
         Task task = (Task) o;
-        boolean test = repeatedTasksCompleteAreEqual(task);
-        Log.d("EQUALS", "repeated task map equals: " + test);
         return id == task.id &&
                 projectId == task.projectId &&
                 routineId == task.routineId &&
@@ -391,7 +389,6 @@ public class Task implements ListItem {
     }
 
     private boolean repeatedTasksCompleteAreEqual(Task task) {
-        if (!repeatsOnADay && !task.repeatsOnADay) return true;
         if (repeatedTaskCompletionDate.size() != task.repeatedTaskCompletionDate.size()) return false;
 
         // can keyStet() return null?
@@ -406,8 +403,6 @@ public class Task implements ListItem {
     }
 
     private boolean listsAreEqual(List<Long> l1, List<Long> l2) {
-        l1 = new ArrayList<>(l1);
-        l2 = new ArrayList<>(l2);
         Collections.sort(l1);
         Collections.sort(l2);
         return l1.equals(l2);
