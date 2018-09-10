@@ -136,6 +136,10 @@ public class TasksAdapter extends RecyclerView.Adapter {
     // ----------------Public----------------
 
 
+    public Context getContext() {
+        return mContext;
+    }
+
     public void clearTasks() {
         mListItems = null;
         notifyDataSetChanged();
