@@ -161,7 +161,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
 
 
     public void showUndoSnackbar() {
-        View view = mActivity.findViewById(R.id.drawer_layout);
+        View view = mActivity.findViewById(R.id.coordinator_layout);
         Snackbar snackbar = Snackbar.make(view, R.string.snack_bar_text, Snackbar.LENGTH_SHORT);
         snackbar.setAction(R.string.snack_bar_undo, v -> mTaskCompleteListener.insertTask(mRecentlyDeleteTask));
         snackbar.show();
