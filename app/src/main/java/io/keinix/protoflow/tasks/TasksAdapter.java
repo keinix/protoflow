@@ -162,7 +162,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
 
     public void showUndoSnackbar() {
         View view = mActivity.findViewById(R.id.coordinator_layout);
-        Snackbar snackbar = Snackbar.make(view, R.string.snack_bar_text, Snackbar.LENGTH_SHORT);
+        Snackbar snackbar = Snackbar.make(view, R.string.snack_bar_text, Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.snack_bar_undo, v -> mTaskCompleteListener.insertTask(mRecentlyDeleteTask));
         snackbar.show();
     }
@@ -178,9 +178,6 @@ public class TasksAdapter extends RecyclerView.Adapter {
         @BindView(R.id.group_duration) Group durationGroup;
         @BindView(R.id.text_view_duration_display) TextView durationTextView;
 
-        @BindView(R.id.tempButton) Button tempButton;
-
-
         TaskViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -194,11 +191,6 @@ public class TasksAdapter extends RecyclerView.Adapter {
             playButton.setOnClickListener(v -> launchEditTask(task.getId()));
             taskCompletedCheckBox.setOnCheckedChangeListener((v, b) -> mTaskCompleteListener.toggleTaskCompleted(task));
             markTaskComplete(task);
-            tempButton.setOnClickListener(v -> {
-                mRecentlyDeleteTask = task;
-                mTaskCompleteListener.deleteTask(task);
-                showUndoSnackbar();
-            });
         }
 
         private void setDetails(Task task) {
