@@ -30,8 +30,8 @@ import static io.keinix.protoflow.tasks.TasksAdapter.DATE_HEADING;
 public class TasksViewModel extends AndroidViewModel {
 
     // ----------Member variables------------
-    private TaskRepository mTaskRepository;
     private LiveData<List<Task>> mAllTasks;
+    private TaskRepository mTaskRepository;
     private List<Long> mNext7DaysUtc;
     private Project mProject;
     private SparseBooleanArray mRoutineHasObserver;

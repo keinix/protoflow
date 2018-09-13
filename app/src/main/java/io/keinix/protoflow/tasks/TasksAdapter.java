@@ -73,7 +73,6 @@ public class TasksAdapter extends RecyclerView.Adapter {
     }
 
 
-
     // ----------------Override----------------
     @NonNull
     @Override
@@ -170,6 +169,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
         snackbar.setAction(R.string.snack_bar_undo, v -> mTaskCompleteListener.insertTask(mRecentlyDeleteTask));
         snackbar.show();
     }
+
 
     // -------------View Holders--------------
 

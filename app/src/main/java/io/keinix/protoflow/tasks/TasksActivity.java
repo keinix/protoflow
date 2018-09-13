@@ -68,7 +68,10 @@ public class TasksActivity extends DaggerAppCompatActivity
     // ----------Member variables------------
 
     private TasksViewModel mViewModel;
-    private LiveData<List<Task>> mDisplayedTasks;
+    private LiveData<List<Task>> mTasksLiveData;
+    private LiveData<List<CalendarDay>> mCalendarDaysLiveData;
+    private LiveData<List<Routine>> mRoutineLiveData;
+    private LiveData<CalendarDay> mCalendarDayLiveData;
     private List<Project> mProjects;
     private long mDateOfCurrentView;
     private String mLastViewValue;
@@ -153,7 +156,7 @@ public class TasksActivity extends DaggerAppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // OnClicks for Projects are set individually when they are added to the menu
         int id = item.getItemId();
-
+        clearObservers();
         switch (id) {
             case R.id.nav_calendar:
                 mLastViewValue = LAST_VIEW_CALENDAR;
@@ -208,8 +211,8 @@ public class TasksActivity extends DaggerAppCompatActivity
         mDatePicker.get().setStartDate(year, month, day);
         setTitle(mDatePicker.get().getStartDateTimeStampWithDay());
         mDateOfCurrentView = mDatePicker.get().getStartDateUtc();
-        mViewModel.getLiveCalendarDay(mDateOfCurrentView)
-                .observe(this, this::displayTasksForDay);
+        mCalendarDayLiveData = mViewModel.getLiveCalendarDay(mDateOfCurrentView);
+        mCalendarDayLiveData.observe(this, this::displayTasksForDay);
     }
 
     // Callback from mNewProjectDialog
@@ -306,19 +309,28 @@ public class TasksActivity extends DaggerAppCompatActivity
     private void setUpRecyclerView() {
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(mAdapter));
+        ItemTouchHelper itemTouchHelper = new
+                ItemTouchHelper(new SwipeToDeleteCallback(mAdapter));
         itemTouchHelper.attachToRecyclerView(recyclerView);
+    }
+
+    private void clearObservers() {
+        if (mTasksLiveData != null)  mTasksLiveData.removeObservers(this);
+        if (mCalendarDayLiveData != null) mCalendarDayLiveData.removeObservers(this);
+        if (mCalendarDaysLiveData != null) mCalendarDaysLiveData.removeObservers(this);
+        if (mRoutineLiveData != null) mRoutineLiveData.removeObservers(this);
     }
 
     // used to restore view after configuration changes
     private void restoreView() {
+        clearObservers();
         switch (mLastViewValue) {
             case LAST_VIEW_CALENDAR:
                 navigationView.setCheckedItem(R.id.nav_calendar);
                 mDatePicker.get().setStartDate(mDateOfCurrentView);
                 setTitle(mDatePicker.get().getStartDateTimeStampWithDay());
-                mViewModel.getLiveCalendarDay(mDateOfCurrentView)
-                        .observe(this, this::displayTasksForDay);
+                mCalendarDayLiveData =  mViewModel.getLiveCalendarDay(mDateOfCurrentView);
+                mCalendarDayLiveData.observe(this, this::displayTasksForDay);
                 break;
             case LAST_VIEW_TODAY:
                 navigationView.setCheckedItem(R.id.nav_today);
@@ -356,8 +368,8 @@ public class TasksActivity extends DaggerAppCompatActivity
     }
 
     private void getTaskThatRepeatOnDay() {
-        mDisplayedTasks = mViewModel.getAllTasksOnDay(mDatePicker.get().getStartDateUtc());
-        mDisplayedTasks.observe(this, tasks -> {
+        mTasksLiveData = mViewModel.getAllTasksOnDay(mDatePicker.get().getStartDateUtc());
+        mTasksLiveData.observe(this, tasks -> {
             if (tasks == null) {
                 mAdapter.clearTasks();
             } else {
@@ -368,27 +380,28 @@ public class TasksActivity extends DaggerAppCompatActivity
 
     // change is here
     private void getTaskForDate(CalendarDay calendarDay) {
-        mDisplayedTasks = mViewModel.getAllTasksOnDay(calendarDay);
-        mDisplayedTasks.observe(this, mAdapter::updateListItems);
+        mTasksLiveData = mViewModel.getAllTasksOnDay(calendarDay);
+        mTasksLiveData.observe(this, mAdapter::updateListItems);
     }
 
     private void getTasksForToday() {
         setTitle(todayString);
         mDatePicker.get().setStartDate(System.currentTimeMillis());
         mDateOfCurrentView = mDatePicker.get().getStartDateUtc();
-        mViewModel.getLiveCalendarDay(mDateOfCurrentView)
-                .observe(this, this::displayTasksForDay);
+        mCalendarDayLiveData =  mViewModel.getLiveCalendarDay(mDateOfCurrentView);
+        mCalendarDayLiveData.observe(this, this::displayTasksForDay);
     }
 
     private void getTasksFor7Days() {
         setTitle(sevenDaysString);
-        mViewModel.getNext7CalendarDays().observe(this, days -> {
+        mCalendarDaysLiveData = mViewModel.getNext7CalendarDays();
+        mCalendarDaysLiveData.observe(this, days -> {
             if (days != null) {
-                mDisplayedTasks = mViewModel.getAllTasksFor7Days(days);
+                mTasksLiveData = mViewModel.getAllTasksFor7Days(days);
             } else {
-                mDisplayedTasks = mViewModel.getAllRepeatedTasks();
+                mTasksLiveData = mViewModel.getAllRepeatedTasks();
             }
-            mDisplayedTasks.observe(this, tasks -> {
+            mTasksLiveData.observe(this, tasks -> {
                 if (tasks.size() != 0) {
                     List<Task> formattedTasks = mViewModel.format7DayTasks(tasks);
                     mAdapter.updateListItems(formattedTasks);
@@ -442,8 +455,8 @@ public class TasksActivity extends DaggerAppCompatActivity
 
     private void displayTasksInProject(Project project) {
         setTitle(project.getName());
-        mDisplayedTasks = mViewModel.getTasksInProject(project.getId());
-        mDisplayedTasks.observe(this, tasks -> {
+        mTasksLiveData = mViewModel.getTasksInProject(project.getId());
+        mTasksLiveData.observe(this, tasks -> {
             if (tasks.size() > 0) {
                 mAdapter.updateListItems(tasks);
             } else {
@@ -470,16 +483,17 @@ public class TasksActivity extends DaggerAppCompatActivity
     }
 
     private void getRoutineChildren(Routine routine) {
-        mViewModel.getChildTasksForRoutine(routine.getId()).observe(this, children -> {
+        mTasksLiveData = mViewModel.getChildTasksForRoutine(routine.getId());
+        mTasksLiveData.observe(this, children -> {
             mViewModel.setCachedRoutineChildren(routine, children);
             mAdapter.updateListItems(getRoutineListItems());
             });
     }
 
     private void displayAllRoutines() {
-        mDisplayedTasks.removeObservers(this);
         setTitle(routinesString);
-        mViewModel.getAllRoutines().observe(this, routines -> {
+        mRoutineLiveData = mViewModel.getAllRoutines();
+        mRoutineLiveData.observe(this, routines -> {
             mViewModel.updateCachedRoutines(routines);
             mAdapter.updateListItems(mViewModel.getRoutineListItems());
         });
@@ -493,7 +507,7 @@ public class TasksActivity extends DaggerAppCompatActivity
 
     private void displayTasksInQuickList() {
         setTitle(quickListString);
-        mDisplayedTasks = mViewModel.getTasksInQuickList();
-        mDisplayedTasks.observe(this, mAdapter::updateListItems);
+        mTasksLiveData = mViewModel.getTasksInQuickList();
+        mTasksLiveData.observe(this, mAdapter::updateListItems);
     }
 }
