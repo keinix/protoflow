@@ -54,7 +54,9 @@ public class TasksActivity extends DaggerAppCompatActivity
 
     // --------------view Binding--------------
 
-    @BindView(R.id.fab) FloatingActionButton fab;
+    // @BindView(R.id.fab) FloatingActionButton fab;
+    @BindView(R.id.fab) com.github.clans.fab.FloatingActionMenu fab;
+
     @BindView(R.id.drawer_layout) DrawerLayout drawer;
     @BindView(R.id.nav_view) NavigationView navigationView;
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -109,7 +111,7 @@ public class TasksActivity extends DaggerAppCompatActivity
 
     // ----------------OnClick----------------
 
-    @OnClick(R.id.fab)
+    @OnClick(R.id.sub_fab_task)
     void fabClick() {
         Intent intent = new Intent(TasksActivity.this, AddEditTaskActivity.class);
         if (getTitle().equals(sevenDaysString)) {
