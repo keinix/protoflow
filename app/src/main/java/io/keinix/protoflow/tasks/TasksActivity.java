@@ -20,7 +20,10 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
+import android.view.View;
 import android.widget.DatePicker;
+
+import com.github.clans.fab.FloatingActionMenu;
 
 import java.util.List;
 
@@ -56,6 +59,7 @@ public class TasksActivity extends DaggerAppCompatActivity
 
     // @BindView(R.id.fab) FloatingActionButton fab;
     @BindView(R.id.fab) com.github.clans.fab.FloatingActionMenu fab;
+    @BindView(R.id.routine_fab)com.github.clans.fab.FloatingActionButton routineFab;
 
     @BindView(R.id.drawer_layout) DrawerLayout drawer;
     @BindView(R.id.nav_view) NavigationView navigationView;
@@ -111,16 +115,21 @@ public class TasksActivity extends DaggerAppCompatActivity
 
     // ----------------OnClick----------------
 
+    @OnClick(R.id.routine_fab)
+    void routineFabClick() {
+        mNewRoutineDialog.get().show(getSupportFragmentManager(), "new_routine");
+    }
+
+
     @OnClick(R.id.sub_fab_task)
     void fabClick() {
+        fab.close(true);
         Intent intent = new Intent(TasksActivity.this, AddEditTaskActivity.class);
         if (getTitle().equals(sevenDaysString)) {
             startActivity(intent);
         } else if (mLastViewValue.equals(LAST_VIEW_PROJECT)) {
             intent.putExtra(EXTRA_PROJECT, mProject);
             startActivity(intent);
-        } else if (mLastViewValue.equals(LAST_VIEW_ROUTINE)) {
-            mNewRoutineDialog.get().show(getSupportFragmentManager(), "new_routine");
         } else {
             intent.putExtra(EXTRA_DATE_OF_CURRENT_VIEW, mDateOfCurrentView);
             startActivity(intent);
@@ -187,8 +196,10 @@ public class TasksActivity extends DaggerAppCompatActivity
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);
+        swapFabs();
         return true;
     }
+
 
 
     @Override
@@ -355,6 +366,17 @@ public class TasksActivity extends DaggerAppCompatActivity
                 navigationView.setCheckedItem(R.id.checkBox_quick_list);
                 displayTasksInQuickList();
                 break;
+        }
+        swapFabs();
+    }
+
+    private void swapFabs() {
+        if (mLastViewValue.equals(LAST_VIEW_ROUTINE)) {
+            routineFab.setVisibility(View.VISIBLE);
+            fab.setVisibility(View.GONE);
+        } else if (fab.getVisibility() == View.GONE){
+            routineFab.setVisibility(View.GONE);
+            fab.setVisibility(View.VISIBLE);
         }
     }
 
