@@ -41,6 +41,7 @@ import io.keinix.protoflow.data.CalendarDay;
 import io.keinix.protoflow.data.Project;
 import io.keinix.protoflow.data.Routine;
 import io.keinix.protoflow.data.Task;
+import io.keinix.protoflow.dialogs.AddListItemDialogFragment;
 import io.keinix.protoflow.dialogs.DatePickerDialogFragment;
 import io.keinix.protoflow.dialogs.NewProjectDialogFragment;
 import io.keinix.protoflow.dialogs.NewRoutineDialogFragment;
@@ -113,8 +114,24 @@ public class TasksActivity extends DaggerAppCompatActivity
     @Inject
     Lazy<NewRoutineDialogFragment> mNewRoutineDialog;
 
+    @Inject
+    Lazy<AddListItemDialogFragment> mAddListItemDialog;
+
     // ----------------OnClick----------------
 
+    // Add a Routine's tasks to the currently displayed list of tasks
+    @OnClick(R.id.sub_fab_routine)
+        void subRoutineFabClick() {
+        LiveData<List<Routine>> liveData = mViewModel.getAllRoutines();
+        liveData.observe(this, routines -> {
+            mAddListItemDialog.get().setListItems(routines);
+            mAddListItemDialog.get().setTitle(routinesString);
+            mAddListItemDialog.get().show(getSupportFragmentManager(), "add_list_item");
+            liveData.removeObservers(this);
+        });
+    }
+
+    // create a new routine
     @OnClick(R.id.routine_fab)
     void routineFabClick() {
         mNewRoutineDialog.get().show(getSupportFragmentManager(), "new_routine");

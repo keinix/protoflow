@@ -8,6 +8,7 @@ import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import io.keinix.protoflow.di.ActivityScope;
+import io.keinix.protoflow.dialogs.AddListItemDialogFragment;
 import io.keinix.protoflow.dialogs.DatePickerDialogFragment;
 import io.keinix.protoflow.dialogs.NewProjectDialogFragment;
 import io.keinix.protoflow.dialogs.NewRoutineDialogFragment;
@@ -37,4 +38,8 @@ public abstract class TasksModule {
     @ActivityScope
     @Binds abstract Activity bindActivity(TasksActivity tasksActivity);
 
+    @ActivityScope
+    @Provides static AddListItemDialogFragment AddListItemDialogFragment() {
+        return new AddListItemDialogFragment();
+    }
 }
