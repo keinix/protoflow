@@ -15,6 +15,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import io.keinix.protoflow.R;
 import io.keinix.protoflow.adapters.AddListItemAdapter;
 import io.keinix.protoflow.util.ListItem;
@@ -24,6 +25,7 @@ public class AddListItemDialogFragment extends DialogFragment {
     @BindView(R.id.text_view_dialog_recyclerview) TextView titleTextView;
     @BindView(R.id.recycler_view_project_in_picker) RecyclerView recyclerView;
 
+    private Unbinder mUnbinder;
     private AddListItemAdapter mAdapter;
     private String mTitle;
 
@@ -36,7 +38,7 @@ public class AddListItemDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_project_picker, container, false);
-        ButterKnife.bind(this, view);
+        mUnbinder = ButterKnife.bind(this, view);
         titleTextView.setText(mTitle);
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -49,5 +51,11 @@ public class AddListItemDialogFragment extends DialogFragment {
 
     public void setTitle(String title) {
         mTitle = title;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mUnbinder.unbind();
     }
 }

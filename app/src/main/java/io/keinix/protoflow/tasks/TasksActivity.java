@@ -36,6 +36,7 @@ import butterknife.OnClick;
 import dagger.Lazy;
 import dagger.android.support.DaggerAppCompatActivity;
 import io.keinix.protoflow.R;
+import io.keinix.protoflow.adapters.ProjectPickerAdapter;
 import io.keinix.protoflow.addeddittask.AddEditTaskActivity;
 import io.keinix.protoflow.data.CalendarDay;
 import io.keinix.protoflow.data.Project;
@@ -45,6 +46,7 @@ import io.keinix.protoflow.dialogs.AddListItemDialogFragment;
 import io.keinix.protoflow.dialogs.DatePickerDialogFragment;
 import io.keinix.protoflow.dialogs.NewProjectDialogFragment;
 import io.keinix.protoflow.dialogs.NewRoutineDialogFragment;
+import io.keinix.protoflow.dialogs.ProjectPickerDialogFragment;
 import io.keinix.protoflow.util.ListItem;
 import io.keinix.protoflow.util.SwipeToDeleteCallback;
 
@@ -54,7 +56,8 @@ public class TasksActivity extends DaggerAppCompatActivity
         NewProjectDialogFragment.OnNewProjectCreatedListener,
         NewRoutineDialogFragment.OnNewRoutineCreatedListener,
         TasksAdapter.RoutineListener,
-        TasksAdapter.TaskCompleteListener {
+        TasksAdapter.TaskCompleteListener,
+        ProjectPickerAdapter.OnProjectSelectedListener{
 
     // --------------view Binding--------------
 
@@ -117,11 +120,26 @@ public class TasksActivity extends DaggerAppCompatActivity
     @Inject
     Lazy<AddListItemDialogFragment> mAddListItemDialog;
 
+    @Inject
+    Lazy<ProjectPickerDialogFragment> mProjectPickerDialog;
+
     // ----------------OnClick----------------
+
+    @OnClick(R.id.sub_fab_project)
+    void projectSubFabCLick() {
+        fab.close(true);
+        LiveData<List<Project>> liveData =  mViewModel.getAllProjects();
+        liveData.observe(this, projects -> {
+            mProjectPickerDialog.get().setTitle("Projects");
+            mProjectPickerDialog.get().setProjects(projects);
+            mProjectPickerDialog.get().show(getSupportFragmentManager(), "project_Picker");
+        });
+    }
 
     // Add a Routine's tasks to the currently displayed list of tasks
     @OnClick(R.id.sub_fab_routine)
-        void subRoutineFabClick() {
+    void subRoutineFabClick() {
+        fab.close(true);
         LiveData<List<Routine>> liveData = mViewModel.getAllRoutines();
         liveData.observe(this, routines -> {
             mAddListItemDialog.get().setListItems(routines);
@@ -306,6 +324,11 @@ public class TasksActivity extends DaggerAppCompatActivity
     @Override
     public void insertTask(Task task) {
         mViewModel.insertTask(task);
+    }
+
+    @Override
+    public void onProjectSelected(Project project) {
+
     }
 
     // --------------Lifecycle--------------
@@ -551,4 +574,5 @@ public class TasksActivity extends DaggerAppCompatActivity
         mTasksLiveData = mViewModel.getTasksInQuickList();
         mTasksLiveData.observe(this, mAdapter::updateListItems);
     }
+
 }

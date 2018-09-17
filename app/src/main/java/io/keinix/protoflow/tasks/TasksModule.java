@@ -12,6 +12,7 @@ import io.keinix.protoflow.dialogs.AddListItemDialogFragment;
 import io.keinix.protoflow.dialogs.DatePickerDialogFragment;
 import io.keinix.protoflow.dialogs.NewProjectDialogFragment;
 import io.keinix.protoflow.dialogs.NewRoutineDialogFragment;
+import io.keinix.protoflow.dialogs.ProjectPickerDialogFragment;
 
 @Module
 public abstract class TasksModule {
@@ -41,5 +42,10 @@ public abstract class TasksModule {
     @ActivityScope
     @Provides static AddListItemDialogFragment AddListItemDialogFragment() {
         return new AddListItemDialogFragment();
+    }
+
+    @ActivityScope
+    @Provides static ProjectPickerDialogFragment ProjectPickerDialogFragment() {
+        return new ProjectPickerDialogFragment();
     }
 }
