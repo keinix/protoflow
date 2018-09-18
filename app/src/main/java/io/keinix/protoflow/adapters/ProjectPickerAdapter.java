@@ -23,9 +23,7 @@ public class ProjectPickerAdapter extends RecyclerView.Adapter<ProjectPickerAdap
 
     private List<Project> mProjects;
     private OnProjectSelectedListener mListener;
-
-    private View mView;
-
+    
 
     public interface OnProjectSelectedListener {
         void onProjectSelected(Project project);

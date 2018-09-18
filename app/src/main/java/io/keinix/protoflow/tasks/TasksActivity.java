@@ -57,7 +57,8 @@ public class TasksActivity extends DaggerAppCompatActivity
         NewRoutineDialogFragment.OnNewRoutineCreatedListener,
         TasksAdapter.RoutineListener,
         TasksAdapter.TaskCompleteListener,
-        ProjectPickerAdapter.OnProjectSelectedListener{
+        ProjectPickerAdapter.OnProjectSelectedListener,
+        AddListItemDialogFragment.OnListItemSelectedListener {
 
     // --------------view Binding--------------
 
@@ -346,6 +347,21 @@ public class TasksActivity extends DaggerAppCompatActivity
             mLastViewValue = LAST_VIEW_TODAY;
             restoreView();
         }
+    }
+
+    @Override
+    public void onTaskSelected(int taskId) {
+
+    }
+
+    //TODO: include some kind of indication that the task are a part of a routine
+    @Override
+    public void onRoutineSelected(int routineId) {
+        LiveData<List<Task>> liveData = mViewModel.getChildTasksForRoutine(routineId);
+        liveData.observe(this, tasks -> {
+
+            liveData.removeObservers(this);
+        });
     }
 
     // ------------------Private------------------

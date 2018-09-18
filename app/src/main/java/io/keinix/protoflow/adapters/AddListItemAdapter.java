@@ -15,18 +15,22 @@ import java.util.List;
 import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.keinix.protoflow.R;
 import io.keinix.protoflow.data.Routine;
 import io.keinix.protoflow.data.Task;
+import io.keinix.protoflow.dialogs.AddListItemDialogFragment;
 import io.keinix.protoflow.util.ListItem;
 
 
 public class AddListItemAdapter extends RecyclerView.Adapter<AddListItemAdapter.AddListItemViewHolder> {
 
     private List<ListItem> mListItems;
+    private AddListItemDialogFragment.OnListItemSelectedListener mListener;
 
-    public AddListItemAdapter() {
+    public AddListItemAdapter(AddListItemDialogFragment.OnListItemSelectedListener listener) {
         mListItems = new ArrayList<>();
+        mListener = listener;
     }
 
     @NonNull
@@ -56,18 +60,22 @@ public class AddListItemAdapter extends RecyclerView.Adapter<AddListItemAdapter.
         notifyDataSetChanged();
     }
 
-    class AddListItemViewHolder extends  RecyclerView.ViewHolder {
+    class AddListItemViewHolder extends  RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.image_button_project_in_picker) ImageButton mImageButton;
         @BindView(R.id.text_view_project_in_picker) TextView mTextView;
 
         @BindDrawable(R.drawable.ic_routines_black_24) Drawable routineIcon;
 
+        private int mPosition;
+
         public AddListItemViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
             ButterKnife.bind(this, itemView);
         }
 
         void bindView(int position) {
+            mPosition = position;
            if (mListItems.get(position).getItemType() == ListItem.TYPE_TASK) {
                bindTask(position);
            } else {
@@ -86,6 +94,17 @@ public class AddListItemAdapter extends RecyclerView.Adapter<AddListItemAdapter.
             mImageButton.setVisibility(View.VISIBLE);
             mImageButton.setImageDrawable(routineIcon);
             mTextView.setText(routine.getName());
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (mListItems.get(mPosition).getItemType() == ListItem.TYPE_TASK) {
+                Task task = (Task) mListItems.get(mPosition);
+                mListener.onTaskSelected(task.getId());
+            } else {
+                Routine routine = (Routine) mListItems.get(mPosition);
+                mListener.onRoutineSelected(routine.getId());
+            }
         }
     }
 }

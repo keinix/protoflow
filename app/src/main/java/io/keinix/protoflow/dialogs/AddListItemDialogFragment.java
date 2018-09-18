@@ -22,6 +22,12 @@ import io.keinix.protoflow.util.ListItem;
 
 public class AddListItemDialogFragment extends DialogFragment {
 
+
+    public interface OnListItemSelectedListener {
+        void onTaskSelected(int taskId);
+        void onRoutineSelected(int routineId);
+    }
+
     @BindView(R.id.text_view_dialog_recyclerview) TextView titleTextView;
     @BindView(R.id.recycler_view_project_in_picker) RecyclerView recyclerView;
 
@@ -30,8 +36,7 @@ public class AddListItemDialogFragment extends DialogFragment {
     private String mTitle;
 
     public AddListItemDialogFragment() {
-        mAdapter = new AddListItemAdapter();
-
+        mAdapter = new AddListItemAdapter((OnListItemSelectedListener) getActivity());
     }
 
     @Nullable
