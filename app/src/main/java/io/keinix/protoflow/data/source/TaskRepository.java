@@ -150,6 +150,44 @@ public class TaskRepository {
         new insertAsyncTask.insertProjectAsync(mProjectDao).execute(project);
     }
 
+    public void insertCalendarDay(CalendarDay calendarDay) {
+        new insertCalendarDayAsync(mCalendarDayDao).execute(calendarDay);
+    }
+
+    public void updateCalendarDay(CalendarDay calendarDay) {
+        new updateCalendarDayAsync(mCalendarDayDao).execute(calendarDay);
+    }
+
+    // INSERT ASYNC
+    private static class insertCalendarDayAsync extends AsyncTask<CalendarDay, Void, Void> {
+        CalendarDayDao mAsyncDao;
+
+        public insertCalendarDayAsync(CalendarDayDao dao) {
+            mAsyncDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(CalendarDay... calendarDays) {
+            mAsyncDao.insert(calendarDays[0]);
+            return null;
+        }
+    }
+
+    // INSERT ASYNC
+    private static class updateCalendarDayAsync extends AsyncTask<CalendarDay, Void, Void> {
+        CalendarDayDao mAsyncDao;
+
+        public updateCalendarDayAsync(CalendarDayDao dao) {
+            mAsyncDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(CalendarDay... calendarDays) {
+            mAsyncDao.update(calendarDays[0]);
+            return null;
+        }
+    }
+
 
     //DELETE ASYNC
     private static class deleteAsyncTask extends AsyncTask<Task, Void, Void> {

@@ -2,6 +2,7 @@ package io.keinix.protoflow.tasks;
 
 import android.app.DatePickerDialog;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
@@ -84,7 +85,9 @@ public class TasksActivity extends DaggerAppCompatActivity
     private LiveData<List<Routine>> mRoutineLiveData;
     private LiveData<CalendarDay> mCalendarDayLiveData;
     private List<Project> mProjects;
+    private MediatorLiveData<List<Task>> mTasksMediatorLiveData;
     private long mDateOfCurrentView;
+    private CalendarDay mDisplayedCalendarDay;
     private String mLastViewValue;
     private Project mProject;
     public static final String TAG = TasksActivity.class.getSimpleName();
@@ -341,6 +344,8 @@ public class TasksActivity extends DaggerAppCompatActivity
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         mViewModel = ViewModelProviders.of(this, mFactory).get(TasksViewModel.class);
+        //TODO: merge all tasks callbacks into MediatorLiveData
+        mTasksMediatorLiveData = new MediatorLiveData<>();
         setupNavDrawer();
         setUpRecyclerView();
         if (savedInstanceState == null) {
@@ -357,9 +362,11 @@ public class TasksActivity extends DaggerAppCompatActivity
     //TODO: include some kind of indication that the task are a part of a routine
     @Override
     public void onRoutineSelected(int routineId) {
+
+        //if tasks are being added to a scheduled day
         LiveData<List<Task>> liveData = mViewModel.getChildTasksForRoutine(routineId);
         liveData.observe(this, tasks -> {
-
+            mViewModel.updateCalendarDay(mDisplayedCalendarDay, tasks, mDateOfCurrentView);
             liveData.removeObservers(this);
         });
     }
@@ -440,6 +447,7 @@ public class TasksActivity extends DaggerAppCompatActivity
 
     // calendarDay can be null if no task was scheduled for that day
     private void displayTasksForDay(@Nullable CalendarDay calendarDay) {
+        mDisplayedCalendarDay = calendarDay;
         if (calendarDay != null) {
             getTaskForDate(calendarDay);
         } else {
@@ -590,5 +598,6 @@ public class TasksActivity extends DaggerAppCompatActivity
         mTasksLiveData = mViewModel.getTasksInQuickList();
         mTasksLiveData.observe(this, mAdapter::updateListItems);
     }
+
 
 }

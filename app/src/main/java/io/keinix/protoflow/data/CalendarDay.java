@@ -54,6 +54,16 @@ public class CalendarDay {
         this.scheduledTaskIds = scheduledTaskIds;
     }
 
+    public void addScheduledTaskIds(ArrayList<Integer> taskIds) {
+        if (scheduledTaskIds == null) scheduledTaskIds = new ArrayList<>();
+        scheduledTaskIds.addAll(taskIds);
+    }
+
+    public void addScheduledTaskIds(int taskId) {
+        if (scheduledTaskIds == null) scheduledTaskIds = new ArrayList<>();
+        scheduledTaskIds.add(taskId);
+    }
+
     public void addTaskId(int id) {
         scheduledTaskIds.add(id);
     }
