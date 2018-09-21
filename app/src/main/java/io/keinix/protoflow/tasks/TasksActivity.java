@@ -122,10 +122,10 @@ public class TasksActivity extends DaggerAppCompatActivity
     Lazy<NewRoutineDialogFragment> mNewRoutineDialog;
 
     @Inject
-    Lazy<AddListItemDialogFragment> mAddListItemDialog;
+    AddListItemDialogFragment mAddListItemDialog;
 
     @Inject
-    Lazy<ProjectPickerDialogFragment> mProjectPickerDialog;
+    ProjectPickerDialogFragment mProjectPickerDialog;
 
     // ----------------OnClick----------------
 
@@ -134,9 +134,9 @@ public class TasksActivity extends DaggerAppCompatActivity
         fab.close(true);
         LiveData<List<Project>> liveData =  mViewModel.getAllProjects();
         liveData.observe(this, projects -> {
-            mProjectPickerDialog.get().setTitle("Projects");
-            mProjectPickerDialog.get().setProjects(projects);
-            mProjectPickerDialog.get().show(getSupportFragmentManager(), "project_Picker");
+            mProjectPickerDialog.setTitle("Projects");
+            mProjectPickerDialog.setProjects(projects);
+            mProjectPickerDialog.show(getSupportFragmentManager(), "project_Picker");
         });
     }
 
@@ -146,9 +146,9 @@ public class TasksActivity extends DaggerAppCompatActivity
         fab.close(true);
         LiveData<List<Routine>> liveData = mViewModel.getAllRoutines();
         liveData.observe(this, routines -> {
-            mAddListItemDialog.get().setListItems(routines);
-            mAddListItemDialog.get().setTitle(routinesString);
-            mAddListItemDialog.get().show(getSupportFragmentManager(), "add_list_item");
+            mAddListItemDialog.setTitle(routinesString);
+            mAddListItemDialog.setListItems(routines);
+            mAddListItemDialog.show(getSupportFragmentManager(), "add_list_item");
             liveData.removeObservers(this);
         });
     }
@@ -367,6 +367,7 @@ public class TasksActivity extends DaggerAppCompatActivity
         LiveData<List<Task>> liveData = mViewModel.getChildTasksForRoutine(routineId);
         liveData.observe(this, tasks -> {
             mViewModel.updateCalendarDay(mDisplayedCalendarDay, tasks, mDateOfCurrentView);
+            mAddListItemDialog.dismiss();
             liveData.removeObservers(this);
         });
     }

@@ -4,9 +4,11 @@ package io.keinix.protoflow.tasks;
 import android.app.Activity;
 import android.content.Context;
 
+import butterknife.BindView;
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
+import io.keinix.protoflow.adapters.AddListItemAdapter;
 import io.keinix.protoflow.di.ActivityScope;
 import io.keinix.protoflow.dialogs.AddListItemDialogFragment;
 import io.keinix.protoflow.dialogs.DatePickerDialogFragment;
@@ -48,4 +50,5 @@ public abstract class TasksModule {
     @Provides static ProjectPickerDialogFragment ProjectPickerDialogFragment() {
         return new ProjectPickerDialogFragment();
     }
+
 }

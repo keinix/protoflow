@@ -41,7 +41,7 @@ public class ProjectPickerDialogFragment extends DialogFragment {
 
     public ProjectPickerDialogFragment() {
         mTitle = newProjectString;
-        mAdapter = new ProjectPickerAdapter(mListener);
+
     }
 
 
@@ -50,8 +50,10 @@ public class ProjectPickerDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_project_picker, container, false);
         mUnbinder = ButterKnife.bind(this, view);
+        mTitle = newProjectString;
         mTitleTextView.setText(mTitle);
         mListener = (ProjectPickerAdapter.OnProjectSelectedListener) getActivity();
+        mAdapter = new ProjectPickerAdapter(mListener);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         return view;

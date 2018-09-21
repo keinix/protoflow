@@ -80,15 +80,15 @@ public class TasksAdapter extends RecyclerView.Adapter {
         View view;
         switch (viewType) {
             case ITEM_VIEW_TYPE_DATE:
-                view = LayoutInflater.from(mContext)
+                view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_date_separator, parent, false);
                 return new DateSeparatorViewHolder(view);
             case ITEM_VIEW_TYPE_ROUTINE:
-                view = LayoutInflater.from(mContext)
+                view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_routine, parent, false);
                 return new RoutineViewHolder(view);
             default:
-                view = LayoutInflater.from(mContext)
+                view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_task, parent, false);
                 return new TaskViewHolder(view);
         }

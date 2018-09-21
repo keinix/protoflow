@@ -29,7 +29,7 @@ public class ProjectPickerAdapter extends RecyclerView.Adapter<ProjectPickerAdap
         void onProjectSelected(Project project);
     }
 
-    @Inject
+
     public ProjectPickerAdapter(OnProjectSelectedListener listener) {
         mListener = listener;
     }
