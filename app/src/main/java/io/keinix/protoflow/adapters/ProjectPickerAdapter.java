@@ -64,6 +64,10 @@ public class ProjectPickerAdapter extends RecyclerView.Adapter<ProjectPickerAdap
         notifyDataSetChanged();
     }
 
+    public void setListener(OnProjectSelectedListener listener) {
+        mListener = listener;
+    }
+
     public class ProjectPickerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @BindView(R.id.image_button_project_in_picker) ImageButton mProjectImageButton;

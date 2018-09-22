@@ -329,7 +329,36 @@ public class TasksActivity extends DaggerAppCompatActivity
 
     @Override
     public void onProjectSelected(Project project) {
+        mProjectPickerDialog.dismiss();
+        LiveData<List<Task>> liveData = mViewModel.getTasksInProject(project.getId());
+        liveData.observe(this, tasks -> {
+            mAddListItemDialog.setListItems(tasks);
+            mAddListItemDialog.setTitle(project.getName());
+            mAddListItemDialog.show(getSupportFragmentManager(), "add_list_item");
+            liveData.removeObservers(this);
+        });
+    }
 
+    @Override
+    public void onTaskSelected(Task task) {
+        mAddListItemDialog.dismiss();
+        if (mLastViewValue.equals(LAST_VIEW_QUICK_LIST)) {
+            task.setInQuickList(true);
+            mViewModel.updateTask(task);
+        } else { // AddToCalendarDay
+            mViewModel.updateCalendarDay(mDisplayedCalendarDay, task, mDateOfCurrentView);
+        }
+    }
+
+    //TODO: include some kind of indication that the task are a part of a routine
+    @Override
+    public void onRoutineSelected(int routineId) {
+        mAddListItemDialog.dismiss();
+        if (mLastViewValue.equals(LAST_VIEW_QUICK_LIST)) {
+            addRoutineToQuickList(routineId);
+        } else {
+            scheduleRoutine(routineId);
+        }
     }
 
     // --------------Lifecycle--------------
@@ -348,27 +377,6 @@ public class TasksActivity extends DaggerAppCompatActivity
         if (savedInstanceState == null) {
             mLastViewValue = LAST_VIEW_TODAY;
             restoreView();
-        }
-    }
-
-    @Override
-    public void onTaskSelected(int taskId) {
-//        LiveData<List<Task>> liveData = mViewModel.getTasksInProject(taskId);
-//        liveData.observe(this, tasks -> {
-//
-//            }
-//            liveData.removeObservers(this);
-//        });
-    }
-
-    //TODO: include some kind of indication that the task are a part of a routine
-    @Override
-    public void onRoutineSelected(int routineId) {
-        mAddListItemDialog.dismiss();
-        if (mLastViewValue.equals(LAST_VIEW_QUICK_LIST)) {
-            addRoutineToQuickList(routineId);
-        } else {
-            scheduleRoutine(routineId);
         }
     }
 

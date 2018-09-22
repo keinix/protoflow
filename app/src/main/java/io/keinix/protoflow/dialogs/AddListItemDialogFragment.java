@@ -20,13 +20,14 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.keinix.protoflow.R;
 import io.keinix.protoflow.adapters.AddListItemAdapter;
+import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.util.ListItem;
 
 public class AddListItemDialogFragment extends DialogFragment {
 
 
     public interface OnListItemSelectedListener {
-        void onTaskSelected(int taskId);
+        void onTaskSelected(Task task);
         void onRoutineSelected(int routineId);
     }
 

@@ -128,6 +128,22 @@ public class TasksViewModel extends AndroidViewModel {
         }
     }
 
+    public void updateCalendarDay(CalendarDay calendarDay, Task task, long date) {
+        boolean calendarDayIsNew = false;
+        if (calendarDay == null) {
+            calendarDay = new CalendarDay(date);
+            calendarDayIsNew = true;
+        }
+
+        calendarDay.addScheduledTaskIds(task.getId());
+
+        if (calendarDayIsNew) {
+            mTaskRepository.insertCalendarDay(calendarDay);
+        } else {
+            mTaskRepository.updateCalendarDay(calendarDay);
+        }
+    }
+
     /**
      * gets tasks scheduled for the day + tasks that repeat on that day
      * @param calendarDay you want to get the tasks from

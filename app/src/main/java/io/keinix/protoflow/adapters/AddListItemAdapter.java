@@ -108,7 +108,7 @@ public class AddListItemAdapter extends RecyclerView.Adapter<AddListItemAdapter.
         public void onClick(View view) {
             if (mListItems.get(mPosition).getItemType() == ListItem.TYPE_TASK) {
                 Task task = (Task) mListItems.get(mPosition);
-                mListener.onTaskSelected(task.getId());
+                mListener.onTaskSelected(task);
             } else {
                 Routine routine = (Routine) mListItems.get(mPosition);
                 mListener.onRoutineSelected(routine.getId());
