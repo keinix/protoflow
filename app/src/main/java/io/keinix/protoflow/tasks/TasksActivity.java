@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -23,8 +22,6 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.widget.DatePicker;
-
-import com.github.clans.fab.FloatingActionMenu;
 
 import java.util.List;
 
@@ -356,21 +353,25 @@ public class TasksActivity extends DaggerAppCompatActivity
 
     @Override
     public void onTaskSelected(int taskId) {
-
+//        LiveData<List<Task>> liveData = mViewModel.getTasksInProject(taskId);
+//        liveData.observe(this, tasks -> {
+//
+//            }
+//            liveData.removeObservers(this);
+//        });
     }
 
     //TODO: include some kind of indication that the task are a part of a routine
     @Override
     public void onRoutineSelected(int routineId) {
-
-        //if tasks are being added to a scheduled day
-        LiveData<List<Task>> liveData = mViewModel.getChildTasksForRoutine(routineId);
-        liveData.observe(this, tasks -> {
-            mViewModel.updateCalendarDay(mDisplayedCalendarDay, tasks, mDateOfCurrentView);
-            mAddListItemDialog.dismiss();
-            liveData.removeObservers(this);
-        });
+        mAddListItemDialog.dismiss();
+        if (mLastViewValue.equals(LAST_VIEW_QUICK_LIST)) {
+            addRoutineToQuickList(routineId);
+        } else {
+            scheduleRoutine(routineId);
+        }
     }
+
 
     // ------------------Private------------------
 
@@ -434,6 +435,15 @@ public class TasksActivity extends DaggerAppCompatActivity
         swapFabs();
     }
 
+    private void scheduleRoutine(int routineId) {
+        //if tasks are being added to a scheduled day
+        LiveData<List<Task>> liveData = mViewModel.getChildTasksForRoutine(routineId);
+        liveData.observe(this, tasks -> {
+            mViewModel.updateCalendarDay(mDisplayedCalendarDay, tasks, mDateOfCurrentView);
+            liveData.removeObservers(this);
+        });
+    }
+
     private void swapFabs() {
         if (mLastViewValue.equals(LAST_VIEW_ROUTINE)) {
             routineFab.setVisibility(View.VISIBLE);
@@ -442,6 +452,17 @@ public class TasksActivity extends DaggerAppCompatActivity
             routineFab.setVisibility(View.GONE);
             fab.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void addRoutineToQuickList(int routineId) {
+        LiveData<List<Task>> liveData = mViewModel.getChildTasksForRoutine(routineId);
+        liveData.observe(this, tasks -> {
+            for (Task task : tasks) {
+                task.setInQuickList(true);
+                mViewModel.updateBatchTasks(task);
+            }
+            liveData.removeObservers(this);
+        });
     }
 
     //~~~~~~~Methods for scheduled tasks~~~~~~~

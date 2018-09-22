@@ -19,7 +19,6 @@ import io.keinix.protoflow.data.source.local.CalendarDayDao;
 import io.keinix.protoflow.data.source.local.ProjectDao;
 import io.keinix.protoflow.data.source.local.RoutineDao;
 import io.keinix.protoflow.data.source.local.TaskDao;
-import io.keinix.protoflow.util.ListItem;
 
 @Singleton
 public class TaskRepository {
@@ -46,6 +45,10 @@ public class TaskRepository {
 
     public LiveData<List<Task>> getRoutineChildTasks(int routineId) {
         return mTaskDao.getRoutineChildTasks(routineId);
+    }
+
+    public void updateBatchTasks(Task task) {
+        new updateBatchTasksAsync(mTaskDao).execute(task);
     }
 
     public void deleteTask(Task task) {
@@ -268,6 +271,22 @@ public class TaskRepository {
         @Override
         protected Void doInBackground(Task... tasks) {
             asyncTaskDao.update(tasks[0]);
+            return null;
+        }
+    }
+
+    //INSERT ALL ASYNC
+    private static class updateBatchTasksAsync extends AsyncTask<Task, Void, Void> {
+
+        private TaskDao asyncTaskDao;
+
+        public updateBatchTasksAsync(TaskDao asyncTaskDao) {
+            this.asyncTaskDao = asyncTaskDao;
+        }
+
+        @Override
+        protected Void doInBackground(Task... tasks) {
+            asyncTaskDao.updateBatch(tasks[0]);
             return null;
         }
     }

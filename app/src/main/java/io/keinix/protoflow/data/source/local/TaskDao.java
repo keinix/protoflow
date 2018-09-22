@@ -21,6 +21,9 @@ public interface TaskDao {
     long insert(Task task);
 
     @Update
+    void updateBatch(Task... tasks);
+
+    @Update
     void update(Task task);
 
     @Delete

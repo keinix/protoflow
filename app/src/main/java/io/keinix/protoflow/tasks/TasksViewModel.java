@@ -63,6 +63,10 @@ public class TasksViewModel extends AndroidViewModel {
         return mTaskRepository.getLiveCalendarDay(date);
     }
 
+    public void updateBatchTasks(Task task) {
+        mTaskRepository.updateBatchTasks(task);
+    }
+
     public LiveData<List<Task>> getTasks(List<Integer> taskIds) {
         return mTaskRepository.getTasks(taskIds);
     }
