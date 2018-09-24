@@ -10,7 +10,9 @@ import io.keinix.protoflow.data.Task;
 
 public class NotificationScheduler {
 
-    public static final String TAG_INPUT_DATA = "TAG_INPUT_DATA";
+    public static final String INPUT_ID = "INPUT_ID";
+    public static final String INPUT_TITLE = "INPUT_TITLE";
+    public static final String INPUT_START_TIME = "INPUT_START_TIME";
 
 
     public void scheduleNotification(Task task) {
@@ -30,7 +32,12 @@ public class NotificationScheduler {
     }
 
     private Data getInputData(Task task) {
-        return new Data.Builder().putInt(TAG_INPUT_DATA, task.getId()).build();
+      return new Data.Builder()
+              .putInt(INPUT_ID, task.getId())
+              .putString(INPUT_TITLE, task.getName())
+              .putLong(INPUT_START_TIME, task.getStartTimeUtc())
+              .build();
+
     }
 
     private String getTag(long startTime) {
