@@ -20,6 +20,7 @@ import io.keinix.protoflow.data.Project;
 import io.keinix.protoflow.data.Routine;
 import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.data.source.TaskRepository;
+import io.keinix.protoflow.scheduling.NotificationScheduler;
 
 public class AddEditTaskViewModel extends AndroidViewModel {
 
@@ -187,10 +188,17 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         task.setInQuickList(isInQuickList);
         task.setScheduledDateUtc(mStartDateUtc);
         Log.d(TAG, "Start Date that is being set in AddEditTask: " + mStartDateUtc);
-        task.setStartTimeUtc(mStartTimeUtc);
+        if (mStartTimeUtc > 0) {
+            task.setStartTimeUtc(mStartTimeUtc);
+            scheduleTaskNotification(task);
+        }
         task.setDurationInMinutes(mTaskDurationInMinutes);
         if (mRoutine != null) task.setRoutineId(mRoutine.getId());
         return task;
+    }
+
+    private void scheduleTaskNotification(Task task) {
+        NotificationScheduler.scheduleNotification(task);
     }
 
     private long parseUnixStartTime(int hours, int minutes) {

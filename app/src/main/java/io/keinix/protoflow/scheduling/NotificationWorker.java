@@ -1,5 +1,6 @@
 package io.keinix.protoflow.scheduling;
 
+import android.annotation.TargetApi;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -10,6 +11,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
 import androidx.work.Worker;
+import io.keinix.protoflow.R;
 
 public class NotificationWorker extends Worker {
 
@@ -19,20 +21,18 @@ public class NotificationWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            buildNotificationChannel();
-        }
+        buildNotificationChannel();
         showNotification();
         return Result.SUCCESS;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+
+    @TargetApi(Build.VERSION_CODES.O)
     private void buildNotificationChannel() {
         NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_PROTOFLOW,
                 NOTIFICATION_CHANNEL_PROTOFLOW, NotificationManager.IMPORTANCE_DEFAULT);
 
-        NotificationManager manager = (NotificationManager) getApplicationContext()
-                .getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager manager = getApplicationContext().getSystemService(NotificationManager.class);
 
         if (manager != null) {
             manager.createNotificationChannel(channel);
@@ -43,6 +43,7 @@ public class NotificationWorker extends Worker {
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(getApplicationContext(), NOTIFICATION_CHANNEL_PROTOFLOW)
                 .setContentTitle(getNotificationTitle())
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
