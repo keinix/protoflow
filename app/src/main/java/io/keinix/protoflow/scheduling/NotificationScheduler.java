@@ -1,6 +1,8 @@
 package io.keinix.protoflow.scheduling;
 
 
+import android.util.Log;
+
 import java.util.concurrent.TimeUnit;
 
 import androidx.work.Data;
@@ -19,6 +21,8 @@ public abstract class NotificationScheduler {
         WorkManager.getInstance().enqueue(getWorkRequest(task));
     }
 
+
+
     private static OneTimeWorkRequest getWorkRequest(Task task) {
         return new OneTimeWorkRequest.Builder(NotificationWorker.class)
                 .setInitialDelay(calculateDelay(task.getStartTimeUtc()), TimeUnit.MILLISECONDS)
@@ -28,6 +32,8 @@ public abstract class NotificationScheduler {
     }
 
     private static long calculateDelay(long startTime) {
+        long currentTime = System.currentTimeMillis() - startTime;
+        Log.d("FINDME", "Delay: " + currentTime);
         return startTime - System.currentTimeMillis();
     }
 

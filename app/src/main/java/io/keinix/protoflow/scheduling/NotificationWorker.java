@@ -43,6 +43,7 @@ public class NotificationWorker extends Worker {
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(getApplicationContext(), NOTIFICATION_CHANNEL_PROTOFLOW)
                 .setContentTitle(getNotificationTitle())
+                .setContentText("Start Time goes here")
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);

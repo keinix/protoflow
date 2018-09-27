@@ -205,6 +205,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         if ((minutes + hours) == 0) return 0;
         if (mStartDateUtc == 0) {
             Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
             calendar.set(Calendar.HOUR_OF_DAY, hours);
             calendar.set(Calendar.MINUTE, minutes);
             calendar.set(Calendar.SECOND, 0);
@@ -215,6 +216,15 @@ public class AddEditTaskViewModel extends AndroidViewModel {
                     (minutes * MINISECONDS_IN_MINUTE);
             return mStartDateUtc + timeOffSet;
         }
+    }
+
+    private void updateStartTime() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(mStartTimeUtc);
+        int hours = calendar.get(Calendar.HOUR_OF_DAY);
+        int minutes = calendar.get(Calendar.MINUTE);
+        long newStartTime = mStartDateUtc + (long) hours + (long) minutes;
+        setStartTimeUtc(newStartTime);
     }
 
     private void setRepeatedDaysInTask(Task task) {
@@ -306,7 +316,9 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         calendar.set(year, month, day, 0, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         setStartDateUtc(calendar.getTimeInMillis());
+        if (mStartTimeUtc > 0) updateStartTime();
     }
+
 
     //overloaded
     public void setStartDateUtc(long startDateUtc) {
