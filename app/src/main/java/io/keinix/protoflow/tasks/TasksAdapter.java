@@ -213,6 +213,15 @@ public class TasksAdapter extends RecyclerView.Adapter {
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
             int minute = calendar.get(Calendar.MINUTE);
             String timeSuffix = calendar.get(Calendar.AM_PM) == Calendar.AM ? "AM" : "PM";
+            boolean is24HourClock = android.text.format.DateFormat.is24HourFormat(mContext);
+            if (!is24HourClock) {
+                timeSuffix = hour < 12 ? "AM" : "PM";
+                if (hour > 12) {
+                    hour -= 12;
+                } else if (hour == 0) {
+                    hour = 12;
+                }
+            }
             return  hour + ":" + minute + timeSuffix;
         }
 

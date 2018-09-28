@@ -32,8 +32,8 @@ public abstract class NotificationScheduler {
     }
 
     private static long calculateDelay(long startTime) {
-        long currentTime = System.currentTimeMillis() - startTime;
-        Log.d("FINDME", "Delay: " + currentTime);
+        long currentTime = System.currentTimeMillis();
+        Log.d("FINDME", "Current Time: " + currentTime);
         return startTime - System.currentTimeMillis();
     }
 

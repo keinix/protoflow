@@ -189,6 +189,7 @@ public class AddEditTaskViewModel extends AndroidViewModel {
         task.setScheduledDateUtc(mStartDateUtc);
         Log.d(TAG, "Start Date that is being set in AddEditTask: " + mStartDateUtc);
         if (mStartTimeUtc > 0) {
+            Log.d("FINDME", "start Time in AddEditViewModel: " + mStartTimeUtc);
             task.setStartTimeUtc(mStartTimeUtc);
             scheduleTaskNotification(task);
         }
@@ -302,11 +303,11 @@ public class AddEditTaskViewModel extends AndroidViewModel {
 
     //overloaded
     public void setStartTimeUtc(int hour, int minute) {
-        if (hour > 12) {
-            hour -= 12;
-        } else if (hour == 0) {
-            hour = 12;
-        }
+//        if (hour > 12) {
+//            hour -= 12;
+//        } else if (hour == 0) {
+//            hour = 12;
+//        }
         setStartTimeUtc(parseUnixStartTime(hour, minute));
     }
 

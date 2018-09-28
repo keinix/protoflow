@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.constraint.Group;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -231,6 +232,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     public void onTimeSet(TimePicker timePicker, int hour, int minute) {
         mTimePicker.get().setStartTime(hour, minute);
         boolean is24HourClock = android.text.format.DateFormat.is24HourFormat(this);
+        Log.d(TAG, "is 24 Hour: " + is24HourClock);
         String timeString = mViewModel.parseStartTimeForTimeStamp(hour, minute, is24HourClock);
         mViewModel.setStartTimeUtc(hour, minute);
         scheduleSelected(cancelStartTimeImageButton, startTimeTextView, timeString);
@@ -392,6 +394,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     private void setStartTimeFromViewModel() {
         if (mViewModel.getStartTimeUtc() > 0) {
             boolean is24Hours = android.text.format.DateFormat.is24HourFormat(this);
+            Log.d(TAG, "is 24 Hour: " + is24Hours);
             scheduleSelected(cancelStartTimeImageButton, startTimeTextView,
                     mViewModel.getTaskStartTimeStamp(is24Hours));
         }
