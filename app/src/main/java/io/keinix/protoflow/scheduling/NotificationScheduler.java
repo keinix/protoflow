@@ -68,7 +68,6 @@ public abstract class NotificationScheduler {
 
     private static int getToday() {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
         return calendar.get(Calendar.DAY_OF_WEEK);
     }
 

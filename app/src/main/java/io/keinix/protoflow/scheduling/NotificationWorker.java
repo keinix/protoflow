@@ -29,13 +29,15 @@ public class NotificationWorker extends Worker {
 
     @TargetApi(Build.VERSION_CODES.O)
     private void buildNotificationChannel() {
-        NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_PROTOFLOW,
-                NOTIFICATION_CHANNEL_PROTOFLOW, NotificationManager.IMPORTANCE_DEFAULT);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel channel;
+            channel = new NotificationChannel(NOTIFICATION_CHANNEL_PROTOFLOW,
+                    NOTIFICATION_CHANNEL_PROTOFLOW, NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationManager manager = getApplicationContext().getSystemService(NotificationManager.class);
 
-        NotificationManager manager = getApplicationContext().getSystemService(NotificationManager.class);
-
-        if (manager != null) {
-            manager.createNotificationChannel(channel);
+            if (manager != null) {
+                manager.createNotificationChannel(channel);
+            }
         }
     }
 
