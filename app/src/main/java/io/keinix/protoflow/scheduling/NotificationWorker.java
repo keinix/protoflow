@@ -3,10 +3,10 @@ package io.keinix.protoflow.scheduling;
 import android.annotation.TargetApi;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.Context;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.text.format.DateFormat;
@@ -15,6 +15,7 @@ import java.util.Calendar;
 
 import androidx.work.Worker;
 import io.keinix.protoflow.R;
+import io.keinix.protoflow.tasks.TasksActivity;
 
 public class NotificationWorker extends Worker {
 
@@ -51,6 +52,7 @@ public class NotificationWorker extends Worker {
                 .setContentText(getTaskStartTimeStamp())
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setAutoCancel(true)
+                .setContentIntent(getPendingIntent())
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         NotificationManagerCompat.from(getApplicationContext())
@@ -86,5 +88,11 @@ public class NotificationWorker extends Worker {
             }
         }
         return String.format("Start: %s:%02d %s", hour, minute, timeSuffix);
+    }
+
+    private PendingIntent getPendingIntent() {
+        Intent intent = new Intent(getApplicationContext(), TasksActivity.class);
+        return PendingIntent.getActivity(getApplicationContext(),
+                TasksActivity.REQUEST_CODE_NOTIFIATION, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 }
