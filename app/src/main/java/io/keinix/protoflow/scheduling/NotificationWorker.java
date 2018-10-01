@@ -9,6 +9,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.text.format.DateFormat;
+
+import java.util.Calendar;
 
 import androidx.work.Worker;
 import io.keinix.protoflow.R;
@@ -45,7 +48,7 @@ public class NotificationWorker extends Worker {
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(getApplicationContext(), NOTIFICATION_CHANNEL_PROTOFLOW)
                 .setContentTitle(getNotificationTitle())
-                .setContentText("Start Time goes here")
+                .setContentText(getTaskStartTimeStamp())
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
@@ -60,5 +63,28 @@ public class NotificationWorker extends Worker {
 
     private int getTaskId() {
         return getInputData().getInt(NotificationScheduler.INPUT_ID, 0);
+    }
+
+    private String getTaskStartTimeStamp() {
+        long startTime = getInputData().getLong(NotificationScheduler.INPUT_START_TIME, 0);
+        boolean is24Hour = DateFormat.is24HourFormat(getApplicationContext());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(startTime);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        return parseStartTimeForTimeStamp(hour, minute, is24Hour);
+    }
+
+    private String parseStartTimeForTimeStamp(int hour, int minute, boolean is24HourClock) {
+        String timeSuffix = "";
+        if (!is24HourClock) {
+            timeSuffix = hour < 12 ? "AM" : "PM";
+            if (hour > 12) {
+                hour -= 12;
+            } else if (hour == 0) {
+                hour = 12;
+            }
+        }
+        return String.format("Start: %s:%02d %s", hour, minute, timeSuffix);
     }
 }
