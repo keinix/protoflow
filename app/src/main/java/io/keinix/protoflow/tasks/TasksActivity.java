@@ -89,7 +89,7 @@ public class TasksActivity extends DaggerAppCompatActivity
     private Project mProject;
     public static final String TAG = TasksActivity.class.getSimpleName();
     public static final int REQUEST_CODE_ROUTINE = 1001;
-    public static final int REQUEST_CODE_NOTIFIATION = 1002;
+    public static final int REQUEST_CODE_NOTIFICATION = 1002;
     public static final String EXTRA_DATE_OF_CURRENT_VIEW = "EXTRA_DATE_OF_CURRENT_VIEW";
     public static final String EXTRA_PROJECT = "EXTRA_PROJECT";
     public static final String EXTRA_ROUTINE = "EXTRA_ROUTINE";

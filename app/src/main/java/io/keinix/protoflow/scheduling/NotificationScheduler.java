@@ -22,8 +22,6 @@ public abstract class NotificationScheduler {
     private static final long MILLIS_IN_24_HOURS = 86400000;
     private static final long MILLIS_IN_WEEK = 604800000;
 
-
-
     public static void scheduleNotification(Task task) {
         WorkManager.getInstance().enqueue(getWorkRequest(task));
         if (task.isRepeatsOnADay()) initPeriodicNotification(task);

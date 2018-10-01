@@ -93,6 +93,6 @@ public class NotificationWorker extends Worker {
     private PendingIntent getPendingIntent() {
         Intent intent = new Intent(getApplicationContext(), TasksActivity.class);
         return PendingIntent.getActivity(getApplicationContext(),
-                TasksActivity.REQUEST_CODE_NOTIFIATION, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                TasksActivity.REQUEST_CODE_NOTIFICATION, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 }
