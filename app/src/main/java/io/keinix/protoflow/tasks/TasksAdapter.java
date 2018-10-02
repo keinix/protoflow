@@ -10,10 +10,10 @@ import android.support.constraint.Group;
 import android.support.design.widget.Snackbar;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -183,20 +183,42 @@ public class TasksAdapter extends RecyclerView.Adapter {
         @BindView(R.id.group_duration) Group durationGroup;
         @BindView(R.id.text_view_duration_display) TextView durationTextView;
 
+        private boolean isCountingDown;
+        private CountDownTimer mCountDownTimer;
+        private long coutdownStatusInMillis = 0;
+
+        private Task mTask;
+
+        @OnClick(R.id.image_button_play_task)
+        void playClicked() {
+            Log.d(TAG, "isCountingDown = " + isCountingDown);
+            if (isCountingDown) {
+                Log.d(TAG, "isCounting Triggered");
+                mCountDownTimer.cancel();
+            } else {
+                if (coutdownStatusInMillis > 0) {
+                    startCountDown(coutdownStatusInMillis);
+                } else {
+                    startCountDown(mTask.getDurationInMinutes());
+                }
+            }
+            isCountingDown = !isCountingDown;
+        }
+
         TaskViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
         void bindView(int position) {
-            Task task = (Task) mListItems.get(position);
-            taskNameTextView.setText(task.getName());
-            setUpPlay(task);
-            setDetails(task);
-            // playButton.setOnClickListener(v -> launchEditTask(task.getId()));
-            playButton.setOnClickListener(v -> startCountDown(task.getDurationInMinutes()));
-            taskCompletedCheckBox.setOnCheckedChangeListener((v, b) -> mTaskCompleteListener.toggleTaskCompleted(task));
-            markTaskComplete(task);
+            mTask = (Task) mListItems.get(position);
+            taskNameTextView.setText(mTask.getName());
+            setUpPlay(mTask);
+            setDetails(mTask);
+            // playButton.setOnClickListener(v -> launchEditTask(mTask.getId()));
+            // playButton.setOnClickListener(v -> startCountDown(mTask.getDurationInMinutes()));
+            taskCompletedCheckBox.setOnCheckedChangeListener((v, b) -> mTaskCompleteListener.toggleTaskCompleted(mTask));
+            markTaskComplete(mTask);
         }
 
         private void setDetails(Task task) {
@@ -259,10 +281,32 @@ public class TasksAdapter extends RecyclerView.Adapter {
         }
 
         private void startCountDown(int durationMinutes) {
-            new CountDownTimer(durationMinutes * 60000, 1000) {
+            mCountDownTimer = new CountDownTimer(durationMinutes * 60000, 1000) {
 
                 @Override
                 public void onTick(long l) {
+                    coutdownStatusInMillis = l;
+                    long minutes = (l / 1000) / 60;
+                    long seconds = (l / 1000) % 60;
+                    String secondsString = Long.toString(seconds);
+                    secondsString = secondsString.length() > 1 ? secondsString : 0 + secondsString;
+                    String timeRemaining = String.format("%s:%s", minutes, secondsString);
+                    durationTextView.setText(timeRemaining);
+                }
+
+                @Override
+                public void onFinish() {
+                    durationTextView.setText("finished");
+                }
+            }.start();
+        }
+
+        private void startCountDown(long durationInMillis) {
+            mCountDownTimer = new CountDownTimer(durationInMillis, 1000) {
+
+                @Override
+                public void onTick(long l) {
+                    coutdownStatusInMillis = l;
                     long minutes = (l / 1000) / 60;
                     long seconds = (l / 1000) % 60;
                     String secondsString = Long.toString(seconds);
@@ -278,6 +322,8 @@ public class TasksAdapter extends RecyclerView.Adapter {
             }.start();
         }
     }
+
+
 
     class DateSeparatorViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.text_view_date_separator) TextView dateSeparatorTextView;
