@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.constraint.Group;
 import android.support.design.widget.Snackbar;
@@ -192,7 +193,8 @@ public class TasksAdapter extends RecyclerView.Adapter {
             taskNameTextView.setText(task.getName());
             setUpPlay(task);
             setDetails(task);
-            playButton.setOnClickListener(v -> launchEditTask(task.getId()));
+            // playButton.setOnClickListener(v -> launchEditTask(task.getId()));
+            playButton.setOnClickListener(v -> startCountDown(task.getDurationInMinutes()));
             taskCompletedCheckBox.setOnCheckedChangeListener((v, b) -> mTaskCompleteListener.toggleTaskCompleted(task));
             markTaskComplete(task);
         }
@@ -254,6 +256,26 @@ public class TasksAdapter extends RecyclerView.Adapter {
                 //taskNameTextView.setPaintFlags(taskDetailsTextView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
                 taskNameTextView.setPaintFlags(0);
             }
+        }
+
+        private void startCountDown(int durationMinutes) {
+            new CountDownTimer(durationMinutes * 60000, 1000) {
+
+                @Override
+                public void onTick(long l) {
+                    long minutes = (l / 1000) / 60;
+                    long seconds = (l / 1000) % 60;
+                    String secondsString = Long.toString(seconds);
+                    secondsString = secondsString.length() > 1 ? secondsString : 0 + secondsString;
+                    String timeRemaining = String.format("%s:%s", minutes, secondsString);
+                    durationTextView.setText(timeRemaining);
+                }
+
+                @Override
+                public void onFinish() {
+                    durationTextView.setText("finished");
+                }
+            }.start();
         }
     }
 
