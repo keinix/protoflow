@@ -78,9 +78,6 @@ public class TasksAdapter extends RecyclerView.Adapter {
         mTaskCompleteListener = (TaskCompleteListener) activity;
     }
 
-
-
-
     // ----------------Override----------------
     @NonNull
     @Override
@@ -214,8 +211,6 @@ public class TasksAdapter extends RecyclerView.Adapter {
             taskNameTextView.setText(mTask.getName());
             setUpPlay(mTask);
             setDetails(mTask);
-            // playButton.setOnClickListener(v -> launchEditTask(mTask.getId()));
-            // playButton.setOnClickListener(v -> startCountDown(mTask.getDurationInMinutes()));
             taskCompletedCheckBox.setOnCheckedChangeListener((v, b) -> mTaskCompleteListener.toggleTaskCompleted(mTask));
             markTaskComplete(mTask);
         }
