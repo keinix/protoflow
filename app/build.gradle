@@ -71,6 +71,9 @@ dependencies {
     implementation "android.arch.work:work-runtime:$work_version"
     implementation "android.arch.work:work-firebase:$work_version"
 
+    //animated play/pause
+    implementation 'com.github.ohoussein.playpauseview:playpauseview:1.0.2'
+
 
 }
 repositories {
