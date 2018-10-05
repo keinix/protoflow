@@ -335,6 +335,17 @@ public class Task implements ListItem {
         }
     }
 
+    @Nullable
+    public TaskCountDownTimer getCountDownTimer() {
+        return mCountDownTimer;
+    }
+
+    public void cancelTimer() {
+        if (mCountDownTimer != null) {
+            mCountDownTimer.cancleTimer();
+        }
+    }
+
     public void toggleTaskComplete() {
         if (repeatsOnADay) throw  new IllegalArgumentException("use ToggleRepeatedTaskComplete() " +
                 "instead if the Task repeats on a day.");

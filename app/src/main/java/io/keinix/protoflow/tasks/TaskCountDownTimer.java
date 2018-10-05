@@ -23,6 +23,7 @@ public class TaskCountDownTimer {
     public static final String BUNDLE_IS_COUNTING_DOWN = "BUNDLE_IS_COUNTING_DOWN";
     public static final String BUNDLE_COUNT_DOWN_STATUS_IN_MILLIS = "BUNDLE_COUNT_DOWN_STATUS_IN_MILLIS";
     public static final String BUNDLE_MILLIS_ELAPSED = "BUNDLE_MILLIS_ELAPSED";
+    public static final String BUNDLE_TIMER_ID = "BUNDLE_TIMER_ID";
 
     private boolean isCountingDown;
     private CountDownTimer mCountDownTimer;
@@ -55,6 +56,10 @@ public class TaskCountDownTimer {
             }
         }
         isCountingDown = !isCountingDown;
+    }
+
+    public void cancleTimer() {
+        mCountDownTimer.cancel();
     }
 
     private void startCountDown(int durationMinutes) {
@@ -129,14 +134,27 @@ public class TaskCountDownTimer {
         return  millisElapsed * 100 / total;
     }
 
-    public int getTimerId() {
-        return timerId;
-    }
-
     public void restoreTimer(Bundle bundle) {
         isCountingDown = bundle.getBoolean(BUNDLE_IS_COUNTING_DOWN);
         countDownStatusInMillis = bundle.getLong(BUNDLE_COUNT_DOWN_STATUS_IN_MILLIS);
         millisElapsed = bundle.getLong(BUNDLE_MILLIS_ELAPSED);
         if (isCountingDown) startCountDown(countDownStatusInMillis);
     }
+
+    public int getTimerId() {
+        return timerId;
+    }
+
+    public boolean isCountingDown() {
+        return isCountingDown;
+    }
+
+    public long getCountDownStatusInMillis() {
+        return countDownStatusInMillis;
+    }
+
+    public long getMillisElapsed() {
+        return millisElapsed;
+    }
+
 }

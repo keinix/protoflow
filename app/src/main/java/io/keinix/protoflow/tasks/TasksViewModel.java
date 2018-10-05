@@ -3,6 +3,7 @@ package io.keinix.protoflow.tasks;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -40,7 +41,7 @@ public class TasksViewModel extends AndroidViewModel {
     private SparseBooleanArray mRoutineHasObserver;
     private List<Routine> mCachedRoutines;
 
-    private List<TaskCountDownTimer> mTaskCountDownTimers;
+    private List<Bundle> mCountDownTimerValueBundles;
 
     public static final String TAG = TasksViewModel.class.getSimpleName();
     @Inject
@@ -189,21 +190,29 @@ public class TasksViewModel extends AndroidViewModel {
     }
 
     public void addCountdownTimer(TaskCountDownTimer countDownTimer) {
-        if (mTaskCountDownTimers == null) mTaskCountDownTimers = new ArrayList<>();
-        mTaskCountDownTimers.add(countDownTimer);
+        if (mCountDownTimerValueBundles == null) mCountDownTimerValueBundles = new ArrayList<>();
+        Bundle bundle = new Bundle();
+        bundle.putInt(TaskCountDownTimer.BUNDLE_TIMER_ID, countDownTimer.getTimerId());
+        bundle.putLong(TaskCountDownTimer.BUNDLE_MILLIS_ELAPSED, countDownTimer.getMillisElapsed());
+        bundle.putLong(TaskCountDownTimer.BUNDLE_COUNT_DOWN_STATUS_IN_MILLIS, countDownTimer.getCountDownStatusInMillis());
+        bundle.putBoolean(TaskCountDownTimer.BUNDLE_IS_COUNTING_DOWN, countDownTimer.isCountingDown());
+        mCountDownTimerValueBundles.add(bundle);
     }
 
     @Nullable
-    public TaskCountDownTimer restoreCountDownTimer(Task task) {
-        TaskCountDownTimer countDownTimer = null;
-        for (TaskCountDownTimer timer : mTaskCountDownTimers) {
-            if (timer.getTimerId() == task.getId()) {
-                countDownTimer = timer;
-                break;
+    public Bundle restoreCountDownTimer(Task task) {
+        Bundle countDownTimerValues = null;
+        if (mCountDownTimerValueBundles != null) {
+            for (Bundle bundle : mCountDownTimerValueBundles) {
+                if (bundle.getInt(TaskCountDownTimer.BUNDLE_TIMER_ID) == task.getId()) {
+                    countDownTimerValues = bundle;
+                    break;
+                }
             }
+            if (countDownTimerValues != null)
+                mCountDownTimerValueBundles.remove(countDownTimerValues);
         }
-        if (countDownTimer != null) mTaskCountDownTimers.remove(countDownTimer);
-        return countDownTimer;
+        return countDownTimerValues;
     }
 
 

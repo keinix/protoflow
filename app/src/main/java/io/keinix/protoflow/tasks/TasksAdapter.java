@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.constraint.Group;
@@ -69,7 +70,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
         void deleteTask(Task task);
         void insertTask(Task task);
         void addCountDownTimer(TaskCountDownTimer taskCountDownTimer);
-        TaskCountDownTimer restoreCountDownTimer(Task task);
+        Bundle getCountDownTimerValues(Task task);
     }
 
     @Inject
@@ -177,6 +178,15 @@ public class TasksAdapter extends RecyclerView.Adapter {
         snackbar.show();
     }
 
+    public void persistTimers() {
+        for (ListItem item : mListItems) {
+            if (item.getItemType() == ListItem.TYPE_TASK && ((Task) item).getDurationInMinutes() > 0) {
+                mTaskCompleteListener.addCountDownTimer(((Task) item).getCountDownTimer());
+//                ((Task) item).cancelTimer();
+            }
+        }
+    }
+
 
     // -------------View Holders--------------
 
@@ -205,12 +215,21 @@ public class TasksAdapter extends RecyclerView.Adapter {
 
         void bindView(int position) {
             mTask = (Task) mListItems.get(position);
-            mTask.setCountdownTimer(playButton, progressBar, durationTextView);
+            if (mTask.getDurationInMinutes() > 0) setCountDownTimer();
             taskNameTextView.setText(mTask.getName());
             setUpPlay(mTask);
             setDetails(mTask);
             // taskCompletedCheckBox.setOnCheckedChangeListener((v, b) -> mTaskCompleteListener.toggleTaskCompleted(mTask));
             // markTaskComplete(mTask);
+        }
+
+        private void setCountDownTimer() {
+            Bundle timerValues = mTaskCompleteListener.getCountDownTimerValues(mTask);
+            if (timerValues == null) {
+                mTask.setCountdownTimer(playButton, progressBar, durationTextView);
+            } else {
+                mTask.resotreCountDownTimer(timerValues, playButton, progressBar, durationTextView);
+            }
         }
 
         private void setDetails(Task task) {

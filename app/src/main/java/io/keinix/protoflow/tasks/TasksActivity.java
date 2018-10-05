@@ -244,6 +244,7 @@ public class TasksActivity extends DaggerAppCompatActivity
         super.onSaveInstanceState(outState);
         outState.putString(KEY_LAST_VIEW, mLastViewValue);
         outState.putLong(KEY_DATE_OF_CURRENT_VIEW, mDateOfCurrentView);
+        mAdapter.persistTimers();
     }
 
     @Override
@@ -367,7 +368,7 @@ public class TasksActivity extends DaggerAppCompatActivity
     }
 
     @Override
-    public TaskCountDownTimer restoreCountDownTimer(Task task) {
+    public Bundle getCountDownTimerValues(Task task) {
         return mViewModel.restoreCountDownTimer(task);
     }
 
