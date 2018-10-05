@@ -189,13 +189,8 @@ public class TasksViewModel extends AndroidViewModel {
         return tasks;
     }
 
-    public void addCountdownTimer(TaskCountDownTimer countDownTimer) {
+    public void saveCountDownTimerValues(Bundle bundle) {
         if (mCountDownTimerValueBundles == null) mCountDownTimerValueBundles = new ArrayList<>();
-        Bundle bundle = new Bundle();
-        bundle.putInt(TaskCountDownTimer.BUNDLE_TIMER_ID, countDownTimer.getTimerId());
-        bundle.putLong(TaskCountDownTimer.BUNDLE_MILLIS_ELAPSED, countDownTimer.getMillisElapsed());
-        bundle.putLong(TaskCountDownTimer.BUNDLE_COUNT_DOWN_STATUS_IN_MILLIS, countDownTimer.getCountDownStatusInMillis());
-        bundle.putBoolean(TaskCountDownTimer.BUNDLE_IS_COUNTING_DOWN, countDownTimer.isCountingDown());
         mCountDownTimerValueBundles.add(bundle);
     }
 

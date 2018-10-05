@@ -15,12 +15,10 @@ import android.widget.TextView;
 import com.ohoussein.playpause.PlayPauseView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import io.keinix.protoflow.tasks.TaskCountDownTimer;
@@ -326,7 +324,7 @@ public class Task implements ListItem {
 
     public void resotreCountDownTimer(Bundle bundle, PlayPauseView playButton, ProgressBar progressBar, TextView durationTextView) {
         mCountDownTimer = new TaskCountDownTimer(this, playButton, progressBar, durationTextView);
-        mCountDownTimer.restoreTimer(bundle);
+        mCountDownTimer.restoreTimerValues(bundle);
     }
 
     public void toggleCountdown() {
@@ -336,14 +334,18 @@ public class Task implements ListItem {
     }
 
     @Nullable
-    public TaskCountDownTimer getCountDownTimer() {
-        return mCountDownTimer;
+    public Bundle getCountdownTimerValues() {
+        return mCountDownTimer.getTimerValues();
     }
 
     public void cancelTimer() {
         if (mCountDownTimer != null) {
-            mCountDownTimer.cancleTimer();
+            mCountDownTimer.cancelTimer();
         }
+    }
+
+    public long getElapsedMillis() {
+        return mCountDownTimer.getMillisElapsed();
     }
 
     public void toggleTaskComplete() {

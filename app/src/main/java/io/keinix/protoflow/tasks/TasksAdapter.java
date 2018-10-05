@@ -69,7 +69,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
         boolean isTaskComplete(Task task);
         void deleteTask(Task task);
         void insertTask(Task task);
-        void addCountDownTimer(TaskCountDownTimer taskCountDownTimer);
+        void addCountDownTimerValues(Bundle bundle);
         Bundle getCountDownTimerValues(Task task);
     }
 
@@ -180,9 +180,10 @@ public class TasksAdapter extends RecyclerView.Adapter {
 
     public void persistTimers() {
         for (ListItem item : mListItems) {
-            if (item.getItemType() == ListItem.TYPE_TASK && ((Task) item).getDurationInMinutes() > 0) {
-                mTaskCompleteListener.addCountDownTimer(((Task) item).getCountDownTimer());
-//                ((Task) item).cancelTimer();
+            if (item.getItemType() == ListItem.TYPE_TASK && ((Task) item).getDurationInMinutes() > 0 &&
+                    ((Task) item).getElapsedMillis() > 0) {
+                mTaskCompleteListener.addCountDownTimerValues(((Task) item).getCountdownTimerValues());
+                ((Task) item).cancelTimer();
             }
         }
     }

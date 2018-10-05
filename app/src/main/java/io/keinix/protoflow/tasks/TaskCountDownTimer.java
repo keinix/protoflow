@@ -58,7 +58,7 @@ public class TaskCountDownTimer {
         isCountingDown = !isCountingDown;
     }
 
-    public void cancleTimer() {
+    public void cancelTimer() {
         mCountDownTimer.cancel();
     }
 
@@ -134,12 +134,25 @@ public class TaskCountDownTimer {
         return  millisElapsed * 100 / total;
     }
 
-    public void restoreTimer(Bundle bundle) {
+    public void restoreTimerValues(Bundle bundle) {
         isCountingDown = bundle.getBoolean(BUNDLE_IS_COUNTING_DOWN);
         countDownStatusInMillis = bundle.getLong(BUNDLE_COUNT_DOWN_STATUS_IN_MILLIS);
         millisElapsed = bundle.getLong(BUNDLE_MILLIS_ELAPSED);
-        if (isCountingDown) startCountDown(countDownStatusInMillis);
+        if (isCountingDown) {
+            startCountDown(countDownStatusInMillis);
+            playButton.toggle();
+        }
     }
+
+    public Bundle getTimerValues() {
+        Bundle bundle = new Bundle();
+        bundle.putInt(TaskCountDownTimer.BUNDLE_TIMER_ID, timerId);
+        bundle.putLong(TaskCountDownTimer.BUNDLE_MILLIS_ELAPSED, millisElapsed);
+        bundle.putLong(TaskCountDownTimer.BUNDLE_COUNT_DOWN_STATUS_IN_MILLIS, getCountDownStatusInMillis());
+        bundle.putBoolean(TaskCountDownTimer.BUNDLE_IS_COUNTING_DOWN, isCountingDown);
+        return bundle;
+    }
+
 
     public int getTimerId() {
         return timerId;
