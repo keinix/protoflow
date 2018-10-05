@@ -83,7 +83,6 @@ public class TasksActivity extends DaggerAppCompatActivity
     private LiveData<List<Routine>> mRoutineLiveData;
     private LiveData<CalendarDay> mCalendarDayLiveData;
     private List<Project> mProjects;
-    private MediatorLiveData<List<Task>> mTasksMediatorLiveData;
     private long mDateOfCurrentView;
     private CalendarDay mDisplayedCalendarDay;
     private String mLastViewValue;
@@ -245,7 +244,6 @@ public class TasksActivity extends DaggerAppCompatActivity
         super.onSaveInstanceState(outState);
         outState.putString(KEY_LAST_VIEW, mLastViewValue);
         outState.putLong(KEY_DATE_OF_CURRENT_VIEW, mDateOfCurrentView);
-
     }
 
     @Override
@@ -363,6 +361,16 @@ public class TasksActivity extends DaggerAppCompatActivity
         }
     }
 
+    @Override
+    public void addCountDownTimer(TaskCountDownTimer taskCountDownTimer) {
+        mViewModel.addCountdownTimer(taskCountDownTimer);
+    }
+
+    @Override
+    public TaskCountDownTimer restoreCountDownTimer(Task task) {
+        return mViewModel.restoreCountDownTimer(task);
+    }
+
     // --------------Lifecycle--------------
 
     @Override
@@ -373,7 +381,6 @@ public class TasksActivity extends DaggerAppCompatActivity
         setSupportActionBar(toolbar);
         mViewModel = ViewModelProviders.of(this, mFactory).get(TasksViewModel.class);
         //TODO: merge all tasks callbacks into MediatorLiveData
-        mTasksMediatorLiveData = new MediatorLiveData<>();
         setupNavDrawer();
         setUpRecyclerView();
         if (savedInstanceState == null) {
@@ -475,6 +482,9 @@ public class TasksActivity extends DaggerAppCompatActivity
         });
     }
 
+    private void RestoreTimer(Task task) {
+
+    }
 
     //~~~~~~~Methods for scheduled tasks~~~~~~~
 

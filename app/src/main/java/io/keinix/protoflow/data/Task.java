@@ -2,11 +2,17 @@ package io.keinix.protoflow.data;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import com.ohoussein.playpause.PlayPauseView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import io.keinix.protoflow.tasks.TaskCountDownTimer;
 import io.keinix.protoflow.util.ListItem;
 import io.keinix.protoflow.util.RoomTypeConverters;
 
@@ -97,6 +104,11 @@ public class Task implements ListItem {
 
     @ColumnInfo(name = "is_task_complete")
     private boolean isTaskComplete;
+
+    @Ignore
+    @Nullable
+    private TaskCountDownTimer mCountDownTimer;
+
 
     // A task can repeat on a given day. This is a map of the 7 days to
     // a list of exact dates that a repeated task was completed on
@@ -305,6 +317,22 @@ public class Task implements ListItem {
 
     public void setRepeatedTaskCompletionDate(@Nullable HashMap<Integer, List<Long>> repeatedTaskCompletionDate) {
         this.repeatedTaskCompletionDate = repeatedTaskCompletionDate;
+    }
+
+    // controlling task Countdown
+    public void setCountdownTimer(PlayPauseView playButton, ProgressBar progressBar, TextView durationTextView) {
+       mCountDownTimer = new TaskCountDownTimer(this, playButton, progressBar, durationTextView);
+    }
+
+    public void resotreCountDownTimer(Bundle bundle, PlayPauseView playButton, ProgressBar progressBar, TextView durationTextView) {
+        mCountDownTimer = new TaskCountDownTimer(this, playButton, progressBar, durationTextView);
+        mCountDownTimer.restoreTimer(bundle);
+    }
+
+    public void toggleCountdown() {
+        if (mCountDownTimer != null) {
+            mCountDownTimer.toggleCountDown();
+        }
     }
 
     public void toggleTaskComplete() {

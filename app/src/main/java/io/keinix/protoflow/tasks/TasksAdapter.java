@@ -68,6 +68,8 @@ public class TasksAdapter extends RecyclerView.Adapter {
         boolean isTaskComplete(Task task);
         void deleteTask(Task task);
         void insertTask(Task task);
+        void addCountDownTimer(TaskCountDownTimer taskCountDownTimer);
+        TaskCountDownTimer restoreCountDownTimer(Task task);
     }
 
     @Inject
@@ -188,16 +190,11 @@ public class TasksAdapter extends RecyclerView.Adapter {
         @BindView(R.id.text_view_duration_display) TextView durationTextView;
         @BindView(R.id.progress_bar_task) ProgressBar progressBar;
 
-        private boolean isCountingDown;
-        private CountDownTimer mCountDownTimer;
-        private long countDownStatusInMillis = 0;
-        private long millisElapsed;
-
         private Task mTask;
 
         @OnClick(R.id.image_button_play_task)
         void playClicked() {
-            toggleCountDown();
+            mTask.toggleCountdown();
         }
 
         TaskViewHolder(View itemView) {
@@ -208,11 +205,12 @@ public class TasksAdapter extends RecyclerView.Adapter {
 
         void bindView(int position) {
             mTask = (Task) mListItems.get(position);
+            mTask.setCountdownTimer(playButton, progressBar, durationTextView);
             taskNameTextView.setText(mTask.getName());
             setUpPlay(mTask);
             setDetails(mTask);
-            taskCompletedCheckBox.setOnCheckedChangeListener((v, b) -> mTaskCompleteListener.toggleTaskCompleted(mTask));
-            markTaskComplete(mTask);
+            // taskCompletedCheckBox.setOnCheckedChangeListener((v, b) -> mTaskCompleteListener.toggleTaskCompleted(mTask));
+            // markTaskComplete(mTask);
         }
 
         private void setDetails(Task task) {
@@ -276,96 +274,12 @@ public class TasksAdapter extends RecyclerView.Adapter {
             }
         }
 
-        private void toggleCountDown() {
-            playButton.toggle();
-            if (isCountingDown) {
-                mCountDownTimer.cancel();
-            } else {
-                if (countDownStatusInMillis > 0) {
-                    startCountDown(countDownStatusInMillis);
-                } else {
-                    startCountDown(mTask.getDurationInMinutes());
-                }
-            }
-            isCountingDown = !isCountingDown;
-        }
-
-        private void startCountDown(int durationMinutes) {
-            mCountDownTimer = new CountDownTimer(durationMinutes * 60000, 1000) {
-
-                @Override
-                public void onTick(long l) {
-                    millisElapsed += 1000;
-                    countDownStatusInMillis = l;
-                    long minutes = (l / 1000) / 60;
-                    long seconds = (l / 1000) % 60;
-                    progressBar.setProgress((int) calculatePercentRemaining());
-                    String secondsString = Long.toString(seconds);
-                    secondsString = secondsString.length() > 1 ? secondsString : 0 + secondsString;
-                    String timeRemaining = String.format("%s:%s", minutes, secondsString);
-                    durationTextView.setText(timeRemaining);
-                }
-
-                @Override
-                public void onFinish() {
-                    durationTextView.setText("finished");
-                    playNotificationSound();
-                    resetCountDown();
-                }
-            }.start();
-        }
-
-        private void resetCountDown() {
-            playButton.toggle();
-            countDownStatusInMillis = 0;
-            millisElapsed = 0;
-            isCountingDown = false;
-        }
-
-        private void startCountDown(long durationInMillis) {
-            mCountDownTimer = new CountDownTimer(durationInMillis, 1000) {
-
-                @Override
-                public void onTick(long l) {
-                    millisElapsed += 1000;
-                    countDownStatusInMillis = l;
-                    long minutes = (l / 1000) / 60;
-                    long seconds = (l / 1000) % 60;
-                    progressBar.setProgress((int) calculatePercentRemaining());
-                    String secondsString = Long.toString(seconds);
-                    secondsString = secondsString.length() > 1 ? secondsString : 0 + secondsString;
-                    String timeRemaining = String.format("%s:%s", minutes, secondsString);
-                    durationTextView.setText(timeRemaining);
-                }
-
-                @Override
-                public void onFinish() {
-                    durationTextView.setText("finished");
-                    playNotificationSound();
-                }
-            }.start();
-        }
-
-        private long calculatePercentRemaining() {
-            long total = mTask.getDurationInMinutes() * 60000;
-            return  millisElapsed * 100 / total;
-        }
-
         @Override
         public void onClick(View view) {
             launchEditTask(mTask.getId());
         }
     }
 
-    private void playNotificationSound() {
-        try {
-            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            Ringtone r = RingtoneManager.getRingtone(mContext, notification);
-            r.play();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     class DateSeparatorViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.text_view_date_separator) TextView dateSeparatorTextView;

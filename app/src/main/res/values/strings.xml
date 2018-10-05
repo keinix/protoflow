@@ -45,10 +45,7 @@
 
     <string name="snack_bar_undo">UNDO</string>
     <string name="snack_bar_text">1 Task Deleted</string>
-
-
-
-
+    <string name="timer_finished">finished</string>
 
 
 </resources>

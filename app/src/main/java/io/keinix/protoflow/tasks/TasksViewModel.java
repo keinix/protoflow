@@ -3,10 +3,13 @@ package io.keinix.protoflow.tasks;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.SparseBooleanArray;
+
+import com.google.android.gms.tasks.Tasks;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,6 +39,8 @@ public class TasksViewModel extends AndroidViewModel {
     private Project mProject;
     private SparseBooleanArray mRoutineHasObserver;
     private List<Routine> mCachedRoutines;
+
+    private List<TaskCountDownTimer> mTaskCountDownTimers;
 
     public static final String TAG = TasksViewModel.class.getSimpleName();
     @Inject
@@ -181,6 +186,24 @@ public class TasksViewModel extends AndroidViewModel {
         tasks = sortTasksByDate(tasks);
         tasks = addDaySeparatorItems(tasks);
         return tasks;
+    }
+
+    public void addCountdownTimer(TaskCountDownTimer countDownTimer) {
+        if (mTaskCountDownTimers == null) mTaskCountDownTimers = new ArrayList<>();
+        mTaskCountDownTimers.add(countDownTimer);
+    }
+
+    @Nullable
+    public TaskCountDownTimer restoreCountDownTimer(Task task) {
+        TaskCountDownTimer countDownTimer = null;
+        for (TaskCountDownTimer timer : mTaskCountDownTimers) {
+            if (timer.getTimerId() == task.getId()) {
+                countDownTimer = timer;
+                break;
+            }
+        }
+        if (countDownTimer != null) mTaskCountDownTimers.remove(countDownTimer);
+        return countDownTimer;
     }
 
 
