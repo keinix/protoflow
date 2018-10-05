@@ -189,11 +189,18 @@ public class TasksViewModel extends AndroidViewModel {
         return tasks;
     }
 
+    /**
+     * persist a {@link Task}'s {@link TaskCountDownTimer} vales on config change
+     * @param bundle representing {@link TaskCountDownTimer} current state
+     */
     public void saveCountDownTimerValues(Bundle bundle) {
         if (mCountDownTimerValueBundles == null) mCountDownTimerValueBundles = new ArrayList<>();
         mCountDownTimerValueBundles.add(bundle);
     }
-
+    /**
+     * persist a {@link Task}'s {@link TaskCountDownTimer} vales on config change
+     * @return  bundle representing {@link TaskCountDownTimer} current state
+     */
     @Nullable
     public Bundle restoreCountDownTimer(Task task) {
         Bundle countDownTimerValues = null;

@@ -4,11 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.constraint.Group;
 import android.support.design.widget.Snackbar;
@@ -170,7 +166,9 @@ public class TasksAdapter extends RecyclerView.Adapter {
         showUndoSnackbar();
     }
 
-
+    /**
+     * show a undo {@link Snackbar} when a Task is deleted
+     */
     public void showUndoSnackbar() {
         View view = mActivity.findViewById(R.id.coordinator_layout);
         Snackbar snackbar = Snackbar.make(view, R.string.snack_bar_text, Snackbar.LENGTH_LONG);
@@ -178,6 +176,10 @@ public class TasksAdapter extends RecyclerView.Adapter {
         snackbar.show();
     }
 
+    /**
+     * If a task has a duration and the timer has been started this method is
+     * used to persist the {@link TaskCountDownTimer} state in {@link TasksViewModel}
+     */
     public void persistTimers() {
         for (ListItem item : mListItems) {
             if (item.getItemType() == ListItem.TYPE_TASK && ((Task) item).getDurationInMinutes() > 0 &&
@@ -229,7 +231,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
             if (timerValues == null) {
                 mTask.setCountdownTimer(playButton, progressBar, durationTextView);
             } else {
-                mTask.resotreCountDownTimer(timerValues, playButton, progressBar, durationTextView);
+                mTask.restoreCountDownTimer(timerValues, playButton, progressBar, durationTextView);
             }
         }
 

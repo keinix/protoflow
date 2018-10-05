@@ -1,15 +1,10 @@
 package io.keinix.protoflow.tasks;
 
-import android.app.Activity;
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.LifecycleObserver;
-import android.arch.lifecycle.OnLifecycleEvent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -58,8 +53,20 @@ public class TaskCountDownTimer {
         isCountingDown = !isCountingDown;
     }
 
+    /**
+     * called in {@link TasksAdapter} on config change so there are
+     * no duplicate timers when the is restored in restoreTimerValues()
+     */
     public void cancelTimer() {
         mCountDownTimer.cancel();
+    }
+
+    // when a timer completes
+    private void resetCountDown() {
+        playButton.toggle();
+        countDownStatusInMillis = 0;
+        millisElapsed = 0;
+        isCountingDown = false;
     }
 
     private void startCountDown(int durationMinutes) {
@@ -85,13 +92,6 @@ public class TaskCountDownTimer {
                 resetCountDown();
             }
         }.start();
-    }
-
-    private void resetCountDown() {
-        playButton.toggle();
-        countDownStatusInMillis = 0;
-        millisElapsed = 0;
-        isCountingDown = false;
     }
 
     private void startCountDown(long durationInMillis) {
@@ -134,6 +134,11 @@ public class TaskCountDownTimer {
         return  millisElapsed * 100 / total;
     }
 
+    /**
+     * After a config change the timerVales store in {@link TasksViewModel} are used
+     * to reactivate the timer
+     * @param bundle of saved timerValues
+     */
     public void restoreTimerValues(Bundle bundle) {
         isCountingDown = bundle.getBoolean(BUNDLE_IS_COUNTING_DOWN);
         countDownStatusInMillis = bundle.getLong(BUNDLE_COUNT_DOWN_STATUS_IN_MILLIS);
@@ -144,6 +149,10 @@ public class TaskCountDownTimer {
         }
     }
 
+    /**
+     * Used to Persist the current timer state in {@link TasksViewModel}
+     * @return Bundle representing current timer state
+     */
     public Bundle getTimerValues() {
         Bundle bundle = new Bundle();
         bundle.putInt(TaskCountDownTimer.BUNDLE_TIMER_ID, timerId);

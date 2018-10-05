@@ -360,11 +360,19 @@ public class TasksActivity extends DaggerAppCompatActivity
         }
     }
 
+    /**
+     * persist the current state of a {@link Task}'s {@link TaskCountDownTimer}
+     * @param bundle representing the state of a {@link TaskCountDownTimer}
+     */
     @Override
     public void addCountDownTimerValues(Bundle bundle) {
         mViewModel.saveCountDownTimerValues(bundle);
     }
 
+    /**
+     * persist the current state of a {@link Task}'s {@link TaskCountDownTimer}
+     * @return bundle representing the state of a {@link TaskCountDownTimer}
+     */
     @Override
     public Bundle getCountDownTimerValues(Task task) {
         return mViewModel.restoreCountDownTimer(task);

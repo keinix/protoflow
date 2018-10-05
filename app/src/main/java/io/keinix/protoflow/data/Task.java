@@ -317,12 +317,18 @@ public class Task implements ListItem {
         this.repeatedTaskCompletionDate = repeatedTaskCompletionDate;
     }
 
-    // controlling task Countdown
+    // ------- TaskCountDown State --------
+    // TaskCountDownTimer is not persisted through process death
+    // the current state of a Task's timer is persisted in TaskViewModel on
+    // config changes
+
+    // create a new timer
     public void setCountdownTimer(PlayPauseView playButton, ProgressBar progressBar, TextView durationTextView) {
        mCountDownTimer = new TaskCountDownTimer(this, playButton, progressBar, durationTextView);
     }
 
-    public void resotreCountDownTimer(Bundle bundle, PlayPauseView playButton, ProgressBar progressBar, TextView durationTextView) {
+    // restore a timer in progress on config change
+    public void restoreCountDownTimer(Bundle bundle, PlayPauseView playButton, ProgressBar progressBar, TextView durationTextView) {
         mCountDownTimer = new TaskCountDownTimer(this, playButton, progressBar, durationTextView);
         mCountDownTimer.restoreTimerValues(bundle);
     }
@@ -333,6 +339,10 @@ public class Task implements ListItem {
         }
     }
 
+    /**
+     * Used to persist a Task's {@link TaskCountDownTimer}
+     * @return A bundle representing the timer's current state
+     */
     @Nullable
     public Bundle getCountdownTimerValues() {
         return mCountDownTimer.getTimerValues();
@@ -344,6 +354,7 @@ public class Task implements ListItem {
         }
     }
 
+    // call to check if a timer has been started
     public long getElapsedMillis() {
         return mCountDownTimer.getMillisElapsed();
     }
