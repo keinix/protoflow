@@ -1,11 +1,19 @@
 package io.keinix.protoflow.data;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
+import io.keinix.protoflow.util.RoomTypeConverters;
+
 @Entity(tableName = "project_table")
+@TypeConverters({RoomTypeConverters.class})
 public class Project implements Parcelable {
 
     @PrimaryKey (autoGenerate = true)
@@ -32,6 +40,9 @@ public class Project implements Parcelable {
     public void setName(String name) {
         this.name = name;
     }
+
+    @ColumnInfo(name = "completed_tasks")
+    public ArrayList<Integer> completedTasks;
 
     @Override
     public int describeContents() {

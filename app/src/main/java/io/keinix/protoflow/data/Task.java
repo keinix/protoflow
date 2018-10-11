@@ -103,6 +103,9 @@ public class Task implements ListItem {
     @ColumnInfo(name = "is_task_complete")
     private boolean isTaskComplete;
 
+    @ColumnInfo(name = "is_task_complete_in_quick_list")
+    private boolean isTaskCompleteInQuickList;
+
     @Ignore
     @Nullable
     private TaskCountDownTimer mCountDownTimer;
@@ -317,6 +320,14 @@ public class Task implements ListItem {
         this.repeatedTaskCompletionDate = repeatedTaskCompletionDate;
     }
 
+    public boolean isTaskCompleteInQuickList() {
+        return isTaskCompleteInQuickList;
+    }
+
+    public void setTaskCompleteInQuickList(boolean taskCompleteInQuickList) {
+        isTaskCompleteInQuickList = taskCompleteInQuickList;
+    }
+
     // ------- TaskCountDown State --------
     // TaskCountDownTimer is not persisted through process death
     // the current state of a Task's timer is persisted in TaskViewModel on
@@ -434,6 +445,7 @@ public class Task implements ListItem {
                 repeatsOnSunday == task.repeatsOnSunday &&
                 isInQuickList == task.isInQuickList &&
                 isTaskComplete == task.isTaskComplete &&
+                isTaskCompleteInQuickList == task.isTaskCompleteInQuickList &&
                 Objects.equals(name, task.name) &&
                 Objects.equals(routines, task.routines) &&
                 Objects.equals(notes, task.notes) &&

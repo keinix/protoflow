@@ -51,6 +51,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
     public static final int ITEM_VIEW_TYPE_ROUTINE = 103;
     private Context mContext;
     private List<ListItem> mListItems;
+    private List<Integer> mCompletedTasks;
     private Activity mActivity;
     private RoutineListener mRoutineListener;
     private TaskCompleteListener mTaskCompleteListener;
@@ -190,6 +191,10 @@ public class TasksAdapter extends RecyclerView.Adapter {
         }
     }
 
+    public void setCompletedTasks(List<Integer> completedTasks) {
+        mCompletedTasks = completedTasks;
+    }
+
 
     // -------------View Holders--------------
 
@@ -218,10 +223,15 @@ public class TasksAdapter extends RecyclerView.Adapter {
 
         void bindView(int position) {
             mTask = (Task) mListItems.get(position);
-            if (mTask.getDurationInMinutes() > 0) setCountDownTimer();
+            if (mTask.getDurationInMinutes() > 0) {
+                setCountDownTimer();
+            } else {
+                progressBar.setProgress(0);
+            }
             taskNameTextView.setText(mTask.getName());
             setUpPlay(mTask);
             setDetails(mTask);
+            markTaskComplete(mTask);
             // taskCompletedCheckBox.setOnCheckedChangeListener((v, b) -> mTaskCompleteListener.toggleTaskCompleted(mTask));
             // markTaskComplete(mTask);
         }
@@ -288,7 +298,8 @@ public class TasksAdapter extends RecyclerView.Adapter {
         }
 
         private void markTaskComplete(Task task) {
-            if (mTaskCompleteListener.isTaskComplete(task)) {
+            boolean taskIsComplete = mCompletedTasks.contains(task.getId());
+            if (taskIsComplete) {
                 taskNameTextView.setPaintFlags(taskDetailsTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             } else {
                 //taskNameTextView.setPaintFlags(taskDetailsTextView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));

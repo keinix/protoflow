@@ -25,6 +25,9 @@ public class CalendarDay {
     @ColumnInfo(name = "tasks_scheduled")
     private ArrayList<Integer> scheduledTaskIds;
 
+    @ColumnInfo(name = "completed_tasks")
+    private ArrayList<Integer> completedTasks;
+
     public CalendarDay(long date) {
         this.date = date;
     }
@@ -66,6 +69,14 @@ public class CalendarDay {
 
     public void addTaskId(int id) {
         scheduledTaskIds.add(id);
+    }
+
+    public ArrayList<Integer> getCompletedTasks() {
+        return completedTasks;
+    }
+
+    public void setCompletedTasks(ArrayList<Integer> completedTasks) {
+        this.completedTasks = completedTasks;
     }
 
     @Override

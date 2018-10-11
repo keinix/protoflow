@@ -34,6 +34,9 @@ public abstract class NotificationScheduler {
     private static void initPeriodicNotification(Task task) {
         List<Long> startDelays = getRepeatedTaskStartDelays(task);
         for (long startDelay : startDelays) {
+            Log.d("FINDME", "Start delay: " + startDelay);
+            long currentTime = System.currentTimeMillis() + startDelay;
+            Log.d("FINDME", "current Time + start delay:  " + currentTime);
             WorkManager.getInstance()
                     .enqueue(getInitWorkRequestForRepeatingTask(task, startDelay));
         }
@@ -61,7 +64,7 @@ public abstract class NotificationScheduler {
     // on a specific will run
     private static long getStartDelayForDay(int day, long startTime) {
         int dayOffset = Math.abs(getToday() - day);
-        return ((dayOffset - 1) * MILLIS_IN_24_HOURS) + calculateDelay(startTime);
+        return (dayOffset * MILLIS_IN_24_HOURS) + calculateDelay(startTime);
     }
 
     private static int getToday() {
@@ -95,7 +98,7 @@ public abstract class NotificationScheduler {
 
     private static long calculateDelay(long startTime) {
         long currentTime = System.currentTimeMillis();
-        Log.d("FINDME", "Current Time: " + currentTime);
+        // Log.d("FINDME", "CalculateDelay() ->  Current Time: " + currentTime + "Start Time: " + startTime);
         return startTime - System.currentTimeMillis();
     }
 
