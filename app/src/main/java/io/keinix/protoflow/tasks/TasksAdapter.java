@@ -184,11 +184,13 @@ public class TasksAdapter extends RecyclerView.Adapter {
      * used to persist the {@link TaskCountDownTimer} state in {@link TasksViewModel}
      */
     public void persistTimers() {
-        for (ListItem item : mListItems) {
-            if (item.getItemType() == ListItem.TYPE_TASK && ((Task) item).getDurationInMinutes() > 0 &&
-                    ((Task) item).getElapsedMillis() > 0) {
-                mTaskCompleteListener.addCountDownTimerValues(((Task) item).getCountdownTimerValues());
-                ((Task) item).cancelTimer();
+        if (mListItems != null) {
+            for (ListItem item : mListItems) {
+                if (item.getItemType() == ListItem.TYPE_TASK && ((Task) item).getDurationInMinutes() > 0 &&
+                        ((Task) item).getElapsedMillis() > 0) {
+                    mTaskCompleteListener.addCountDownTimerValues(((Task) item).getCountdownTimerValues());
+                    ((Task) item).cancelTimer();
+                }
             }
         }
     }
@@ -230,6 +232,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
             } else {
                 progressBar.setProgress(0);
             }
+
             taskCompletedCheckBox.setOnClickListener((view) -> {
                 for (ListItem listItem : mListItems) {
                     if (((Task) listItem).getId() == mTask.getId()) {
@@ -239,12 +242,11 @@ public class TasksAdapter extends RecyclerView.Adapter {
                 }
                 mTaskCompleteListener.toggleTaskCompleted(mTask.getId());
             });
+
             taskNameTextView.setText(mTask.getName());
             setUpPlay(mTask);
             setDetails(mTask);
-             markTaskComplete(mTask);
-            // taskCompletedCheckBox.setOnCheckedChangeListener((v, b) -> mTaskCompleteListener.toggleTaskCompleted(mTask));
-            // markTaskComplete(mTask);
+            markTaskComplete(mTask);
         }
 
         private void setCountDownTimer() {

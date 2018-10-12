@@ -202,7 +202,6 @@ public class TasksActivity extends DaggerAppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // OnClicks for Projects are set individually when they are added to the menu
         int id = item.getItemId();
-        clearObservers();
         switch (id) {
             case R.id.nav_calendar:
                 mLastViewValue = LAST_VIEW_CALENDAR;
@@ -210,23 +209,33 @@ public class TasksActivity extends DaggerAppCompatActivity
                 break;
             case R.id.nav_today:
                 mLastViewValue = LAST_VIEW_TODAY;
+                clearObservers();
+                mAdapter.clearTasks();
                 getTasksForToday();
                 break;
             case R.id.nav_7_days:
                 mLastViewValue = LAST_VIEW_7_DAYS;
                 mDateOfCurrentView = 0;
+                clearObservers();
+                mAdapter.clearTasks();
                 getTasksFor7Days();
                 break;
             case R.id.nav_add_project:
                 mNewProjectDialog.get().show(getSupportFragmentManager(), "new_project_dialog");
+                clearObservers();
+                mAdapter.clearTasks();
                 mLastViewValue = LAST_VIEW_PROJECT;
                 break;
             case R.id.nav_routines:
                 mLastViewValue = LAST_VIEW_ROUTINE;
+                clearObservers();
+                mAdapter.clearTasks();
                 displayAllRoutines();
                 break;
             case R.id.nav_quick_list:
                 mLastViewValue = LAST_VIEW_QUICK_LIST;
+                clearObservers();
+                mAdapter.clearTasks();
                 displayTasksInQuickList();
                 break;
         }
@@ -256,6 +265,8 @@ public class TasksActivity extends DaggerAppCompatActivity
     // Callback from mDatePicker
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+        clearObservers();
+        mAdapter.clearTasks();
         mDatePicker.get().setStartDate(year, month, day);
         setTitle(mDatePicker.get().getStartDateTimeStampWithDay());
         mDateOfCurrentView = mDatePicker.get().getStartDateUtc();
