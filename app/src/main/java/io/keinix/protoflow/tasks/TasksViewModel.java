@@ -121,6 +121,10 @@ public class TasksViewModel extends AndroidViewModel {
         mTaskRepository.updateTask(task);
     }
 
+    public void updateCalendarDay(CalendarDay calendarDay) {
+        mTaskRepository.updateCalendarDay(calendarDay);
+    }
+
     public void updateCalendarDay(CalendarDay calendarDay, List<Task> tasks, long date) {
         boolean calendarDayIsNew = false;
         if (calendarDay == null) {

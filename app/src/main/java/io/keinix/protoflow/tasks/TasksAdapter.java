@@ -14,9 +14,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ohoussein.playpause.PlayPauseView;
 
@@ -29,6 +31,7 @@ import javax.inject.Inject;
 import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import io.keinix.protoflow.R;
 import io.keinix.protoflow.addeddittask.AddEditTaskActivity;
@@ -62,8 +65,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
     }
 
     public interface TaskCompleteListener {
-        void toggleTaskCompleted(Task task);
-        boolean isTaskComplete(Task task);
+        void toggleTaskCompleted(int id);
         void deleteTask(Task task);
         void insertTask(Task task);
         void addCountDownTimerValues(Bundle bundle);
@@ -228,10 +230,14 @@ public class TasksAdapter extends RecyclerView.Adapter {
             } else {
                 progressBar.setProgress(0);
             }
+            taskCompletedCheckBox.setOnClickListener((view) -> {
+                ((Task) mListItems.get(position)).setCompletionStatusChange(true);
+                mTaskCompleteListener.toggleTaskCompleted(mTask.getId());
+            });
             taskNameTextView.setText(mTask.getName());
             setUpPlay(mTask);
             setDetails(mTask);
-            // markTaskComplete(mTask);
+             markTaskComplete(mTask);
             // taskCompletedCheckBox.setOnCheckedChangeListener((v, b) -> mTaskCompleteListener.toggleTaskCompleted(mTask));
             // markTaskComplete(mTask);
         }
@@ -298,12 +304,13 @@ public class TasksAdapter extends RecyclerView.Adapter {
         }
 
         private void markTaskComplete(Task task) {
-            boolean taskIsComplete = mCompletedTasks.contains(task.getId());
+            boolean taskIsComplete = mCompletedTasks != null && mCompletedTasks.contains(task.getId());
             if (taskIsComplete) {
                 taskNameTextView.setPaintFlags(taskDetailsTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                taskCompletedCheckBox.setChecked(true);
             } else {
-                //taskNameTextView.setPaintFlags(taskDetailsTextView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
-                taskNameTextView.setPaintFlags(0);
+                taskNameTextView.setPaintFlags(taskDetailsTextView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+                taskCompletedCheckBox.setChecked(false);
             }
         }
 

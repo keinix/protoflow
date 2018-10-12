@@ -89,7 +89,6 @@ public class CalendarDay {
         completedTasks.add(taskId);
     }
 
-
     @Override
     public String toString() {
         return "CalendarDay{" +

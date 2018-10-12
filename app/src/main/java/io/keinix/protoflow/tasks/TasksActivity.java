@@ -294,26 +294,15 @@ public class TasksActivity extends DaggerAppCompatActivity
         showHideRoutineChildTasks(routine);
     }
 
-    @Override
-    public void toggleTaskCompleted(Task task) {
-        // get date from date picker
-        Task newTask = task.cloneWithNewDate(task.getScheduledDateUtc());
-        if (newTask.isRepeatsOnADay()) {
-            newTask.toggleRepeatedTaskComplete(mDateOfCurrentView);
-        } else {
-            newTask.toggleTaskComplete();
-        }
-
-        mViewModel.updateTask(newTask);
-    }
 
     @Override
-    public boolean isTaskComplete(Task task) {
-        if (task.isRepeatsOnADay()) {
-            return task.isRepeatedTaskComplete(mDateOfCurrentView);
-        } else {
-            return task.isTaskComplete();
+    public void toggleTaskCompleted(int id) {
+        boolean wasRemoved = false;
+        if (mDisplayedCalendarDay.getCompletedTasks() != null) {
+            wasRemoved = mDisplayedCalendarDay.getCompletedTasks().remove(Integer.valueOf(id));
         }
+        if (!wasRemoved) mDisplayedCalendarDay.addCompletedTasks(id);
+        mViewModel.updateCalendarDay(mDisplayedCalendarDay);
     }
 
     @Override

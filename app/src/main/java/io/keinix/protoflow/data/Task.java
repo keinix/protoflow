@@ -106,6 +106,13 @@ public class Task implements ListItem {
     @ColumnInfo(name = "is_task_complete_in_quick_list")
     private boolean isTaskCompleteInQuickList;
 
+    // Since the state of a complete Task is saved in the corresponding CalendarDay
+    // or project Object when a task is completed the Task object itself does not change
+    // so it is not flagged for rebinding by DiffUtitls This counter is used to make a change in
+    // the task so the view will be rebound in the RecyclerView.Adapter
+    @Ignore
+    private boolean completionStatusChange;
+
     @Ignore
     @Nullable
     private TaskCountDownTimer mCountDownTimer;
@@ -328,6 +335,8 @@ public class Task implements ListItem {
         isTaskCompleteInQuickList = taskCompleteInQuickList;
     }
 
+
+
     // ------- TaskCountDown State --------
     // TaskCountDownTimer is not persisted through process death
     // the current state of a Task's timer is persisted in TaskViewModel on
@@ -348,6 +357,14 @@ public class Task implements ListItem {
         if (mCountDownTimer != null) {
             mCountDownTimer.toggleCountDown();
         }
+    }
+
+    public boolean isCompletionStatusChange() {
+        return completionStatusChange;
+    }
+
+    public void setCompletionStatusChange(boolean completionStatusChange) {
+        this.completionStatusChange = completionStatusChange;
     }
 
     /**
@@ -446,6 +463,7 @@ public class Task implements ListItem {
                 repeatsOnSunday == task.repeatsOnSunday &&
                 isInQuickList == task.isInQuickList &&
                 isTaskComplete == task.isTaskComplete &&
+                completionStatusChange == task.isCompletionStatusChange() &&
                 isTaskCompleteInQuickList == task.isTaskCompleteInQuickList &&
                 Objects.equals(name, task.name) &&
                 Objects.equals(routines, task.routines) &&
