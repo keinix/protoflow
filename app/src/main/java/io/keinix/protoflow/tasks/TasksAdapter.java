@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.Group;
 import android.support.design.widget.Snackbar;
+import android.support.v4.util.LongSparseArray;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -55,17 +56,19 @@ public class TasksAdapter extends RecyclerView.Adapter {
     private Context mContext;
     private List<ListItem> mListItems;
     private List<Integer> mCompletedTasks;
+    private LongSparseArray<List<Integer>> mCompletedTasksFor7Days;
     private Activity mActivity;
     private RoutineListener mRoutineListener;
     private TaskCompleteListener mTaskCompleteListener;
     private Task mRecentlyDeleteTask;
+    private boolean mViewIs7Days;
 
     interface RoutineListener {
         void onRoutineExpandedOrCollapsed(Routine routine);
     }
 
     public interface TaskCompleteListener {
-        void toggleTaskCompleted(int id);
+        void toggleTaskCompleted(Task task);
         void deleteTask(Task task);
         void insertTask(Task task);
         void addCountDownTimerValues(Bundle bundle);
@@ -199,6 +202,17 @@ public class TasksAdapter extends RecyclerView.Adapter {
         mCompletedTasks = completedTasks;
     }
 
+    public void setCompletedTasksFor7Days(LongSparseArray<List<Integer>> completedTasksFor7Days) {
+        mCompletedTasksFor7Days = completedTasksFor7Days;
+    }
+
+    public LongSparseArray<List<Integer>> getCompletedTasksFor7Days() {
+        return mCompletedTasksFor7Days;
+    }
+
+    public void setViewIs7Days(boolean viewIs7Days) {
+        mViewIs7Days = viewIs7Days;
+    }
 
     // -------------View Holders--------------
 
@@ -240,7 +254,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
                         break;
                     }
                 }
-                mTaskCompleteListener.toggleTaskCompleted(mTask.getId());
+                mTaskCompleteListener.toggleTaskCompleted(mTask);
             });
 
             taskNameTextView.setText(mTask.getName());
@@ -311,7 +325,10 @@ public class TasksAdapter extends RecyclerView.Adapter {
         }
 
         private void markTaskComplete(Task task) {
-            boolean taskIsComplete = mCompletedTasks != null && mCompletedTasks.contains(task.getId());
+            boolean taskIsComplete = mViewIs7Days ?
+                    is7DayTaskComplete(task) :
+                    mCompletedTasks != null && mCompletedTasks.contains(task.getId());
+
             if (taskIsComplete) {
                 taskNameTextView.setPaintFlags(taskDetailsTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 taskCompletedCheckBox.setChecked(true);
@@ -319,6 +336,14 @@ public class TasksAdapter extends RecyclerView.Adapter {
                 taskNameTextView.setPaintFlags(taskDetailsTextView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
                 taskCompletedCheckBox.setChecked(false);
             }
+        }
+
+        private boolean is7DayTaskComplete(Task task) {
+            if (mCompletedTasksFor7Days != null &&
+                    mCompletedTasksFor7Days.get(task.getScheduledDateUtc()) != null) {
+                return mCompletedTasksFor7Days.get(task.getScheduledDateUtc()).contains(task.getId());
+            }
+            return false;
         }
 
         @Override

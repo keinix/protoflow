@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.util.LongSparseArray;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,6 +23,7 @@ import android.view.SubMenu;
 import android.view.View;
 import android.widget.DatePicker;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -83,6 +85,7 @@ public class TasksActivity extends DaggerAppCompatActivity
     private List<Project> mProjects;
     private long mDateOfCurrentView;
     private CalendarDay mDisplayedCalendarDay;
+    private List<CalendarDay> mDisplayed7CalendarDays;
     private String mLastViewValue;
     private Project mProject;
     public static final String TAG = TasksActivity.class.getSimpleName();
@@ -205,16 +208,19 @@ public class TasksActivity extends DaggerAppCompatActivity
         switch (id) {
             case R.id.nav_calendar:
                 mLastViewValue = LAST_VIEW_CALENDAR;
+                mAdapter.setViewIs7Days(false);
                 mDatePicker.get().show(getSupportFragmentManager(), "date_picker");
                 break;
             case R.id.nav_today:
                 mLastViewValue = LAST_VIEW_TODAY;
+                mAdapter.setViewIs7Days(false);
                 clearObservers();
                 mAdapter.clearTasks();
                 getTasksForToday();
                 break;
             case R.id.nav_7_days:
                 mLastViewValue = LAST_VIEW_7_DAYS;
+                mAdapter.setViewIs7Days(true);
                 mDateOfCurrentView = 0;
                 clearObservers();
                 mAdapter.clearTasks();
@@ -222,18 +228,21 @@ public class TasksActivity extends DaggerAppCompatActivity
                 break;
             case R.id.nav_add_project:
                 mNewProjectDialog.get().show(getSupportFragmentManager(), "new_project_dialog");
+                mAdapter.setViewIs7Days(false);
                 clearObservers();
                 mAdapter.clearTasks();
                 mLastViewValue = LAST_VIEW_PROJECT;
                 break;
             case R.id.nav_routines:
                 mLastViewValue = LAST_VIEW_ROUTINE;
+                mAdapter.setViewIs7Days(false);
                 clearObservers();
                 mAdapter.clearTasks();
                 displayAllRoutines();
                 break;
             case R.id.nav_quick_list:
                 mLastViewValue = LAST_VIEW_QUICK_LIST;
+                mAdapter.setViewIs7Days(false);
                 clearObservers();
                 mAdapter.clearTasks();
                 displayTasksInQuickList();
@@ -307,13 +316,14 @@ public class TasksActivity extends DaggerAppCompatActivity
 
 
     @Override
-    public void toggleTaskCompleted(int id) {
-        boolean wasRemoved = false;
-        if (mDisplayedCalendarDay.getCompletedTasks() != null) {
-            wasRemoved = mDisplayedCalendarDay.getCompletedTasks().remove(Integer.valueOf(id));
+    public void toggleTaskCompleted(Task task) {
+        switch (mLastViewValue) {
+            case LAST_VIEW_7_DAYS:
+                toggle7DaysTaskCompleted(task);
+                break;
+            default:
+                toggleScheduledTaskCompleted(task.getId());
         }
-        if (!wasRemoved) mDisplayedCalendarDay.addCompletedTasks(id);
-        mViewModel.updateCalendarDay(mDisplayedCalendarDay);
     }
 
     @Override
@@ -430,29 +440,35 @@ public class TasksActivity extends DaggerAppCompatActivity
             case LAST_VIEW_CALENDAR:
                 navigationView.setCheckedItem(R.id.nav_calendar);
                 mDatePicker.get().setStartDate(mDateOfCurrentView);
+                mAdapter.setViewIs7Days(false);
                 setTitle(mDatePicker.get().getStartDateTimeStampWithDay());
                 mCalendarDayLiveData =  mViewModel.getLiveCalendarDay(mDateOfCurrentView);
                 mCalendarDayLiveData.observe(this, this::displayTasksForDay);
                 break;
             case LAST_VIEW_TODAY:
                 navigationView.setCheckedItem(R.id.nav_today);
+                mAdapter.setViewIs7Days(false);
                 getTasksForToday();
                 break;
             case LAST_VIEW_7_DAYS:
                 navigationView.setCheckedItem(R.id.nav_7_days);
+                mAdapter.setViewIs7Days(true);
                 getTasksFor7Days();
                 break;
             case LAST_VIEW_PROJECT:
                 mProject = mViewModel.getProject();
+                mAdapter.setViewIs7Days(false);
                 displayTasksInProject(mProject);
                 setProjectAsClickInNavMenu(mProject);
                 break;
             case LAST_VIEW_ROUTINE:
                 navigationView.setCheckedItem(R.id.nav_routines);
+                mAdapter.setViewIs7Days(false);
                 displayAllRoutines();
                 break;
             case LAST_VIEW_QUICK_LIST:
                 navigationView.setCheckedItem(R.id.checkBox_quick_list);
+                mAdapter.setViewIs7Days(false);
                 displayTasksInQuickList();
                 break;
         }
@@ -489,8 +505,30 @@ public class TasksActivity extends DaggerAppCompatActivity
         });
     }
 
-    private void RestoreTimer(Task task) {
+    private void toggleScheduledTaskCompleted(int id) {
+        boolean wasRemoved = false;
+        if (mDisplayedCalendarDay.getCompletedTasks() != null) {
+            wasRemoved = mDisplayedCalendarDay.getCompletedTasks().remove(Integer.valueOf(id));
+        }
+        if (!wasRemoved) mDisplayedCalendarDay.addCompletedTasks(id);
+        mViewModel.updateCalendarDay(mDisplayedCalendarDay);
+    }
 
+    private void toggle7DaysTaskCompleted(Task task) {
+        boolean calendarDayFound = false;
+        for (CalendarDay calendarDay : mDisplayed7CalendarDays) {
+            if (calendarDay.getDate() == task.getScheduledDateUtc()) {
+                calendarDay.addCompletedTasks(task.getId());
+                calendarDayFound = true;
+                mViewModel.updateCalendarDay(calendarDay);
+                break;
+            }
+        }
+        if (!calendarDayFound) {
+            CalendarDay calendarDay = new CalendarDay(task.getScheduledDateUtc());
+            calendarDay.addCompletedTasks(task.getId());
+            mViewModel.updateCalendarDay(calendarDay);
+        }
     }
 
     //~~~~~~~Methods for scheduled tasks~~~~~~~
@@ -549,7 +587,9 @@ public class TasksActivity extends DaggerAppCompatActivity
         setTitle(sevenDaysString);
         mCalendarDaysLiveData = mViewModel.getNext7CalendarDays();
         mCalendarDaysLiveData.observe(this, days -> {
+            mDisplayed7CalendarDays = days;
             if (days != null) {
+                setCompletedTaskFor7Days(days);
                 mTasksLiveData = mViewModel.getAllTasksFor7Days(days);
             } else {
                 mTasksLiveData = mViewModel.getAllRepeatedTasks();
@@ -563,6 +603,14 @@ public class TasksActivity extends DaggerAppCompatActivity
                 }
             });
         });
+    }
+
+    private void setCompletedTaskFor7Days(List<CalendarDay> days) {
+        LongSparseArray<List<Integer>> tasksCompletedOnDay = new LongSparseArray<>();
+        for (CalendarDay day : days) {
+            tasksCompletedOnDay.put(day.getDate(), day.getCompletedTasks());
+        }
+        mAdapter.setCompletedTasksFor7Days(tasksCompletedOnDay);
     }
 
     //~~~~~~~Methods for Projects~~~~~~~

@@ -226,8 +226,6 @@ public class TasksViewModel extends AndroidViewModel {
     }
 
 
-    // NEW ------------->
-
     public void updateCachedRoutines(List<Routine> newRoutines) {
         if (mCachedRoutines == null) mCachedRoutines = new ArrayList<>();
 
