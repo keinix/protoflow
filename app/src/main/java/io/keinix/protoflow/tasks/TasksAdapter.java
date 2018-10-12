@@ -231,7 +231,12 @@ public class TasksAdapter extends RecyclerView.Adapter {
                 progressBar.setProgress(0);
             }
             taskCompletedCheckBox.setOnClickListener((view) -> {
-                ((Task) mListItems.get(position)).setCompletionStatusChange(true);
+                for (ListItem listItem : mListItems) {
+                    if (((Task) listItem).getId() == mTask.getId()) {
+                        ((Task) listItem).setCompletionStatusChange(true);
+                        break;
+                    }
+                }
                 mTaskCompleteListener.toggleTaskCompleted(mTask.getId());
             });
             taskNameTextView.setText(mTask.getName());
