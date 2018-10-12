@@ -506,18 +506,33 @@ public class TasksActivity extends DaggerAppCompatActivity
     }
 
     private void getTaskThatRepeatOnDay() {
+        //TODO: may need to add the new CalendarDay here
         mTasksLiveData = mViewModel.getAllTasksOnDay(mDatePicker.get().getStartDateUtc());
         mTasksLiveData.observe(this, tasks -> {
             if (tasks == null) {
                 mAdapter.clearTasks();
             } else {
-                mAdapter.updateListItems(tasks);
+                mTasksLiveData.removeObservers(this);
+                CalendarDay calendarDay = new CalendarDay(mDatePicker.get().getStartDateUtc());
+                for (Task task: tasks) {
+                    calendarDay.addScheduledTaskIds(task.getId());
+                }
+                mViewModel.insertCalendarDay(calendarDay);
+                mCalendarDayLiveData = mViewModel.getLiveCalendarDay(mDatePicker.get().getStartDateUtc());
+                mCalendarDayLiveData.observe(this, calendarDayAfterInsert -> {
+                    if (calendarDayAfterInsert != null) {
+                        getTaskForDate(calendarDayAfterInsert);
+                        mDisplayedCalendarDay = calendarDayAfterInsert;
+                    }
+                });
+               // mAdapter.updateListItems(tasks);
             }
         });
     }
 
     // change is here
     private void getTaskForDate(CalendarDay calendarDay) {
+        mAdapter.setCompletedTasks(calendarDay.getCompletedTasks());
         mTasksLiveData = mViewModel.getAllTasksOnDay(calendarDay);
         mTasksLiveData.observe(this, mAdapter::updateListItems);
     }

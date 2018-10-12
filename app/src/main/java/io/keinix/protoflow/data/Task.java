@@ -367,6 +367,7 @@ public class Task implements ListItem {
 
     // call to check if a timer has been started
     public long getElapsedMillis() {
+        if (mCountDownTimer == null) return 0;
         return mCountDownTimer.getMillisElapsed();
     }
 

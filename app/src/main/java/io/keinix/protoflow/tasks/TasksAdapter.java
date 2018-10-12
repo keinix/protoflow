@@ -231,7 +231,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
             taskNameTextView.setText(mTask.getName());
             setUpPlay(mTask);
             setDetails(mTask);
-            markTaskComplete(mTask);
+            // markTaskComplete(mTask);
             // taskCompletedCheckBox.setOnCheckedChangeListener((v, b) -> mTaskCompleteListener.toggleTaskCompleted(mTask));
             // markTaskComplete(mTask);
         }

@@ -3,6 +3,7 @@ package io.keinix.protoflow.data;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 
@@ -30,6 +31,8 @@ public class CalendarDay {
 
     public CalendarDay(long date) {
         this.date = date;
+        completedTasks = new ArrayList<>();
+        scheduledTaskIds = new ArrayList<>();
     }
 
     // getters and setters
@@ -68,9 +71,11 @@ public class CalendarDay {
     }
 
     public void addTaskId(int id) {
+        if (scheduledTaskIds == null) scheduledTaskIds = new ArrayList<>();
         scheduledTaskIds.add(id);
     }
 
+    @Nullable
     public ArrayList<Integer> getCompletedTasks() {
         return completedTasks;
     }
@@ -78,6 +83,12 @@ public class CalendarDay {
     public void setCompletedTasks(ArrayList<Integer> completedTasks) {
         this.completedTasks = completedTasks;
     }
+
+    public void addCompletedTasks(int taskId) {
+        if (completedTasks == null) completedTasks = new ArrayList<>();
+        completedTasks.add(taskId);
+    }
+
 
     @Override
     public String toString() {

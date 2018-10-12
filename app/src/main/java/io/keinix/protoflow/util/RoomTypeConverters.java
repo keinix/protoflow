@@ -15,20 +15,26 @@ public class RoomTypeConverters {
 
     @TypeConverter
     public String fromArrayToString(ArrayList<Integer> taskIds) {
-        StringBuilder idString = new StringBuilder();
-        for (int id : taskIds) {
-            idString.append(id + ",");
+        if (taskIds != null) {
+            StringBuilder idString = new StringBuilder();
+            for (int id : taskIds) {
+                idString.append(id).append(",");
+            }
+            return idString.toString();
         }
-        return idString.toString();
+        return null;
     }
 
     @TypeConverter
     public ArrayList<Integer> fromStringToArray(String idString) {
-        ArrayList<Integer> idArray= new ArrayList<>();
-        for (String id : idString.split(",")) {
-            idArray.add(Integer.parseInt(id));
+        if (idString != null && idString.length() > 1) {
+            ArrayList<Integer> idArray = new ArrayList<>();
+            for (String id : idString.split(",")) {
+                idArray.add(Integer.parseInt(id));
+            }
+            return idArray;
         }
-        return idArray;
+        return null;
     }
 
     /**
