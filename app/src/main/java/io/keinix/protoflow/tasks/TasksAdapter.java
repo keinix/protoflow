@@ -62,6 +62,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
     private TaskCompleteListener mTaskCompleteListener;
     private Task mRecentlyDeleteTask;
     private boolean mViewIs7Days;
+    private String mLastViewValue;
 
     interface RoutineListener {
         void onRoutineExpandedOrCollapsed(Routine routine);
@@ -214,6 +215,14 @@ public class TasksAdapter extends RecyclerView.Adapter {
         mViewIs7Days = viewIs7Days;
     }
 
+    public String getLastViewValue() {
+        return mLastViewValue;
+    }
+
+    public void setLastViewValue(String lastViewValue) {
+        mLastViewValue = lastViewValue;
+    }
+
     // -------------View Holders--------------
 
     class TaskViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -325,9 +334,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
         }
 
         private void markTaskComplete(Task task) {
-            boolean taskIsComplete = mViewIs7Days ?
-                    is7DayTaskComplete(task) :
-                    mCompletedTasks != null && mCompletedTasks.contains(task.getId());
+            boolean taskIsComplete = isTaskComplete(task);
 
             if (taskIsComplete) {
                 taskNameTextView.setPaintFlags(taskDetailsTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
@@ -338,12 +345,31 @@ public class TasksAdapter extends RecyclerView.Adapter {
             }
         }
 
+        private boolean isTaskComplete(Task task) {
+            switch (mLastViewValue) {
+                case TasksActivity.LAST_VIEW_7_DAYS:
+                    return is7DayTaskComplete(task);
+                case TasksActivity.LAST_VIEW_QUICK_LIST:
+                    return isTaskCompleteInQuickList(task);
+                default:
+                    return isScheduledTaskComplete(task);
+            }
+        }
+
         private boolean is7DayTaskComplete(Task task) {
             if (mCompletedTasksFor7Days != null &&
                     mCompletedTasksFor7Days.get(task.getScheduledDateUtc()) != null) {
                 return mCompletedTasksFor7Days.get(task.getScheduledDateUtc()).contains(task.getId());
             }
             return false;
+        }
+
+        private boolean isTaskCompleteInQuickList(Task task) {
+            return task.isTaskCompleteInQuickList();
+        }
+
+        private boolean isScheduledTaskComplete(Task task) {
+            return mCompletedTasks != null && mCompletedTasks.contains(task.getId());
         }
 
         @Override

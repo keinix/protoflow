@@ -208,41 +208,40 @@ public class TasksActivity extends DaggerAppCompatActivity
         switch (id) {
             case R.id.nav_calendar:
                 mLastViewValue = LAST_VIEW_CALENDAR;
-                mAdapter.setViewIs7Days(false);
                 mDatePicker.get().show(getSupportFragmentManager(), "date_picker");
                 break;
             case R.id.nav_today:
                 mLastViewValue = LAST_VIEW_TODAY;
-                mAdapter.setViewIs7Days(false);
                 clearObservers();
+                mAdapter.setLastViewValue(mLastViewValue);
                 mAdapter.clearTasks();
                 getTasksForToday();
                 break;
             case R.id.nav_7_days:
                 mLastViewValue = LAST_VIEW_7_DAYS;
-                mAdapter.setViewIs7Days(true);
                 mDateOfCurrentView = 0;
+                mAdapter.setLastViewValue(mLastViewValue);
                 clearObservers();
                 mAdapter.clearTasks();
                 getTasksFor7Days();
                 break;
             case R.id.nav_add_project:
                 mNewProjectDialog.get().show(getSupportFragmentManager(), "new_project_dialog");
-                mAdapter.setViewIs7Days(false);
                 clearObservers();
+                mAdapter.setLastViewValue(mLastViewValue);
                 mAdapter.clearTasks();
                 mLastViewValue = LAST_VIEW_PROJECT;
                 break;
             case R.id.nav_routines:
                 mLastViewValue = LAST_VIEW_ROUTINE;
-                mAdapter.setViewIs7Days(false);
+                mAdapter.setLastViewValue(mLastViewValue);
                 clearObservers();
                 mAdapter.clearTasks();
                 displayAllRoutines();
                 break;
             case R.id.nav_quick_list:
                 mLastViewValue = LAST_VIEW_QUICK_LIST;
-                mAdapter.setViewIs7Days(false);
+                mAdapter.setLastViewValue(mLastViewValue);
                 clearObservers();
                 mAdapter.clearTasks();
                 displayTasksInQuickList();
@@ -279,6 +278,7 @@ public class TasksActivity extends DaggerAppCompatActivity
         mDatePicker.get().setStartDate(year, month, day);
         setTitle(mDatePicker.get().getStartDateTimeStampWithDay());
         mDateOfCurrentView = mDatePicker.get().getStartDateUtc();
+        mAdapter.setLastViewValue(mLastViewValue);
         mCalendarDayLiveData = mViewModel.getLiveCalendarDay(mDateOfCurrentView);
         mCalendarDayLiveData.observe(this, this::displayTasksForDay);
     }
@@ -321,10 +321,13 @@ public class TasksActivity extends DaggerAppCompatActivity
             case LAST_VIEW_7_DAYS:
                 toggle7DaysTaskCompleted(task);
                 break;
+            case LAST_VIEW_QUICK_LIST:
+                toggleQuickListTaskComplete(task);
             default:
                 toggleScheduledTaskCompleted(task.getId());
         }
     }
+
 
     @Override
     public void deleteTask(Task task) {
@@ -440,35 +443,35 @@ public class TasksActivity extends DaggerAppCompatActivity
             case LAST_VIEW_CALENDAR:
                 navigationView.setCheckedItem(R.id.nav_calendar);
                 mDatePicker.get().setStartDate(mDateOfCurrentView);
-                mAdapter.setViewIs7Days(false);
+                mAdapter.setLastViewValue(mLastViewValue);
                 setTitle(mDatePicker.get().getStartDateTimeStampWithDay());
                 mCalendarDayLiveData =  mViewModel.getLiveCalendarDay(mDateOfCurrentView);
                 mCalendarDayLiveData.observe(this, this::displayTasksForDay);
                 break;
             case LAST_VIEW_TODAY:
                 navigationView.setCheckedItem(R.id.nav_today);
-                mAdapter.setViewIs7Days(false);
+                mAdapter.setLastViewValue(mLastViewValue);
                 getTasksForToday();
                 break;
             case LAST_VIEW_7_DAYS:
                 navigationView.setCheckedItem(R.id.nav_7_days);
-                mAdapter.setViewIs7Days(true);
+                mAdapter.setLastViewValue(mLastViewValue);
                 getTasksFor7Days();
                 break;
             case LAST_VIEW_PROJECT:
                 mProject = mViewModel.getProject();
-                mAdapter.setViewIs7Days(false);
+                mAdapter.setLastViewValue(mLastViewValue);
                 displayTasksInProject(mProject);
                 setProjectAsClickInNavMenu(mProject);
                 break;
             case LAST_VIEW_ROUTINE:
                 navigationView.setCheckedItem(R.id.nav_routines);
-                mAdapter.setViewIs7Days(false);
+                mAdapter.setLastViewValue(mLastViewValue);
                 displayAllRoutines();
                 break;
             case LAST_VIEW_QUICK_LIST:
                 navigationView.setCheckedItem(R.id.checkBox_quick_list);
-                mAdapter.setViewIs7Days(false);
+                mAdapter.setLastViewValue(mLastViewValue);
                 displayTasksInQuickList();
                 break;
         }
@@ -514,11 +517,19 @@ public class TasksActivity extends DaggerAppCompatActivity
         mViewModel.updateCalendarDay(mDisplayedCalendarDay);
     }
 
+    private void toggleQuickListTaskComplete(Task task) {
+        task.setTaskCompleteInQuickList(!task.isTaskCompleteInQuickList());
+        mViewModel.updateTask(task);
+    }
+
     private void toggle7DaysTaskCompleted(Task task) {
         boolean calendarDayFound = false;
         for (CalendarDay calendarDay : mDisplayed7CalendarDays) {
             if (calendarDay.getDate() == task.getScheduledDateUtc()) {
-                calendarDay.addCompletedTasks(task.getId());
+                if (calendarDay.getCompletedTasks() == null ||
+                        !calendarDay.getCompletedTasks().remove(Integer.valueOf(task.getId()))) {
+                    calendarDay.addCompletedTasks(task.getId());
+                }
                 calendarDayFound = true;
                 mViewModel.updateCalendarDay(calendarDay);
                 break;
@@ -527,7 +538,7 @@ public class TasksActivity extends DaggerAppCompatActivity
         if (!calendarDayFound) {
             CalendarDay calendarDay = new CalendarDay(task.getScheduledDateUtc());
             calendarDay.addCompletedTasks(task.getId());
-            mViewModel.updateCalendarDay(calendarDay);
+            mViewModel.insertCalendarDay(calendarDay);
         }
     }
 

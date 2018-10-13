@@ -24,7 +24,7 @@ public abstract class NotificationScheduler {
 
     public static void scheduleNotification(Task task) {
         WorkManager.getInstance().enqueue(getWorkRequest(task));
-        if (task.isRepeatsOnADay()) initPeriodicNotification(task);
+        // if (task.isRepeatsOnADay()) initPeriodicNotification(task);
     }
 
     public static void schedulePeriodicNotification(int taskId, String taskName, long taskStartTime) {
