@@ -183,7 +183,9 @@ public class TasksViewModel extends AndroidViewModel {
     public LiveData<List<Task>> getAllTasksFor7Days(List<CalendarDay> calendarDays) {
         List<Integer> taskIds = new ArrayList<>();
         for (CalendarDay calendarDay : calendarDays) {
-            taskIds.addAll(calendarDay.getScheduledTaskIds());
+            if (calendarDay.getScheduledTaskIds() != null) {
+                taskIds.addAll(calendarDay.getScheduledTaskIds());
+            }
         }
         return mTaskRepository.getAllTasksFor7Days(taskIds);
     }

@@ -46,12 +46,14 @@ public class ListItemDiffCallback extends DiffUtil.Callback {
     private boolean checkRoutinesAreSame(int oldRoutinePosition, int newRoutinePosition) {
         int oldRoutineId =  ((Routine) mOldListItems.get(oldRoutinePosition)).getId();
         int newRoutineId =  ((Routine) mNewListItems.get(newRoutinePosition)).getId();
+
         return oldRoutineId == newRoutineId;
     }
 
     private boolean checkIfTasksAreSame(int oldTaskPosition, int newTaskPosition) {
         int oldTaskId = ((Task) mOldListItems.get(oldTaskPosition)).getId();
         int newTaskId = ((Task) mNewListItems.get(newTaskPosition)).getId();
+
         return oldTaskId == newTaskId;
     }
 
