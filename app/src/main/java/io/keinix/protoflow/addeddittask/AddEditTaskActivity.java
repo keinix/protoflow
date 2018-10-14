@@ -130,6 +130,9 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
     @Inject
     long mDateFromPreviousView;
 
+    @Inject
+    boolean mWasLaunchedFromQuickList;
+
     //----------------OnCLicks----------------
 
     @OnCheckedChanged(R.id.checkbox_repeat)
@@ -369,6 +372,7 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
             repeatCheckbox.setVisibility(View.GONE);
             mViewModel.setProject(mProject);
         }
+        if (mWasLaunchedFromQuickList) quickListCheckbox.setChecked(true);
         setUpForRoutine();
     }
 

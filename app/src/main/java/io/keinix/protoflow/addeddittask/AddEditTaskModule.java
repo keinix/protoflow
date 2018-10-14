@@ -70,6 +70,12 @@ public abstract class AddEditTaskModule {
 
 
     @ActivityScope
+    @Provides static boolean getIsQuickListFromIntent(AddEditTaskActivity addEditTaskActivity) {
+        return addEditTaskActivity.getIntent().getBooleanExtra(TasksActivity.EXTRA_QUICK_LIST, false);
+    }
+
+
+    @ActivityScope
     @Provides static ProjectPickerAdapter projectPickerAdapter(OnProjectSelectedListener listener) {
         return new ProjectPickerAdapter(listener);
     }
