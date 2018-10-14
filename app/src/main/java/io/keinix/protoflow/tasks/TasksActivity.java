@@ -256,8 +256,6 @@ public class TasksActivity extends DaggerAppCompatActivity
         return true;
     }
 
-
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -572,7 +570,7 @@ public class TasksActivity extends DaggerAppCompatActivity
                 }
                 mViewModel.insertCalendarDay(calendarDay);
                 mCalendarDayLiveData = mViewModel.getLiveCalendarDay(mDatePicker.get().getStartDateUtc());
-                mCalendarDayLiveData.observe(this, calendarDayAfterInsert -> {
+                mCalendarDayLiveData.observe(TasksActivity.this, calendarDayAfterInsert -> {
                     if (calendarDayAfterInsert != null) {
                         getTaskForDate(calendarDayAfterInsert);
                         mDisplayedCalendarDay = calendarDayAfterInsert;
