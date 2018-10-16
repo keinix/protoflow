@@ -313,6 +313,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
                     hour = 12;
                 }
             }
+            if (minute == 0) timeSuffix = 0 + timeSuffix;
             return  hour + ":" + minute + timeSuffix;
         }
 
