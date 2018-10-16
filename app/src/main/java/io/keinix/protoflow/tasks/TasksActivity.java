@@ -218,7 +218,7 @@ public class TasksActivity extends DaggerAppCompatActivity
                 mLastViewValue = LAST_VIEW_TODAY;
                 clearObservers();
                 mAdapter.setLastViewValue(mLastViewValue);
-                mAdapter.clearTasks();
+//                mAdapter.clearTasks();
                 getTasksForToday();
                 break;
             case R.id.nav_7_days:
@@ -226,28 +226,28 @@ public class TasksActivity extends DaggerAppCompatActivity
                 mDateOfCurrentView = 0;
                 mAdapter.setLastViewValue(mLastViewValue);
                 clearObservers();
-                mAdapter.clearTasks();
+//                mAdapter.clearTasks();
                 getTasksFor7Days();
                 break;
             case R.id.nav_add_project:
                 mNewProjectDialog.get().show(getSupportFragmentManager(), "new_project_dialog");
                 clearObservers();
                 mAdapter.setLastViewValue(mLastViewValue);
-                mAdapter.clearTasks();
+//                mAdapter.clearTasks();
                 mLastViewValue = LAST_VIEW_PROJECT;
                 break;
             case R.id.nav_routines:
                 mLastViewValue = LAST_VIEW_ROUTINE;
                 mAdapter.setLastViewValue(mLastViewValue);
                 clearObservers();
-                mAdapter.clearTasks();
+//                mAdapter.clearTasks();
                 displayAllRoutines();
                 break;
             case R.id.nav_quick_list:
                 mLastViewValue = LAST_VIEW_QUICK_LIST;
                 mAdapter.setLastViewValue(mLastViewValue);
                 clearObservers();
-                mAdapter.clearTasks();
+//                mAdapter.clearTasks();
                 displayTasksInQuickList();
                 break;
         }
@@ -276,13 +276,13 @@ public class TasksActivity extends DaggerAppCompatActivity
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
         clearObservers();
-        mAdapter.clearTasks();
+//        mAdapter.clearTasks();
         mDatePicker.get().setStartDate(year, month, day);
         setTitle(mDatePicker.get().getStartDateTimeStampWithDay());
         mDateOfCurrentView = mDatePicker.get().getStartDateUtc();
         mAdapter.setLastViewValue(mLastViewValue);
         mCalendarDayLiveData = mViewModel.getLiveCalendarDay(mDateOfCurrentView);
-        mCalendarDayLiveData.observe(this, this::displayTasksForDay);
+        mCalendarDayLiveData.observe(TasksActivity.this, this::displayTasksForDay);
     }
 
     // Callback from mNewProjectDialog

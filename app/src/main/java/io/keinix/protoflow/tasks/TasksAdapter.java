@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Group;
 import android.support.design.widget.Snackbar;
 import android.support.v4.util.LongSparseArray;
@@ -267,6 +268,11 @@ public class TasksAdapter extends RecyclerView.Adapter {
                 mTaskCompleteListener.toggleTaskCompleted(mTask);
             });
 
+            if (mLastViewValue.equals(TasksActivity.LAST_VIEW_ROUTINE)) {
+                taskCompletedCheckBox.setVisibility(View.INVISIBLE);
+            } else {
+                taskCompletedCheckBox.setVisibility(View.VISIBLE);
+            }
             taskNameTextView.setText(mTask.getName());
             setUpPlay(mTask);
             setDetails(mTask);

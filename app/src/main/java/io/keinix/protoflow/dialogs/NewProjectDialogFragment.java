@@ -36,6 +36,7 @@ public class NewProjectDialogFragment extends DialogFragment {
     @BindString(R.string.new_project_no_title_warning) String noTitleString;
     @BindString(R.string.new_project_no_title_toast) String noTitleToastString;
     @BindString(R.string.new_project_title) String newProjectTitleString;
+    @BindString(R.string.new_project_hint) String projectHintString;
 
     @BindColor(R.color.errorHintText) int red;
     @BindDrawable(R.drawable.ic_project_black_24) Drawable projectDrawable;
@@ -77,6 +78,7 @@ public class NewProjectDialogFragment extends DialogFragment {
         mUnbinder =  ButterKnife.bind(this, view);
         mListener = (OnNewProjectCreatedListener) getActivity();
         headerTextView.setText(newProjectTitleString);
+        newProjectEditText.setHint(projectHintString);
         colorSelectorImageButton.setImageDrawable(projectDrawable);
         return view;
     }

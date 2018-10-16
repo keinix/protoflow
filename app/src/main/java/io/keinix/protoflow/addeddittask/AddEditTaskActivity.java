@@ -445,16 +445,18 @@ public class AddEditTaskActivity extends DaggerAppCompatActivity
      */
     private void setUpRepeatedDaysUi() {
         SparseBooleanArray dayArray = mViewModel.getIsDaySelectedArray();
-        for (int i = 0; i < dayArray.size(); i++) {
-            if (!dayArray.valueAt(i)) {
-                TextView dayTextView = null;
-                for (TextView day : repeatDays) {
-                    if (day.getId() == dayArray.keyAt(i)) {
-                        dayTextView = day;
-                        break;
+        if (dayArray != null) {
+            for (int i = 0; i < dayArray.size(); i++) {
+                if (!dayArray.valueAt(i)) {
+                    TextView dayTextView = null;
+                    for (TextView day : repeatDays) {
+                        if (day.getId() == dayArray.keyAt(i)) {
+                            dayTextView = day;
+                            break;
+                        }
                     }
+                    setDayUiAsUnSelected(dayTextView);
                 }
-                setDayUiAsUnSelected(dayTextView);
             }
         }
     }

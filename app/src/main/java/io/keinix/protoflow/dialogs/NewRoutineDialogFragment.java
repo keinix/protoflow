@@ -33,6 +33,7 @@ public class NewRoutineDialogFragment extends DialogFragment {
     @BindString(R.string.new_routine_no_title_warning) String noTitleString;
     @BindString(R.string.new_routine_no_title_toast) String noTitleToastString;
     @BindString(R.string.new_routine_title) String routineTitleString;
+    @BindString(R.string.new_routine_hint) String routineHintString;
 
     @BindColor(R.color.errorHintText) int red;
 
@@ -75,6 +76,7 @@ public class NewRoutineDialogFragment extends DialogFragment {
         mUnbinder =  ButterKnife.bind(this, view);
         mListener = (OnNewRoutineCreatedListener) getActivity();
         headerTextView.setText(routineTitleString);
+        newProjectEditText.setHint(routineHintString);
         colorSelectorImageButton.setImageDrawable(routineDrawable);
         return view;
     }
