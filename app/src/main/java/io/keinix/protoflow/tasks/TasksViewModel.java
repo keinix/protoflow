@@ -134,7 +134,11 @@ public class TasksViewModel extends AndroidViewModel {
 
         for (Task task : tasks) {
             calendarDay.addScheduledTaskIds(task.getId());
+            task.setScheduledDateUtc(date);
+            mTaskRepository.updateBatchTasks(task);
         }
+
+
         if (calendarDayIsNew) {
             mTaskRepository.insertCalendarDay(calendarDay);
         } else {
@@ -143,6 +147,9 @@ public class TasksViewModel extends AndroidViewModel {
     }
 
     public void updateCalendarDay(CalendarDay calendarDay, Task task, long date) {
+        task.setScheduledDateUtc(date);
+        mTaskRepository.updateTask(task);
+
         boolean calendarDayIsNew = false;
         if (calendarDay == null) {
             calendarDay = new CalendarDay(date);
@@ -150,6 +157,8 @@ public class TasksViewModel extends AndroidViewModel {
         }
 
         calendarDay.addScheduledTaskIds(task.getId());
+
+
 
         if (calendarDayIsNew) {
             mTaskRepository.insertCalendarDay(calendarDay);

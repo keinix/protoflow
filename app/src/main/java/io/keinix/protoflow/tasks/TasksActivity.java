@@ -17,6 +17,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -353,6 +354,7 @@ public class TasksActivity extends DaggerAppCompatActivity
         });
     }
 
+    // Task from a projected was added to the quick list or a CalendarDay
     @Override
     public void onTaskSelected(Task task) {
         mAddListItemDialog.dismiss();
@@ -360,6 +362,7 @@ public class TasksActivity extends DaggerAppCompatActivity
             task.setInQuickList(true);
             mViewModel.updateTask(task);
         } else { // AddToCalendarDay
+            Log.d(TAG, "Date Of Current View: "  + mDateOfCurrentView);
             mViewModel.updateCalendarDay(mDisplayedCalendarDay, task, mDateOfCurrentView);
         }
     }
