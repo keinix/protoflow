@@ -53,7 +53,6 @@ public class Project implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeInt(id);
         parcel.writeString(name);
-
     }
 
     private Project(Parcel in) {

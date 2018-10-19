@@ -326,6 +326,7 @@ public class TasksActivity extends DaggerAppCompatActivity
                 break;
             case LAST_VIEW_QUICK_LIST:
                 toggleQuickListTaskComplete(task);
+                break;
             default:
                 toggleScheduledTaskCompleted(task.getId());
         }
