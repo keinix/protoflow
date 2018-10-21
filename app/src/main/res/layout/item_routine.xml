@@ -53,6 +53,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/text_view_routine_name"/>
 
+    <ImageButton
+        android:id="@+id/image_button_delete_routine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@null"
+        android:src="@drawable/ic_delete_white_36"
+        android:tint="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/image_button_add_task_to_routine"
+        app:layout_constraintStart_toEndOf="@+id/image_button_routine_drop_down"
+        app:layout_constraintTop_toTopOf="parent"/>
+
 
 
 </android.support.constraint.ConstraintLayout>

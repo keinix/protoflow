@@ -43,6 +43,11 @@ public class TaskRepository {
         new insertRoutineAsync(mRoutineDao).execute(routine);
     }
 
+    public void deleteRoutine(Routine routine) {
+        new deleteRoutineAsyncTask(mRoutineDao).execute(routine);
+    }
+
+
     public LiveData<List<Task>> getRoutineChildTasks(int routineId) {
         return mTaskDao.getRoutineChildTasks(routineId);
     }
@@ -107,6 +112,10 @@ public class TaskRepository {
         return mTaskDao.getTasksInQuickList();
     }
 
+    public void deleteTaskInRoutine(int routineId) {
+        new deleteAllAsyncTask(mTaskDao).execute(routineId);
+    }
+
     /**
      * @param taskIds a list of ids for a given day. pass null if no events scheduled for day
      * @param repeatedDay day constant from {@link Calendar} used to get tasks that repeat on
@@ -138,6 +147,8 @@ public class TaskRepository {
                 return mTaskDao.getAllTasksForDateSunday(taskIds);
         }
     }
+
+
 
     //SQL UPDATE
     public void updateTask(Task task) {
@@ -208,6 +219,38 @@ public class TaskRepository {
         @Override
         protected Void doInBackground(Task... tasks) {
             mAsyncDao.delete(tasks[0]);
+            return null;
+        }
+    }
+
+    //DELETE ASYNC
+    private static class deleteRoutineAsyncTask extends AsyncTask<Routine, Void, Void> {
+
+        private RoutineDao mAsyncDao;
+
+        public deleteRoutineAsyncTask(RoutineDao asyncDao) {
+            mAsyncDao = asyncDao;
+        }
+
+        @Override
+        protected Void doInBackground(Routine... routine) {
+            mAsyncDao.deleteRooutine(routine[0]);
+            return null;
+        }
+    }
+
+    //DELETE ASYNC
+    private static class deleteAllAsyncTask extends AsyncTask<Integer, Void, Void> {
+
+        private TaskDao mAsyncDao;
+
+        public deleteAllAsyncTask(TaskDao asyncDao) {
+            mAsyncDao = asyncDao;
+        }
+
+        @Override
+        protected Void doInBackground(Integer... routineIds) {
+            mAsyncDao.deleteTasksInRoutine(routineIds[0]);
             return null;
         }
     }

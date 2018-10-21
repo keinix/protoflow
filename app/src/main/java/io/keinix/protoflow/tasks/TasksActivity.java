@@ -382,6 +382,12 @@ public class TasksActivity extends DaggerAppCompatActivity
         }
     }
 
+    @Override
+    public void onRoutineDeleted(Routine routine) {
+        mViewModel.deleteRoutine(routine);
+        mViewModel.deleteTaskInRoutine(routine.getId());
+    }
+
     /**
      * persist the current state of a {@link Task}'s {@link TaskCountDownTimer}
      * @param bundle representing the state of a {@link TaskCountDownTimer}

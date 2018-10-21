@@ -67,6 +67,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
 
     interface RoutineListener {
         void onRoutineExpandedOrCollapsed(Routine routine);
+        void onRoutineDeleted(Routine routine);
     }
 
     public interface TaskCompleteListener {
@@ -435,6 +436,11 @@ public class TasksAdapter extends RecyclerView.Adapter {
             }
             mRoutine.setExpanded(!mRoutine.isExpanded());
             mRoutineListener.onRoutineExpandedOrCollapsed(mRoutine);
+        }
+
+        @OnClick(R.id.image_button_delete_routine)
+        void deleteRoution() {
+            mRoutineListener.onRoutineDeleted(mRoutine);
         }
 
         private RoutineViewHolder(View itemView) {

@@ -4,21 +4,16 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.SparseBooleanArray;
-
-import com.google.android.gms.tasks.Tasks;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -59,6 +54,10 @@ public class TasksViewModel extends AndroidViewModel {
 
     public void deleteTask(Task task) {
         mTaskRepository.deleteTask(task);
+    }
+
+    public void deleteRoutine(Routine routine) {
+        mTaskRepository.deleteRoutine(routine);
     }
 
     public void insertTask(Task task) {
@@ -127,6 +126,10 @@ public class TasksViewModel extends AndroidViewModel {
 
     public void updateCalendarDay(CalendarDay calendarDay) {
         mTaskRepository.updateCalendarDay(calendarDay);
+    }
+
+    public void deleteTaskInRoutine(int routineId) {
+        mTaskRepository.deleteTaskInRoutine(routineId);
     }
 
     public void updateCalendarDay(CalendarDay calendarDay, List<Task> tasks, long date) {
