@@ -24,4 +24,7 @@ public interface ProjectDao {
 
     @Query("SELECT * from project_table WHERE id = :id LIMIT 1")
     LiveData<Project> getProject(int id);
+
+    @Update
+    void update(Project project);
 }

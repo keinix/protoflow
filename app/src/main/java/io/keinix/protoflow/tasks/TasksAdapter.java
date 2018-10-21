@@ -258,11 +258,20 @@ public class TasksAdapter extends RecyclerView.Adapter {
             }
 
             taskCompletedCheckBox.setOnClickListener((view) -> {
-                for (ListItem listItem : mListItems) {
-                    if (((Task) listItem).getId() == mTask.getId() &&
-                            ((Task) listItem).getScheduledDateUtc() == mTask.getScheduledDateUtc())  {
-                        ((Task) listItem).setCompletionStatusChange(true);
-                        break;
+                if (mLastViewValue.equals(TasksActivity.LAST_VIEW_7_DAYS)) {
+                    for (ListItem listItem : mListItems) {
+                        if (((Task) listItem).getId() == mTask.getId() && (
+                                ((Task) listItem).getScheduledDateUtc() == mTask.getScheduledDateUtc())) {
+                            ((Task) listItem).setCompletionStatusChange(true);
+                            break;
+                        }
+                    }
+                } else {
+                    for (ListItem listItem : mListItems) {
+                        if (((Task) listItem).getId() == mTask.getId()) {
+                            ((Task) listItem).setCompletionStatusChange(!((Task) listItem).isCompletionStatusChange());
+                            break;
+                        }
                     }
                 }
                 mTaskCompleteListener.toggleTaskCompleted(mTask);

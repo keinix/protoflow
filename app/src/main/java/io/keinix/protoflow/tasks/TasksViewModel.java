@@ -81,6 +81,10 @@ public class TasksViewModel extends AndroidViewModel {
         mTaskRepository.insertCalendarDay(calendarDay);
     }
 
+    public void updateProject(Project project) {
+        mTaskRepository.updateProject(project);
+    }
+
     public LiveData<List<Task>> getTasksInQuickList() {
         return mTaskRepository.getTasksInQuickList();
     }

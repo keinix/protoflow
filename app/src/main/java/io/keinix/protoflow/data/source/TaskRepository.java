@@ -153,6 +153,10 @@ public class TaskRepository {
         new insertAsyncTask.insertProjectAsync(mProjectDao).execute(project);
     }
 
+    public void updateProject(Project project) {
+        new updateProjectAsync(mProjectDao).execute(project);
+    }
+
     public void insertCalendarDay(CalendarDay calendarDay) {
         new insertCalendarDayAsync(mCalendarDayDao).execute(calendarDay);
     }
@@ -208,6 +212,22 @@ public class TaskRepository {
         }
     }
 
+    //INSERT PROJECT ASYNC
+    private static class updateProjectAsync extends AsyncTask<Project, Void, Void> {
+
+        private ProjectDao asyncProjectDao;
+
+        public updateProjectAsync(ProjectDao projectDao) {
+            asyncProjectDao = projectDao;
+        }
+
+        @Override
+        protected Void doInBackground(Project... projects) {
+            asyncProjectDao.update(projects[0]);
+            return null;
+        }
+    }
+
     //INSERT ASYNC
     private static class insertAsyncTask extends AsyncTask<Task, Void, Void> {
 
@@ -243,6 +263,7 @@ public class TaskRepository {
                 return null;
             }
         }
+
 
         private void insertTaskIdIntoDay(long id, long dayInMillis) {
             CalendarDay calendarDay = calendarDayDao.getCalendarDay(dayInMillis);

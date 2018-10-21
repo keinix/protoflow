@@ -41,6 +41,19 @@ public class Project implements Parcelable {
         this.name = name;
     }
 
+    public ArrayList<Integer> getCompletedTasks() {
+        return completedTasks;
+    }
+
+    public void setCompletedTasks(ArrayList<Integer> completedTasks) {
+        this.completedTasks = completedTasks;
+    }
+
+    public void addCompletedTasks(int id) {
+        if (completedTasks == null) completedTasks = new ArrayList<>();
+        completedTasks.add(id);
+    }
+
     @ColumnInfo(name = "completed_tasks")
     public ArrayList<Integer> completedTasks;
 

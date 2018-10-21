@@ -367,6 +367,8 @@ public class Task implements ListItem {
         this.completionStatusChange = completionStatusChange;
     }
 
+
+
     /**
      * Used to persist a Task's {@link TaskCountDownTimer}
      * @return A bundle representing the timer's current state
