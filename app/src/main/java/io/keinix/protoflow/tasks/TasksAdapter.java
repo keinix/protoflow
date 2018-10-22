@@ -360,9 +360,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
         }
 
         private void markTaskComplete(Task task) {
-            boolean taskIsComplete = isTaskComplete(task);
-
-            if (taskIsComplete) {
+            if (isTaskComplete(task)) {
                 taskNameTextView.setPaintFlags(taskDetailsTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 taskCompletedCheckBox.setChecked(true);
             } else {

@@ -347,7 +347,7 @@ public class TasksActivity extends DaggerAppCompatActivity
                 toggleQuickListTaskComplete(task);
                 break;
             case LAST_VIEW_PROJECT:
-                toggleProjectTaskComplete(task.getId());
+                toggleProjectTaskComplete(task);
             default:
                 toggleScheduledTaskCompleted(task.getId());
         }
@@ -578,13 +578,14 @@ public class TasksActivity extends DaggerAppCompatActivity
         mViewModel.updateTask(task);
     }
 
-    private void toggleProjectTaskComplete(int id) {
+    private void toggleProjectTaskComplete(Task task) {
         boolean wasRemoved = false;
         if (mProject.getCompletedTasks() != null) {
-            wasRemoved = mProject.getCompletedTasks().remove(Integer.valueOf(id));
+            wasRemoved = mProject.getCompletedTasks().remove(Integer.valueOf(task.getId()));
         }
-        if (!wasRemoved) mProject.addCompletedTasks(id);
+        if (!wasRemoved) mProject.addCompletedTasks(task.getId());
         mViewModel.updateProject(mProject);
+        mViewModel.updateTask(task);
     }
 
     private void toggle7DaysTaskCompleted(Task task) {
@@ -750,10 +751,10 @@ public class TasksActivity extends DaggerAppCompatActivity
 
     private boolean onProjectClicked(Project project) {
         mProject = project;
+        mLastViewValue = LAST_VIEW_PROJECT;
         displayTasksInProject(project);
         mViewModel.setProject(project);
         drawer.closeDrawer(GravityCompat.START);
-        mLastViewValue = LAST_VIEW_PROJECT;
         invalidateOptionsMenu();
         return true;
     }
@@ -764,6 +765,8 @@ public class TasksActivity extends DaggerAppCompatActivity
         mAdapter.setCompletedTasks(project.getCompletedTasks());
         mTasksLiveData = mViewModel.getTasksInProject(project.getId());
         mTasksLiveData.observe(TasksActivity.this, tasks -> {
+            Log.d(TAG, "DisplayTasksInProject OBSERVER TRIGGERED");
+            mAdapter.setCompletedTasks(mProject.getCompletedTasks());
             if (tasks.size() > 0) {
                 mAdapter.updateListItems(tasks);
             } else {
