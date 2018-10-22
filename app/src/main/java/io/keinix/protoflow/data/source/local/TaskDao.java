@@ -32,6 +32,9 @@ public interface TaskDao {
     @Query("DELETE from task_table WHERE routine_id = :routineId")
     void deleteTasksInRoutine(int routineId);
 
+    @Query("DELETE from task_table WHERE project_id = :projectId")
+    void deleteTasksInProject(int projectId);
+
     @Query("SELECT * from task_table")
     LiveData<List<Task>> getAllTasks();
 

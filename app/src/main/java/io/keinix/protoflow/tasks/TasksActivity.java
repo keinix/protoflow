@@ -194,6 +194,12 @@ public class TasksActivity extends DaggerAppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.tasks, menu);
+        MenuItem deleteButton = menu.findItem(R.id.menu_item_delete_project);
+        if (mLastViewValue == LAST_VIEW_PROJECT) {
+            deleteButton.setVisible(true);
+        } else {
+            deleteButton.setVisible(false);
+        }
         return true;
     }
 
@@ -201,7 +207,10 @@ public class TasksActivity extends DaggerAppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
+        if (id == R.id.menu_item_delete_project) {
+            mLastViewValue = LAST_VIEW_TODAY;
+            restoreView();
+            mViewModel.deleteProject(mProject);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -213,10 +222,12 @@ public class TasksActivity extends DaggerAppCompatActivity
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_calendar:
+                invalidateOptionsMenu();
                 mLastViewValue = LAST_VIEW_CALENDAR;
                 mDatePicker.get().show(getSupportFragmentManager(), "date_picker");
                 break;
             case R.id.nav_today:
+                invalidateOptionsMenu();
                 mLastViewValue = LAST_VIEW_TODAY;
                 clearObservers();
                 mAdapter.setLastViewValue(mLastViewValue);
@@ -224,6 +235,7 @@ public class TasksActivity extends DaggerAppCompatActivity
                 getTasksForToday();
                 break;
             case R.id.nav_7_days:
+                invalidateOptionsMenu();
                 mLastViewValue = LAST_VIEW_7_DAYS;
                 mDateOfCurrentView = 0;
                 mAdapter.setLastViewValue(mLastViewValue);
@@ -232,13 +244,15 @@ public class TasksActivity extends DaggerAppCompatActivity
                 getTasksFor7Days();
                 break;
             case R.id.nav_add_project:
+                mAdapter.setLastViewValue(mLastViewValue);
+                invalidateOptionsMenu();
                 mNewProjectDialog.get().show(getSupportFragmentManager(), "new_project_dialog");
                 clearObservers();
-                mAdapter.setLastViewValue(mLastViewValue);
 //                mAdapter.clearTasks();
                 mLastViewValue = LAST_VIEW_PROJECT;
                 break;
             case R.id.nav_routines:
+                invalidateOptionsMenu();
                 mLastViewValue = LAST_VIEW_ROUTINE;
                 mAdapter.setLastViewValue(mLastViewValue);
                 clearObservers();
@@ -246,6 +260,7 @@ public class TasksActivity extends DaggerAppCompatActivity
                 displayAllRoutines();
                 break;
             case R.id.nav_quick_list:
+                invalidateOptionsMenu();
                 mLastViewValue = LAST_VIEW_QUICK_LIST;
                 clearObservers();
                 mAdapter.setLastViewValue(mLastViewValue);
@@ -457,6 +472,7 @@ public class TasksActivity extends DaggerAppCompatActivity
         // clearObservers();
         switch (mLastViewValue) {
             case LAST_VIEW_CALENDAR:
+                invalidateOptionsMenu();
                 clearObservers();
                 navigationView.setCheckedItem(R.id.nav_calendar);
                 mDatePicker.get().setStartDate(mDateOfCurrentView);
@@ -466,18 +482,21 @@ public class TasksActivity extends DaggerAppCompatActivity
                 mCalendarDayLiveData.observe(TasksActivity.this, this::displayTasksForDay);
                 break;
             case LAST_VIEW_TODAY:
+                invalidateOptionsMenu();
                 clearObservers();
                 navigationView.setCheckedItem(R.id.nav_today);
                 mAdapter.setLastViewValue(mLastViewValue);
                 getTasksForToday();
                 break;
             case LAST_VIEW_7_DAYS:
+                invalidateOptionsMenu();
                 clearObservers();
                 navigationView.setCheckedItem(R.id.nav_7_days);
                 mAdapter.setLastViewValue(mLastViewValue);
                 getTasksFor7Days();
                 break;
             case LAST_VIEW_PROJECT:
+                invalidateOptionsMenu();
                 clearObservers();
                 mProject = mViewModel.getProject();
                 mAdapter.setLastViewValue(mLastViewValue);
@@ -485,12 +504,14 @@ public class TasksActivity extends DaggerAppCompatActivity
                 setProjectAsClickInNavMenu(mProject);
                 break;
             case LAST_VIEW_ROUTINE:
+                invalidateOptionsMenu();
                 clearObservers();
                 navigationView.setCheckedItem(R.id.nav_routines);
                 mAdapter.setLastViewValue(mLastViewValue);
                 displayAllRoutines();
                 break;
             case LAST_VIEW_QUICK_LIST:
+                invalidateOptionsMenu();
                 clearObservers();
                 navigationView.setCheckedItem(R.id.checkBox_quick_list);
                 mAdapter.setLastViewValue(mLastViewValue);
@@ -679,9 +700,11 @@ public class TasksActivity extends DaggerAppCompatActivity
                     updateProjectsInMenu(projects);
                 } else {
                     // called only when a new project is created
-                    if (mProjects.size() != projects.size()) {
+                    if (mProjects.size() < projects.size()) {
                         updateProjectsInMenu(projects.subList(projects.size() - 1, projects.size()));
                         onProjectClicked(projects.get(projects.size() - 1));
+                    } else if (mProjects.size() > projects.size()) {
+                        removeDeletedProjectFomrNavBar(projects);
                     }
                 }
                 mProjects = projects;
@@ -693,10 +716,22 @@ public class TasksActivity extends DaggerAppCompatActivity
         MenuItem item = navigationView.getMenu().findItem(R.id.nav_projects);
         SubMenu subMenu = item.getSubMenu();
         for (Project project : projects) {
-            subMenu.add(project.getName())
+            subMenu.add(Menu.NONE, project.getId(), Menu.NONE, project.getName())
                     .setOnMenuItemClickListener(v -> onProjectClicked(project))
                     .setIcon(R.drawable.ic_project_black_24)
                     .setCheckable(true);
+        }
+    }
+
+    private void removeDeletedProjectFomrNavBar(List<Project> projects) {
+        MenuItem item = navigationView.getMenu().findItem(R.id.nav_projects);
+        SubMenu subMenu = item.getSubMenu();
+
+        for (Project project : mProjects) {
+            if (!projects.contains(project)) {
+                subMenu.removeItem(project.getId());
+                break;
+            }
         }
     }
 
@@ -706,6 +741,7 @@ public class TasksActivity extends DaggerAppCompatActivity
         mViewModel.setProject(project);
         drawer.closeDrawer(GravityCompat.START);
         mLastViewValue = LAST_VIEW_PROJECT;
+        invalidateOptionsMenu();
         return true;
     }
 

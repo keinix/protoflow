@@ -68,6 +68,12 @@ public class TasksViewModel extends AndroidViewModel {
         return mTaskRepository.getLiveCalendarDay(date);
     }
 
+    public void deleteProject(Project project) {
+        mTaskRepository.deleteProject(project);
+        mTaskRepository.deleteTasksInproject(project.getId());
+    }
+
+
     public void updateBatchTasks(Task task) {
         mTaskRepository.updateBatchTasks(task);
     }
