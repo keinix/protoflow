@@ -75,6 +75,7 @@ public class TasksAdapter extends RecyclerView.Adapter {
         void deleteTask(Task task);
         void insertTask(Task task);
         void addCountDownTimerValues(Bundle bundle);
+        void setRecyclerViewEmptyState(boolean isEmpty);
         Bundle getCountDownTimerValues(Task task);
     }
 
@@ -166,6 +167,9 @@ public class TasksAdapter extends RecyclerView.Adapter {
             mListItems.clear();
             mListItems.addAll(listItems);
             diffResult.dispatchUpdatesTo(this);
+
+            boolean isEmpty = listItems == null || listItems.size() == 0;
+            mTaskCompleteListener.setRecyclerViewEmptyState(isEmpty);
     }
 
     public void deleteTask(int position) {
@@ -211,6 +215,10 @@ public class TasksAdapter extends RecyclerView.Adapter {
 
     public LongSparseArray<List<Integer>> getCompletedTasksFor7Days() {
         return mCompletedTasksFor7Days;
+    }
+
+    public List<ListItem> getListItems() {
+        return mListItems;
     }
 
     public void setViewIs7Days(boolean viewIs7Days) {

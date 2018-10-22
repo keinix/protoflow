@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.TextView;
 
 import java.util.HashMap;
 import java.util.List;
@@ -65,6 +66,7 @@ public class TasksActivity extends DaggerAppCompatActivity
     // @BindView(R.id.fab) FloatingActionButton fab;
     @BindView(R.id.fab) com.github.clans.fab.FloatingActionMenu fab;
     @BindView(R.id.routine_fab)com.github.clans.fab.FloatingActionButton routineFab;
+    @BindView(R.id.text_view_empty_recycler_view) TextView emptyRecyclerViewTextView;
 
     @BindView(R.id.drawer_layout) DrawerLayout drawer;
     @BindView(R.id.nav_view) NavigationView navigationView;
@@ -421,6 +423,16 @@ public class TasksActivity extends DaggerAppCompatActivity
         return mViewModel.restoreCountDownTimer(task);
     }
 
+    @Override
+    public void setRecyclerViewEmptyState(boolean isEmpty) {
+        Log.d(TAG, "Check if empty Called");
+        if (isEmpty) {
+            emptyRecyclerViewTextView.setVisibility(View.VISIBLE);
+        } else {
+            emptyRecyclerViewTextView.setVisibility(View.GONE);
+        }
+    }
+
     // --------------Lifecycle--------------
 
     @Override
@@ -466,6 +478,7 @@ public class TasksActivity extends DaggerAppCompatActivity
         if (mCalendarDaysLiveData != null) mCalendarDaysLiveData.removeObservers(TasksActivity.this);
         if (mRoutineLiveData != null) mRoutineLiveData.removeObservers(TasksActivity.this);
     }
+
 
     // used to restore view after configuration changes
     private void restoreView() {

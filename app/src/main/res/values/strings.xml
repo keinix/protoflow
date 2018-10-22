@@ -46,6 +46,7 @@
     <string name="snack_bar_undo">UNDO</string>
     <string name="snack_bar_text">1 Task Deleted</string>
     <string name="timer_finished">finished</string>
+    <string name="recycler_view_empty_state">Look\'s like you\'ve got nothing to do… \n \nTry adding a new task with the \' + \' button</string>
 
 
 </resources>

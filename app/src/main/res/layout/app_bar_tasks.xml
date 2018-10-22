@@ -48,7 +48,7 @@
             app:fab_colorPressed="@color/colorAccent"
             app:fab_colorRipple="@color/colorPrimary"
             app:fab_size="mini"
-            app:fab_label="Project"
+            app:fab_label="From Project"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -59,7 +59,7 @@
             app:fab_colorPressed="@color/colorAccent"
             app:fab_colorRipple="@color/colorPrimary"
             app:fab_size="mini"
-            app:fab_label="Routine"
+            app:fab_label="From Routine"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -70,7 +70,7 @@
             app:fab_colorPressed="@color/colorAccent"
             app:fab_colorRipple="@color/colorPrimary"
             app:fab_size="mini"
-            app:fab_label="Task"
+            app:fab_label="New Task"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
