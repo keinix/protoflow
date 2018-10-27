@@ -59,7 +59,6 @@ public class Repository {
         return mTaskRepository.getAllRepeatedTasks();
     }
 
-
     public LiveData<List<Task>> getAllTasksOnDay(@Nullable List<Integer> taskIds, int repeatedDay) {
         return mTaskRepository.getAllTasksOnDay(taskIds, repeatedDay);
     }
@@ -154,54 +153,4 @@ public class Repository {
     public void deleteRoutine(Routine routine) {
         mRoutineRepository.deleteRoutine(routine);
     }
-
-
-    //DELETE PROJECT ASYNC
-    private static class deleteProjectAsyncTask extends AsyncTask<Project, Void, Void> {
-
-        private ProjectDao mAsyncDao;
-
-        public deleteProjectAsyncTask(ProjectDao asyncDao) {
-            mAsyncDao = asyncDao;
-        }
-
-        @Override
-        protected Void doInBackground(Project... projects) {
-            mAsyncDao.deleteProject(projects[0]);
-            return null;
-        }
-    }
-
-    //INSERT PROJECT ASYNC
-    private static class updateProjectAsync extends AsyncTask<Project, Void, Void> {
-
-        private ProjectDao asyncProjectDao;
-
-        public updateProjectAsync(ProjectDao projectDao) {
-            asyncProjectDao = projectDao;
-        }
-
-        @Override
-        protected Void doInBackground(Project... projects) {
-            asyncProjectDao.update(projects[0]);
-            return null;
-        }
-    }
-
-    //INSERT PROJECT ASYNC
-    private static class insertProjectAsync extends AsyncTask<Project, Void, Void> {
-
-        private ProjectDao asyncProjectDao;
-
-        public insertProjectAsync(ProjectDao projectDao) {
-            asyncProjectDao = projectDao;
-        }
-
-        @Override
-        protected Void doInBackground(Project... projects) {
-            asyncProjectDao.insert(projects[0]);
-            return null;
-        }
-    }
-
 }

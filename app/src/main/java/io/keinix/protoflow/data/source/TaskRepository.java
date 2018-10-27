@@ -8,16 +8,21 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import io.keinix.protoflow.data.CalendarDay;
 import io.keinix.protoflow.data.Task;
 import io.keinix.protoflow.data.source.local.CalendarDayDao;
 import io.keinix.protoflow.data.source.local.TaskDao;
 
+@Singleton
 public class TaskRepository {
 
     private CalendarDayDao mCalendarDayDao;
     private TaskDao mTaskDao;
 
+    @Inject
     TaskRepository(TaskDao taskDao, CalendarDayDao calendarDayDao) {
         mTaskDao = taskDao;
         mCalendarDayDao = calendarDayDao;

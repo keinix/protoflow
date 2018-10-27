@@ -6,10 +6,12 @@ import android.os.AsyncTask;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import io.keinix.protoflow.data.Routine;
 import io.keinix.protoflow.data.source.local.RoutineDao;
 
+@Singleton
 public class RoutineRepository {
 
     private RoutineDao mRoutineDao;

@@ -15,7 +15,7 @@ import io.keinix.protoflow.data.source.local.TaskDao;
 import io.keinix.protoflow.data.source.local.TaskRoomDatabase;
 
 @Module
-public abstract class TaskRepositoryModule {
+public abstract class RepositoryModule {
 
     @Singleton
     @Provides static TaskRoomDatabase provideDb(Application context) {

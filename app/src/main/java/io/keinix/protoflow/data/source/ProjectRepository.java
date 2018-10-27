@@ -5,14 +5,19 @@ import android.os.AsyncTask;
 
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import io.keinix.protoflow.data.Project;
 import io.keinix.protoflow.data.Routine;
 import io.keinix.protoflow.data.source.local.ProjectDao;
 
+@Singleton
 public class ProjectRepository {
 
     private ProjectDao mProjectDao;
 
+    @Inject
     ProjectRepository(ProjectDao projectDao) {
         mProjectDao = projectDao;
     }

@@ -5,13 +5,18 @@ import android.os.AsyncTask;
 
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import io.keinix.protoflow.data.CalendarDay;
 import io.keinix.protoflow.data.source.local.CalendarDayDao;
 
+@Singleton
 public class CalendarDayRepository {
 
     private CalendarDayDao mCalendarDayDao;
 
+    @Inject
     public CalendarDayRepository(CalendarDayDao calendarDayDao) {
         mCalendarDayDao = calendarDayDao;
     }
