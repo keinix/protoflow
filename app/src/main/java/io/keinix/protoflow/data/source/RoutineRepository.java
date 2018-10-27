@@ -15,19 +15,19 @@ public class RoutineRepository {
     private RoutineDao mRoutineDao;
 
     @Inject
-    public RoutineRepository(RoutineDao routineDao) {
+    RoutineRepository(RoutineDao routineDao) {
         mRoutineDao = routineDao;
     }
 
-    public void insertRoutine(Routine routine) {
+    void insertRoutine(Routine routine) {
         new insertRoutineAsync(mRoutineDao).execute(routine);
     }
 
-    public void deleteRoutine(Routine routine) {
+    void deleteRoutine(Routine routine) {
         new deleteRoutineAsyncTask(mRoutineDao).execute(routine);
     }
 
-    public LiveData<List<Routine>> getAllRoutines() {
+    LiveData<List<Routine>> getAllRoutines() {
         return mRoutineDao.getAllRoutines();
     }
 

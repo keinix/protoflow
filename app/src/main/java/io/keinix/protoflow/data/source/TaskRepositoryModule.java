@@ -52,13 +52,23 @@ public abstract class TaskRepositoryModule {
     }
 
     @Singleton
-    @Provides static Repository taskRepository(TaskDao dao, CalendarDayDao cDao, ProjectDao pDao, RoutineRepository rRepo) {
-        return new Repository(dao, cDao, pDao, rRepo);
+    @Provides static Repository taskRepository(TaskRepository tRepo, CalendarDayRepository cRepo, ProjectDao pDao, RoutineRepository rRepo) {
+        return new Repository(tRepo, cRepo, pDao, rRepo);
     }
 
     @Singleton
     @Provides static RoutineRepository proveRoutineRepository(RoutineDao dao) {
         return new RoutineRepository(dao);
+    }
+
+    @Singleton
+    @Provides static TaskRepository provideTaskRepository(TaskDao tDao, CalendarDayDao cDao) {
+        return new TaskRepository(tDao, cDao);
+    }
+
+    @Singleton
+    @Provides static CalendarDayRepository provideCalendarDayRepository(CalendarDayDao cDao) {
+        return new CalendarDayRepository(cDao);
     }
 
 }
