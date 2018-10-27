@@ -77,6 +77,8 @@ public class TasksActivity extends DaggerAppCompatActivity
     @BindString(R.string.tasks_toolbar_title_7_days) String sevenDaysString;
     @BindString(R.string.tasks_toolbar_title_routines) String routinesString;
     @BindString(R.string.quick_list) String quickListString;
+    @BindString(R.string.recycler_view_empty_state) String emptyStateString;
+    @BindString(R.string.recycler_view_empty_state_routine) String emptyStateStringRoutine;
 
     // ----------Member variables------------
 
@@ -272,6 +274,7 @@ public class TasksActivity extends DaggerAppCompatActivity
         }
         drawer.closeDrawer(GravityCompat.START);
         swapFabs();
+        setRecyclerViewEmptyState(mAdapter.getListItems() == null || mAdapter.getListItems().size() == 0);
         return true;
     }
 
@@ -427,6 +430,11 @@ public class TasksActivity extends DaggerAppCompatActivity
     public void setRecyclerViewEmptyState(boolean isEmpty) {
         Log.d(TAG, "Check if empty Called");
         if (isEmpty) {
+            if (mLastViewValue.equals(LAST_VIEW_ROUTINE)) {
+                emptyRecyclerViewTextView.setText(emptyStateStringRoutine);
+            } else {
+                emptyRecyclerViewTextView.setText(emptyStateString);
+            }
             emptyRecyclerViewTextView.setVisibility(View.VISIBLE);
         } else {
             emptyRecyclerViewTextView.setVisibility(View.GONE);
@@ -532,6 +540,7 @@ public class TasksActivity extends DaggerAppCompatActivity
                 break;
         }
         swapFabs();
+        setRecyclerViewEmptyState(mAdapter.getListItems() == null || mAdapter.getListItems().size() == 0);
     }
 
     private void scheduleRoutine(int routineId) {
@@ -651,11 +660,11 @@ public class TasksActivity extends DaggerAppCompatActivity
     // change is here
     private void getTaskForDate(CalendarDay calendarDay) {
         mAdapter.setCompletedTasks(calendarDay.getCompletedTasks());
+        mTasksLiveData.removeObservers(TasksActivity.this);
         mTasksLiveData = mViewModel.getAllTasksOnDay(calendarDay);
         mTasksLiveData.observe(TasksActivity.this, tasks -> {
             mAdapter.updateListItems(tasks);
             Log.d(TAG, "OBSERVER TRIGGERED: GetTaskForDate. Observer on mTasksLiveData");
-            mTasksLiveData.removeObservers(this);
         });
     }
 
