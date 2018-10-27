@@ -25,15 +25,15 @@ public class Repository {
 
     private TaskRepository mTaskRepository;
     private CalendarDayRepository mCalendarDayRepository;
-    private ProjectDao mProjectDao;
+    private ProjectRepository mProjectRepository;
     private RoutineRepository mRoutineRepository;
 
     @Inject
-    public Repository(TaskRepository taskRepository, CalendarDayRepository calendarDayRepository, ProjectDao projectDao,
+    public Repository(TaskRepository taskRepository, CalendarDayRepository calendarDayRepository, ProjectRepository projectRepository,
                       RoutineRepository routineRepository) {
         mTaskRepository = taskRepository;
         mCalendarDayRepository = calendarDayRepository;
-        mProjectDao = projectDao;
+        mProjectRepository = projectRepository;
         mRoutineRepository = routineRepository;
     }
 
@@ -103,23 +103,23 @@ public class Repository {
     // ----------------------Project----------------------
 
     public LiveData<Project> getProject(int id) {
-        return mProjectDao.getProject(id);
+        return mProjectRepository.getProject(id);
     }
 
     public LiveData<List<Project>> getAllProjects() {
-        return mProjectDao.getAllProjects();
+        return mProjectRepository.getAllProjects();
     }
 
     public void insertProject(Project project) {
-        new insertProjectAsync(mProjectDao).execute(project);
+        mProjectRepository.insertProject(project);
     }
 
     public void updateProject(Project project) {
-        new updateProjectAsync(mProjectDao).execute(project);
+        mProjectRepository.updateProject(project);
     }
 
     public void deleteProject(Project project) {
-        new deleteProjectAsyncTask(mProjectDao).execute(project);
+        mProjectRepository.deleteProject(project);
     }
 
     // --------------------CalendarDay--------------------
@@ -143,6 +143,10 @@ public class Repository {
 
     // ---------------------Routine---------------------
 
+    public LiveData<List<Routine>> getAllRoutines() {
+        return mRoutineRepository.getAllRoutines();
+    }
+
     public void insertRoutine(Routine routine) {
         mRoutineRepository.insertRoutine(routine);
     }
@@ -151,57 +155,6 @@ public class Repository {
         mRoutineRepository.deleteRoutine(routine);
     }
 
-    public LiveData<List<Routine>> getAllRoutines() {
-        return mRoutineRepository.getAllRoutines();
-    }
-
-
-    // INSERT ASYNC
-    private static class insertCalendarDayAsync extends AsyncTask<CalendarDay, Void, Void> {
-        CalendarDayDao mAsyncDao;
-
-        public insertCalendarDayAsync(CalendarDayDao dao) {
-            mAsyncDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(CalendarDay... calendarDays) {
-            mAsyncDao.insert(calendarDays[0]);
-            return null;
-        }
-    }
-
-    // INSERT ASYNC
-    private static class updateCalendarDayAsync extends AsyncTask<CalendarDay, Void, Void> {
-        CalendarDayDao mAsyncDao;
-
-        public updateCalendarDayAsync(CalendarDayDao dao) {
-            mAsyncDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(CalendarDay... calendarDays) {
-            mAsyncDao.update(calendarDays[0]);
-            return null;
-        }
-    }
-
-
-    //DELETE ASYNC
-    private static class deleteAsyncTask extends AsyncTask<Task, Void, Void> {
-
-        private TaskDao mAsyncDao;
-
-        public deleteAsyncTask(TaskDao asyncDao) {
-            mAsyncDao = asyncDao;
-        }
-
-        @Override
-        protected Void doInBackground(Task... tasks) {
-            mAsyncDao.delete(tasks[0]);
-            return null;
-        }
-    }
 
     //DELETE PROJECT ASYNC
     private static class deleteProjectAsyncTask extends AsyncTask<Project, Void, Void> {
@@ -215,39 +168,6 @@ public class Repository {
         @Override
         protected Void doInBackground(Project... projects) {
             mAsyncDao.deleteProject(projects[0]);
-            return null;
-        }
-    }
-
-    //DELETE TASKS IN PROJECT ASYNC
-    private static class deleteTasksInProjectAsync extends AsyncTask<Integer, Void, Void> {
-
-        private TaskDao mAsyncDao;
-
-        public deleteTasksInProjectAsync(TaskDao asyncDao) {
-            mAsyncDao = asyncDao;
-        }
-
-        @Override
-        protected Void doInBackground(Integer... projectIds) {
-            mAsyncDao.deleteTasksInProject(projectIds[0]);
-            return null;
-        }
-    }
-
-
-    //DELETE ASYNC
-    private static class deleteAllAsyncTask extends AsyncTask<Integer, Void, Void> {
-
-        private TaskDao mAsyncDao;
-
-        public deleteAllAsyncTask(TaskDao asyncDao) {
-            mAsyncDao = asyncDao;
-        }
-
-        @Override
-        protected Void doInBackground(Integer... routineIds) {
-            mAsyncDao.deleteTasksInRoutine(routineIds[0]);
             return null;
         }
     }
@@ -280,74 +200,6 @@ public class Repository {
         @Override
         protected Void doInBackground(Project... projects) {
             asyncProjectDao.insert(projects[0]);
-            return null;
-        }
-    }
-
-    //INSERT ASYNC
-    private static class insertAsyncTask extends AsyncTask<Task, Void, Void> {
-
-        private TaskDao asyncTaskDao;
-        private CalendarDayDao calendarDayDao;
-
-        public insertAsyncTask(TaskDao asyncTaskDao, CalendarDayDao asyncCalendarDao) {
-            this.asyncTaskDao = asyncTaskDao;
-            this.calendarDayDao = asyncCalendarDao;
-        }
-
-        @Override
-        protected Void doInBackground(Task... params) {
-            long taskId = asyncTaskDao.insert(params[0]);
-            if (params[0].getScheduledDateUtc() > 0) {
-                insertTaskIdIntoDay(taskId, params[0].getScheduledDateUtc());
-            }
-            return null;
-        }
-
-
-        private void insertTaskIdIntoDay(long id, long dayInMillis) {
-            CalendarDay calendarDay = calendarDayDao.getCalendarDay(dayInMillis);
-            if (calendarDay == null) {
-                calendarDay = new CalendarDay(dayInMillis);
-                ArrayList<Integer> taskIds = new ArrayList<>();
-                taskIds.add((int) id);
-                calendarDay.setScheduledTaskIds(taskIds);
-                calendarDayDao.insert(calendarDay);
-            } else {
-                calendarDay.addTaskId((int) id);
-                calendarDayDao.update(calendarDay);
-            }
-        }
-    }
-
-    //UPDATE ASYNC
-    private static class updateAsyncTask extends AsyncTask<Task, Void, Void> {
-
-        private TaskDao asyncTaskDao;
-
-        public updateAsyncTask(TaskDao asyncTaskDao) {
-            this.asyncTaskDao = asyncTaskDao;
-        }
-
-        @Override
-        protected Void doInBackground(Task... tasks) {
-            asyncTaskDao.update(tasks[0]);
-            return null;
-        }
-    }
-
-    //INSERT ALL ASYNC
-    private static class updateBatchTasksAsync extends AsyncTask<Task, Void, Void> {
-
-        private TaskDao asyncTaskDao;
-
-        public updateBatchTasksAsync(TaskDao asyncTaskDao) {
-            this.asyncTaskDao = asyncTaskDao;
-        }
-
-        @Override
-        protected Void doInBackground(Task... tasks) {
-            asyncTaskDao.updateBatch(tasks[0]);
             return null;
         }
     }
