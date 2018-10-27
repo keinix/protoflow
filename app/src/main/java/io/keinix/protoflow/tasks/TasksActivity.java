@@ -660,7 +660,7 @@ public class TasksActivity extends DaggerAppCompatActivity
     // change is here
     private void getTaskForDate(CalendarDay calendarDay) {
         mAdapter.setCompletedTasks(calendarDay.getCompletedTasks());
-        mTasksLiveData.removeObservers(TasksActivity.this);
+        if (mTasksLiveData != null) mTasksLiveData.removeObservers(TasksActivity.this);
         mTasksLiveData = mViewModel.getAllTasksOnDay(calendarDay);
         mTasksLiveData.observe(TasksActivity.this, tasks -> {
             mAdapter.updateListItems(tasks);

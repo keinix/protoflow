@@ -19,12 +19,12 @@ import io.keinix.protoflow.R;
 import io.keinix.protoflow.data.Project;
 import io.keinix.protoflow.data.Routine;
 import io.keinix.protoflow.data.Task;
-import io.keinix.protoflow.data.source.TaskRepository;
+import io.keinix.protoflow.data.source.Repository;
 import io.keinix.protoflow.scheduling.NotificationScheduler;
 
 public class AddEditTaskViewModel extends AndroidViewModel {
 
-    private TaskRepository mTaskRepository;
+    private Repository mRepository;
 
     // ------------create a new Task object------------
     // These vars are set in AddEditTaskActivity and are used to
@@ -44,31 +44,31 @@ public class AddEditTaskViewModel extends AndroidViewModel {
     private static final String TAG = AddEditTaskViewModel.class.getSimpleName();
 
     @Inject
-    public AddEditTaskViewModel(@NonNull Application application, TaskRepository taskRepository) {
+    public AddEditTaskViewModel(@NonNull Application application, Repository repository) {
         super(application);
-        mTaskRepository = taskRepository;
+        mRepository = repository;
     }
 
     // -------public: model layer bridge--------
 
     void insertTask(Task task) {
-        mTaskRepository.insertTask(task);
+        mRepository.insertTask(task);
     }
 
     void updateTask(Task task) {
-        mTaskRepository.updateTask(task);
+        mRepository.updateTask(task);
     }
 
     LiveData<Task> getTaskToEdit(int id) {
-        return mTaskRepository.getTask(id);
+        return mRepository.getTask(id);
     }
 
     LiveData<List<Project>> getAllProjects() {
-        return mTaskRepository.getAllProjects();
+        return mRepository.getAllProjects();
     }
 
     public LiveData<Project> getProject(int id) {
-        return mTaskRepository.getProject(id);
+        return mRepository.getProject(id);
     }
 
     // -----------public: view layer------------

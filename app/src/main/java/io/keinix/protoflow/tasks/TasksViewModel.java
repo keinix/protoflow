@@ -21,7 +21,7 @@ import io.keinix.protoflow.data.CalendarDay;
 import io.keinix.protoflow.data.Project;
 import io.keinix.protoflow.data.Routine;
 import io.keinix.protoflow.data.Task;
-import io.keinix.protoflow.data.source.TaskRepository;
+import io.keinix.protoflow.data.source.Repository;
 import io.keinix.protoflow.util.ListItem;
 
 import static io.keinix.protoflow.tasks.TasksAdapter.DATE_HEADING;
@@ -30,7 +30,7 @@ public class TasksViewModel extends AndroidViewModel {
 
     // ----------Member variables------------
     private LiveData<List<Task>> mAllTasks;
-    private TaskRepository mTaskRepository;
+    private Repository mRepository;
     private List<Long> mNext7DaysUtc;
     private Project mProject;
     private SparseBooleanArray mRoutineHasObserver;
@@ -40,10 +40,10 @@ public class TasksViewModel extends AndroidViewModel {
 
     public static final String TAG = TasksViewModel.class.getSimpleName();
     @Inject
-    public TasksViewModel(@NonNull Application application, TaskRepository taskRepository) {
+    public TasksViewModel(@NonNull Application application, Repository repository) {
         super(application);
-        mTaskRepository = taskRepository;
-        mAllTasks = mTaskRepository.getAllTasks();
+        mRepository = repository;
+        mAllTasks = mRepository.getAllTasks();
         mRoutineHasObserver = new SparseBooleanArray();
     }
 
@@ -53,89 +53,89 @@ public class TasksViewModel extends AndroidViewModel {
     }
 
     public void deleteTask(Task task) {
-        mTaskRepository.deleteTask(task);
+        mRepository.deleteTask(task);
     }
 
     public void deleteRoutine(Routine routine) {
-        mTaskRepository.deleteRoutine(routine);
+        mRepository.deleteRoutine(routine);
     }
 
     public void insertTask(Task task) {
-        mTaskRepository.insertTask(task);
+        mRepository.insertTask(task);
     }
 
     public LiveData<CalendarDay> getLiveCalendarDay(long date) {
-        return mTaskRepository.getLiveCalendarDay(date);
+        return mRepository.getLiveCalendarDay(date);
     }
 
     public void deleteProject(Project project) {
-        mTaskRepository.deleteProject(project);
-        mTaskRepository.deleteTasksInproject(project.getId());
+        mRepository.deleteProject(project);
+        mRepository.deleteTasksInProject(project.getId());
     }
 
 
     public void updateBatchTasks(Task task) {
-        mTaskRepository.updateBatchTasks(task);
+        mRepository.updateBatchTasks(task);
     }
 
     public LiveData<List<Task>> getTasks(List<Integer> taskIds) {
-        return mTaskRepository.getTasks(taskIds);
+        return mRepository.getTasks(taskIds);
     }
 
     public void insertCalendarDay(CalendarDay calendarDay) {
-        mTaskRepository.insertCalendarDay(calendarDay);
+        mRepository.insertCalendarDay(calendarDay);
     }
 
     public void updateProject(Project project) {
-        mTaskRepository.updateProject(project);
+        mRepository.updateProject(project);
     }
 
     public LiveData<List<Task>> getTasksInQuickList() {
-        return mTaskRepository.getTasksInQuickList();
+        return mRepository.getTasksInQuickList();
     }
 
     public LiveData<List<CalendarDay>> getNext7CalendarDays() {
-        return mTaskRepository.getNext7CalendarDays(getDatesForNext7Days());
+        return mRepository.getNext7CalendarDays(getDatesForNext7Days());
     }
 
     public LiveData<List<Task>> getAllRepeatedTasks() {
-        return mTaskRepository.getAllRepeatedTasks();
+        return mRepository.getAllRepeatedTasks();
     }
 
     public LiveData<List<Task>> getTasksInProject(int projectId) {
-        return mTaskRepository.getTasksInProject(projectId);
+        return mRepository.getTasksInProject(projectId);
     }
 
     public LiveData<List<Project>> getAllProjects() {
-        return mTaskRepository.getAllProjects();
+        return mRepository.getAllProjects();
     }
 
     public void insertProject(Project project) {
-        mTaskRepository.insertProject(project);
+        mRepository.insertProject(project);
     }
 
     public LiveData<List<Routine>> getAllRoutines() {
-        return mTaskRepository.getAllRoutines();
+        return mRepository.getAllRoutines();
     }
 
     public void insertRoutine(Routine routine) {
-        mTaskRepository.insertRoutine(routine);
+        mRepository.insertRoutine(routine);
     }
 
     public LiveData<List<Task>> getChildTasksForRoutine(int routineId) {
-        return mTaskRepository.getRoutineChildTasks(routineId);
+        return mRepository.getRoutineChildTasks(routineId);
     }
 
     public void updateTask(Task task) {
-        mTaskRepository.updateTask(task);
+        mRepository.updateTask(task);
     }
 
     public void updateCalendarDay(CalendarDay calendarDay) {
-        mTaskRepository.updateCalendarDay(calendarDay);
+        mRepository.updateCalendarDay(calendarDay);
     }
 
     public void deleteTaskInRoutine(int routineId) {
-        mTaskRepository.deleteTaskInRoutine(routineId);
+        mRepository.deleteTaskInRoutine(routineId);
     }
 
     public void updateCalendarDay(CalendarDay calendarDay, List<Task> tasks, long date) {
@@ -148,20 +148,20 @@ public class TasksViewModel extends AndroidViewModel {
         for (Task task : tasks) {
             calendarDay.addScheduledTaskIds(task.getId());
             task.setScheduledDateUtc(date);
-            mTaskRepository.updateBatchTasks(task);
+            mRepository.updateBatchTasks(task);
         }
 
 
         if (calendarDayIsNew) {
-            mTaskRepository.insertCalendarDay(calendarDay);
+            mRepository.insertCalendarDay(calendarDay);
         } else {
-            mTaskRepository.updateCalendarDay(calendarDay);
+            mRepository.updateCalendarDay(calendarDay);
         }
     }
 
     public void updateCalendarDay(CalendarDay calendarDay, Task task, long date) {
         task.setScheduledDateUtc(date);
-        mTaskRepository.updateTask(task);
+        mRepository.updateTask(task);
 
         boolean calendarDayIsNew = false;
         if (calendarDay == null) {
@@ -174,9 +174,9 @@ public class TasksViewModel extends AndroidViewModel {
 
 
         if (calendarDayIsNew) {
-            mTaskRepository.insertCalendarDay(calendarDay);
+            mRepository.insertCalendarDay(calendarDay);
         } else {
-            mTaskRepository.updateCalendarDay(calendarDay);
+            mRepository.updateCalendarDay(calendarDay);
         }
     }
 
@@ -188,7 +188,7 @@ public class TasksViewModel extends AndroidViewModel {
     public LiveData<List<Task>> getAllTasksOnDay(CalendarDay calendarDay) {
         List<Integer> taskIds = calendarDay.getScheduledTaskIds();
         int repeatedDay = getDayOfWeek(calendarDay);
-        return mTaskRepository.getAllTasksOnDay(taskIds, repeatedDay);
+        return mRepository.getAllTasksOnDay(taskIds, repeatedDay);
     }
 
     /**
@@ -199,7 +199,7 @@ public class TasksViewModel extends AndroidViewModel {
      */
     public LiveData<List<Task>> getAllTasksOnDay(long dayInMillis) {
         int repeatedDay = getDayOfWeek(dayInMillis);
-        return mTaskRepository.getAllTasksOnDay(null, repeatedDay);
+        return mRepository.getAllTasksOnDay(null, repeatedDay);
     }
 
     public LiveData<List<Task>> getAllTasksFor7Days(List<CalendarDay> calendarDays) {
@@ -209,7 +209,7 @@ public class TasksViewModel extends AndroidViewModel {
                 taskIds.addAll(calendarDay.getScheduledTaskIds());
             }
         }
-        return mTaskRepository.getAllTasksFor7Days(taskIds);
+        return mRepository.getAllTasksFor7Days(taskIds);
     }
 
     // -----------------public------------------

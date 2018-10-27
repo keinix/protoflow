@@ -3,9 +3,7 @@ package io.keinix.protoflow.data.source.local;
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
-import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
-import android.arch.persistence.room.TypeConverters;
 import android.arch.persistence.room.Update;
 
 import java.util.List;
@@ -13,8 +11,7 @@ import java.util.List;
 import javax.inject.Singleton;
 
 import io.keinix.protoflow.data.CalendarDay;
-import io.keinix.protoflow.data.source.TaskRepository;
-import io.keinix.protoflow.util.RoomTypeConverters;
+import io.keinix.protoflow.data.source.Repository;
 
 @Dao
 @Singleton
@@ -27,7 +24,7 @@ public interface CalendarDayDao {
     void update(CalendarDay day);
 
     /**
-     * used in {@link TaskRepository} async to check if a CalendarDay exists
+     * used in {@link Repository} async to check if a CalendarDay exists
      * when creating a new task
      * @param date of the day
      * @return {@link CalendarDay} for that date

@@ -7,7 +7,6 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import io.keinix.protoflow.data.Project;
 import io.keinix.protoflow.data.source.local.CalendarDayDao;
 import io.keinix.protoflow.data.source.local.CalendarDayDatabase;
 import io.keinix.protoflow.data.source.local.ProjectDao;
@@ -53,8 +52,13 @@ public abstract class TaskRepositoryModule {
     }
 
     @Singleton
-    @Provides static TaskRepository taskRepository(TaskDao dao, CalendarDayDao cDao, ProjectDao pDao, RoutineDao rDao) {
-        return new TaskRepository(dao, cDao, pDao, rDao);
+    @Provides static Repository taskRepository(TaskDao dao, CalendarDayDao cDao, ProjectDao pDao, RoutineRepository rRepo) {
+        return new Repository(dao, cDao, pDao, rRepo);
+    }
+
+    @Singleton
+    @Provides static RoutineRepository proveRoutineRepository(RoutineDao dao) {
+        return new RoutineRepository(dao);
     }
 
 }
